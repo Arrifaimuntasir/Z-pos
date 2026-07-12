@@ -1,0 +1,319 @@
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Custom Landing Page Styles
+body {
+    font-family: $font-family-sans-serif;
+    color: #334155;
+    background-color: $body-bg;
+}
+
+// Navbar
+.navbar-landing {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+    
+    .navbar-brand {
+        font-weight: 700;
+        color: $primary;
+        font-size: 1.5rem;
+        
+        span {
+            color: $accent;
+        }
+    }
+    
+    .nav-link {
+        font-weight: 500;
+        color: $primary;
+        margin: 0 0.5rem;
+        position: relative;
+        
+        &:hover {
+            color: $accent;
+        }
+    }
+
+    .btn-login {
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+    }
+}
+
+// Hero Section
+.hero-section {
+    padding: 8rem 0 5rem;
+    background: linear-gradient(135deg, rgba(15,23,42,0.03) 0%, rgba(16,185,129,0.05) 100%);
+    position: relative;
+    overflow: hidden;
+
+    h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: $primary;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        
+        .highlight {
+            color: $accent;
+            position: relative;
+            z-index: 1;
+            
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 5px;
+                left: 0;
+                width: 100%;
+                height: 30%;
+                background-color: rgba(16,185,129,0.2);
+                z-index: -1;
+            }
+        }
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #475569;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        border-radius: 8px;
+        font-size: 1.1rem;
+    }
+
+    .hero-image {
+        position: relative;
+        border-radius: 20px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        overflow: hidden;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.6) 100%);
+        }
+    }
+}
+
+// Features
+.feature-box {
+    padding: 2.5rem 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(16,185,129,0.15);
+    }
+    
+    .icon-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: rgba(16,185,129,0.1);
+        color: $accent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: $primary;
+        margin-bottom: 1rem;
+    }
+    
+    p {
+        color: #64748b;
+        margin-bottom: 0;
+    }
+}
+
+// Pricing
+.pricing-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    
+    &.popular {
+        border: 2px solid $accent;
+        transform: scale(1.05);
+        z-index: 1;
+        
+        .badge-popular {
+            position: absolute;
+            top: 1rem;
+            right: -2rem;
+            background: $accent;
+            color: #fff;
+            padding: 0.25rem 3rem;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    }
+    
+    .price {
+        font-size: 3rem;
+        font-weight: 800;
+        color: $primary;
+        
+        span {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+    }
+    
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0;
+        
+        li {
+            margin-bottom: 1rem;
+            color: #475569;
+            
+            i {
+                color: $accent;
+                margin-right: 0.5rem;
+            }
+        }
+    }
+}
+
+// Testimonials
+.testimonial-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    
+    .quote-icon {
+        color: rgba(16,185,129,0.2);
+        font-size: 3rem;
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+    }
+    
+    p {
+        font-size: 1.1rem;
+        font-style: italic;
+        color: #475569;
+        margin-bottom: 1.5rem;
+    }
+    
+    .client-info {
+        display: flex;
+        align-items: center;
+        
+        img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        
+        h5 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1rem;
+            color: $primary;
+        }
+        
+        span {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    }
+}
+
+// Footer
+.footer {
+    background-color: $primary;
+    color: rgba(255,255,255,0.7);
+    padding: 5rem 0 2rem;
+    
+    h5 {
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    
+    ul li {
+        margin-bottom: 0.8rem;
+        
+        a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            
+            &:hover {
+                color: $accent;
+            }
+        }
+    }
+    
+    .social-icons a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        
+        &:hover {
+            background: $accent;
+            transform: translateY(-3px);
+        }
+    }
+    
+    .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: 3rem;
+        padding-top: 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+// Map
+.map-container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    height: 300px;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-weight: 500;
+}

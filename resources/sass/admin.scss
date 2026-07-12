@@ -1,0 +1,230 @@
+// Variables
+@import 'variables';
+
+// Admin Layout
+.admin-body {
+    background-color: #f8fafc;
+    overflow-x: hidden;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+// Sidebar
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    min-height: 100vh;
+    background: #ffffff;
+    color: #334155;
+    transition: all 0.3s;
+    border-right: 1px solid #e2e8f0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    
+    &.active {
+        margin-left: -250px;
+    }
+
+    .sidebar-header {
+        padding: 20px;
+        background: #ffffff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    ul.components {
+        padding: 15px 0;
+        flex: 1;
+        
+        li {
+            padding: 2px 15px;
+            
+            a {
+                padding: 10px 15px;
+                font-size: 0.95rem;
+                display: block;
+                color: #64748b;
+                text-decoration: none;
+                transition: all 0.2s;
+                font-weight: 600;
+                border-radius: 8px;
+                
+                &:hover, &[aria-expanded="true"] {
+                    color: #0f172a;
+                    background: #f8fafc;
+                }
+                
+                i {
+                    font-size: 1.1rem;
+                    opacity: 0.8;
+                    width: 25px;
+                    display: inline-block;
+                    color: #0ea5e9;
+                }
+            }
+            
+            &.active > a {
+                background: #eff6ff;
+                color: #2563eb;
+                
+                i {
+                    color: #2563eb;
+                    opacity: 1;
+                }
+            }
+        }
+        
+        ul.collapse, ul.collapsing {
+            background: #ffffff;
+            margin-top: 5px;
+            
+            li {
+                padding: 2px 15px 2px 35px;
+                a {
+                    padding: 8px 15px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    
+                    &:hover {
+                        color: #2563eb;
+                        background: #eff6ff;
+                    }
+                }
+            }
+        }
+    }
+    
+    .sidebar-bottom {
+        padding: 15px;
+        border-top: 1px solid #e2e8f0;
+        background: #f8fafc;
+        
+        .maintenance-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+            
+            .text-muted {
+                font-size: 0.8rem;
+            }
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}
+
+// Content Area
+#content {
+    width: 100%;
+    min-height: 100vh;
+    transition: all 0.3s;
+    
+    .top-navbar {
+        padding: 10px 20px;
+        
+        .btn-light {
+            background: #f1f5f9;
+            border: none;
+            
+            &:hover {
+                background: #e2e8f0;
+            }
+        }
+    }
+}
+
+// Cards in Admin
+.admin-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.25rem 1.5rem;
+        border-radius: 12px 12px 0 0;
+        font-weight: 600;
+        color: $primary;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+}
+
+// Tables in Admin
+.table-admin {
+    vertical-align: middle;
+    
+    th {
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        background-color: #f8fafc;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 1rem;
+    }
+    
+    td {
+        padding: 1rem;
+        color: #334155;
+        border-bottom: 1px solid #f1f5f9;
+    }
+}
+
+// Modals
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    
+    .modal-header {
+        border-bottom: 1px solid #f1f5f9;
+        padding: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #f1f5f9;
+        padding: 1.5rem;
+    }
+}
+
+// Media Queries
+@media (max-width: 768px) {
+    .sidebar {
+        margin-left: -260px;
+        
+        &.active {
+            margin-left: 0;
+        }
+    }
+    
+    #content.active {
+        margin-left: 260px;
+    }
+}
