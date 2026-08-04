@@ -44,6 +44,7 @@
                         </td>
                         <td class="text-end fw-bold text-danger">{{ number_format($expense->amount) }} TSh</td>
                         <td class="text-end">
+                            <a href="{{ route('expenses.edit', $expense) }}" class="btn btn-sm btn-light text-primary me-1"><i class="bi bi-pencil"></i></a>
                             <form action="{{ route('expenses.destroy', $expense) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this expense?');">
                                 @csrf
                                 @method('DELETE')
