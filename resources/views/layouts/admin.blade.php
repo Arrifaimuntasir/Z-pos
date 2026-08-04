@@ -22,92 +22,82 @@
 <body class="admin-body">
     <div class="wrapper">
         <!-- Sidebar -->
-        <nav id="sidebar" class="sidebar">
-            <div class="sidebar-header py-4 d-flex align-items-center justify-content-center">
-                <div style="width: 40px; height: 40px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: white; border-radius: 8px;">
-                    <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
-                </div>
-                <div class="ms-2 d-flex flex-column justify-content-center text-start">
-                    <span class="fw-bold fs-4 text-primary lh-1">Z-pos</span>
+        <nav id="sidebar" class="sidebar" style="background-color: #ffffff !important; border-right: 1px solid #e2e8f0;">
+            <div class="sidebar-header py-3 d-flex align-items-center justify-content-center" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0;">
+                <div style="width: 100%; height: auto; max-width: 130px; display: flex; justify-content: center; align-items: center; padding: 5px; mix-blend-mode: multiply;">
+                    <img src="{{ asset('images/zamar_logo.jpg') }}" alt="ZAMAR STORE" style="width: 100%; height: auto; object-fit: contain; filter: brightness(1.2) contrast(1.8);">
                 </div>
             </div>
 
-            <ul class="list-unstyled components">
-                <li class="active">
-                    <a href="{{ url('/home') }}"><i class="bi bi-grid-fill me-3"></i> Dashboard</a>
+            <ul class="list-unstyled components" style="background-color: #ffffff;">
+                <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}" style="{{ request()->is('/') || request()->is('home') ? 'background-color: #eff6ff; border-radius: 8px; margin: 0 10px;' : 'margin: 0 10px;' }}">
+                    <a href="{{ url('/home') }}" style="{{ request()->is('/') || request()->is('home') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"><i class="bi bi-grid-fill me-3" style="{{ request()->is('/') || request()->is('home') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"></i> Dashboard</a>
+                </li>
+                
+                <li class="{{ request()->is('sales*') ? 'active' : '' }}" style="{{ request()->is('sales*') ? 'background-color: #eff6ff; border-radius: 8px; margin: 0 10px;' : 'margin: 0 10px;' }}">
+                    <a href="{{ route('sales.create') }}" style="{{ request()->is('sales*') ? 'color: #2563eb !important;' : 'color: #64748b;' }}">
+                        <i class="bi bi-cart-check-fill me-3" style="{{ request()->is('sales*') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"></i> POS / Sales
+                    </a>
                 </li>
                 <li>
-                    <a href="{{ route('customers.index') }}"><i class="bi bi-person-fill me-3"></i> Customer</a>
-                </li>
-                <li>
-                    <a href="#itemsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <a href="#itemsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
                         <i class="bi bi-box-seam-fill me-3"></i> Items
                     </a>
                     <ul class="collapse list-unstyled" id="itemsSubmenu">
-                        <li><a href="{{ route('products.index') }}">Products</a></li>
-                        <li><a href="{{ route('categories.index') }}">Categories</a></li>
-                        <li><a href="{{ route('brands.index') }}">Brands</a></li>
-                        <li><a href="{{ route('units.index') }}">Units</a></li>
+                        <li><a href="{{ route('products.index') }}" style="color: #64748b;">Products</a></li>
+                        <li><a href="{{ route('categories.index') }}" style="color: #64748b;">Categories</a></li>
+                        <li><a href="{{ route('brands.index') }}" style="color: #64748b;">Brands</a></li>
+                        <li><a href="{{ route('units.index') }}" style="color: #64748b;">Units</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#"><i class="bi bi-receipt-cutoff me-3"></i> Sales Order</a>
+                    <a href="#purchasesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
+                        <i class="bi bi-cart-fill me-3"></i> Purchases
+                    </a>
+                    <ul class="collapse list-unstyled" id="purchasesSubmenu">
+                        <li><a href="{{ route('purchases.create') }}" style="color: #64748b;">Add Purchase</a></li>
+                        <li><a href="{{ route('purchases.index') }}" style="color: #64748b;">Purchase List</a></li>
+                        <li><a href="{{ route('suppliers.index') }}" style="color: #64748b;">Suppliers</a></li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="{{ route('suppliers.index') }}"><i class="bi bi-cart-fill me-3"></i> Purchases</a>
+                    <a href="{{ route('expenses.index') }}" style="color: #64748b;"><i class="bi bi-graph-down-arrow me-3"></i> Expenses</a>
                 </li>
                 <li>
-                    <a href="#"><i class="bi bi-bank2 me-3"></i> Banking</a>
-                </li>
-                <li>
-                    <a href="#"><i class="bi bi-pie-chart-fill me-3"></i> Reports</a>
-                </li>
-                <li>
-                    <a href="#"><i class="bi bi-folder-fill me-3"></i> Files</a>
-                </li>
-                <li>
-                    <a href="#"><i class="bi bi-three-dots me-3"></i> More</a>
+                    <a href="{{ route('reports.index') }}" style="color: #64748b;"><i class="bi bi-pie-chart-fill me-3"></i> Reports</a>
                 </li>
             </ul>
 
-            <div class="sidebar-bottom mt-auto">
-                <div class="maintenance-toggle">
+            <div class="sidebar-bottom mt-auto" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+                <div class="maintenance-toggle d-flex align-items-center justify-content-between p-3 bg-white rounded border mb-3 mx-3">
                     <div>
-                        <div class="fw-bold text-dark">Maintenance</div>
-                        <div class="text-muted">Site Live</div>
+                        <div class="fw-bold text-dark" style="font-size: 0.85rem;">Maintenance</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Site Live</div>
                     </div>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" role="switch" id="maintenanceSwitch" checked>
                     </div>
                 </div>
-                <div class="user-role">
+                <div class="user-role px-3 pb-3 d-flex align-items-center justify-content-between text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
                     SUPER ADMIN <i class="bi bi-chevron-right"></i>
                 </div>
             </div>
         </nav>
 
         <!-- Page Content -->
-        <div id="content">
+        <div id="content" style="background-color: #f8fafc;">
             <!-- Top Navbar -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-white top-navbar shadow-sm border-bottom">
+            <nav class="navbar navbar-expand-lg top-navbar shadow-sm border-bottom" style="background-color: #3b82f6 !important; padding: 12px 20px;">
                 <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn btn-light" style="background: transparent;">
+                    <button type="button" id="sidebarCollapse" class="btn text-white" style="background: transparent; border: none;">
                         <i class="bi bi-chevron-double-left fs-5"></i>
                     </button>
 
                     <div class="d-flex align-items-center ms-auto">
-                        <a href="#" class="btn btn-primary rounded-pill px-4 me-3 fw-bold shadow-sm">New Order</a>
-                        
-                        <a href="#" class="text-dark me-4 position-relative">
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                <i class="bi bi-basket-fill fs-5"></i>
-                            </div>
-                        </a>
-
                         <div class="dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="position-relative me-2">
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0D8ABC&color=fff" alt="User" class="rounded-circle shadow-sm" width="40" height="40">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=ffffff&color=3b82f6" alt="User" class="rounded-circle shadow-sm" width="40" height="40">
                                     <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle"></span>
                                 </div>
                             </a>

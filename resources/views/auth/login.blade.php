@@ -213,7 +213,7 @@
                     </a>
                     
                     <div class="mt-4 text-center">
-                        <span class="text-muted small">Don't have an account? <a href="#" class="text-decoration-none" style="color: #10b981; font-weight: 600;">Sign Up</a></span>
+                        <span class="text-muted small">Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none" style="color: #10b981; font-weight: 600;">Sign Up</a></span>
                     </div>
                 </form>
             </div>

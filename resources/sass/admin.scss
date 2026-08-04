@@ -10,14 +10,17 @@
 .wrapper {
     display: flex;
     width: 100%;
-    align-items: stretch;
+    align-items: flex-start;
 }
 
 // Sidebar
 .sidebar {
     min-width: 250px;
     max-width: 250px;
-    min-height: 100vh;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
     background: #ffffff;
     color: #334155;
     transition: all 0.3s;

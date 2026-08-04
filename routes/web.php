@@ -13,16 +13,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(['register' => false]);
+Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     // Master Data & Inventory
     Route::resource('categories', CategoryController::class);
-    Route::resource('brands', BrandController::class);
-    Route::resource('units', UnitController::class);
-    Route::resource('suppliers', SupplierController::class);
-    Route::resource('customers', CustomerController::class);
+    Route::resource('brands', App\Http\Controllers\BrandController::class);
+    Route::resource('units', App\Http\Controllers\UnitController::class);
+    Route::resource('suppliers', App\Http\Controllers\SupplierController::class);
+    Route::resource('customers', App\Http\Controllers\CustomerController::class);
+    Route::resource('expenses', App\Http\Controllers\ExpenseController::class);
+    Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
     Route::resource('products', ProductController::class);
+    Route::resource('purchases', App\Http\Controllers\PurchaseController::class);
+    Route::resource('sales', App\Http\Controllers\SaleController::class);
 });

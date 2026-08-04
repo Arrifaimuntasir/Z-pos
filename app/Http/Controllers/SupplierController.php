@@ -11,7 +11,8 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        //
+        $suppliers = \App\Models\Supplier::latest()->get();
+        return view('suppliers.index', compact('suppliers'));
     }
 
     /**
@@ -19,7 +20,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        //
+        return view('suppliers.create');
     }
 
     /**
@@ -27,7 +28,17 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string'
+        ]);
+
+        \App\Models\Supplier::create($request->all());
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
     }
 
     /**
@@ -41,24 +52,35 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(\App\Models\Supplier $supplier)
     {
-        //
+        return view('suppliers.edit', compact('supplier'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, \App\Models\Supplier $supplier)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'contact_person' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string'
+        ]);
+
+        $supplier->update($request->all());
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(\App\Models\Supplier $supplier)
     {
-        //
+        $supplier->delete();
+        return redirect()->route('suppliers.index')->with('success', 'Supplier deleted successfully.');
     }
 }

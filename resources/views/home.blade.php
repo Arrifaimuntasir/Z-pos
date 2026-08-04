@@ -8,7 +8,7 @@
         border-radius: 12px;
         padding: 1.25rem;
         box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-        border: none;
+        border: 1px solid #f1f5f9;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -17,6 +17,7 @@
     .dash-card-blue {
         background: #0d6efd;
         color: white;
+        border: none;
     }
     .dash-card-white {
         background: white;
@@ -35,11 +36,7 @@
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    }
-    .legend-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
+        border: 1px solid #f1f5f9;
     }
     .legend-dot {
         width: 10px;
@@ -52,21 +49,23 @@
 <!-- Header Row -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h3 class="fw-bold mb-1">Dashboard</h3>
+        <h3 class="fw-bold mb-1 text-dark">Dashboard</h3>
         <p class="text-muted small mb-0">Business statistics &middot; {{ date('M d, Y') }}</p>
     </div>
     <div>
-        <select class="form-select border-0 shadow-sm rounded-pill px-4 bg-white" style="cursor: pointer;">
+        <select class="form-select border shadow-sm rounded-3 px-4 bg-white fw-medium text-dark" style="cursor: pointer;">
             <option>Overall statistics</option>
-            <option>This Month</option>
-            <option>This Year</option>
+            <option>Today's statistics</option>
+            <option>This month's statistics</option>
+            <option>Half-year statistics</option>
+            <option>Yearly statistics</option>
         </select>
     </div>
 </div>
 
 <!-- KPI Cards -->
-<div class="row g-3 mb-4">
-    <div class="col">
+<div class="row g-3 mb-5">
+    <div class="col-md-3">
         <div class="dash-card dash-card-blue">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small fw-semibold opacity-75">Total Revenue</span>
@@ -74,63 +73,50 @@
                     <i class="bi bi-graph-up-arrow"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-0">-210,000 <span class="fs-6 fw-normal opacity-75">TSh</span></h3>
+            <h3 class="fw-bold mb-0">{{ number_format($totalRevenue) }} <span style="font-size: 0.8rem;" class="fw-normal">TSh</span></h3>
         </div>
     </div>
     
-    <div class="col">
+    <div class="col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">Total Income</span>
                 <div class="dash-icon-box bg-success bg-opacity-10 text-success">
-                    <i class="bi bi-graph-up-arrow"></i>
+                    <i class="bi bi-graph-up"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-0 text-dark">0 <span class="fs-6 text-muted fw-normal">TSh</span></h3>
+            <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalIncome) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3>
         </div>
     </div>
 
-    <div class="col">
+    <div class="col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">Total Expense</span>
                 <div class="dash-icon-box bg-danger bg-opacity-10 text-danger">
-                    <i class="bi bi-graph-down-arrow"></i>
+                    <i class="bi bi-graph-down"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-0 text-dark">210,000 <span class="fs-6 text-muted fw-normal">TSh</span></h3>
+            <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalExpense) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3>
         </div>
     </div>
-
-    <div class="col">
+    
+    <div class="col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">Outstanding Invoices</span>
                 <div class="dash-icon-box bg-warning bg-opacity-10 text-warning">
-                    <i class="bi bi-wallet2"></i>
+                    <i class="bi bi-receipt"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-0 text-warning">120,000 <span class="fs-6 opacity-75 fw-normal">TSh</span></h3>
-        </div>
-    </div>
-
-    <div class="col">
-        <div class="dash-card dash-card-white">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <span class="small text-muted fw-semibold">Total Customers</span>
-                <div class="dash-icon-box" style="background: #f3e8ff; color: #a855f7;">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-            </div>
-            <h3 class="fw-bold mb-0 text-dark" style="color: #a855f7 !important;">5</h3>
+            <h3 class="fw-bold mb-0 text-warning" style="color: #f59e0b !important;">{{ number_format($outstandingInvoices) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3>
         </div>
     </div>
 </div>
 
-<!-- Cash Flow Analytics -->
-<div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <h5 class="fw-bold mb-0">Analytics</h5>
-    <select class="form-select border-0 shadow-sm rounded-pill px-4 bg-white" style="width: auto; cursor: pointer;">
+    <select class="form-select border shadow-sm rounded-3 bg-white" style="width: auto; cursor: pointer;">
         <option>Yearly</option>
         <option>Monthly</option>
     </select>
@@ -139,41 +125,44 @@
 <div class="chart-container mb-4">
     <div class="row">
         <div class="col-md-9 border-end pe-4">
-            <div class="d-flex justify-content-between mb-3">
-                <h6 class="fw-bold">Cash Flow</h6>
-                <span class="text-muted small">This year - monthly</span>
-            </div>
-            <div style="height: 250px;">
+            <h6 class="fw-bold mb-4">Cash Flow</h6>
+            <div style="position: relative; height: 300px; width: 100%;">
                 <canvas id="cashFlowChart"></canvas>
             </div>
         </div>
         <div class="col-md-3 ps-4 d-flex flex-column justify-content-center">
-            <div class="legend-item">
-                <div class="legend-dot bg-success"></div>
-                <div>
-                    <div class="text-muted small">Total Income</div>
-                    <div class="fw-bold fs-5">+ 0</div>
+            <div class="text-end text-muted small mb-4">This year - monthly</div>
+            
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1">
+                    <div class="legend-dot bg-success"></div>
+                    <span class="text-muted small">Total Income</span>
                 </div>
+                <h5 class="fw-bold text-dark mb-0">+ {{ number_format(array_sum($monthlyIncome)) }}</h5>
             </div>
-            <div class="legend-item">
-                <div class="legend-dot bg-warning"></div>
-                <div>
-                    <div class="text-muted small">Total Expenses</div>
-                    <div class="fw-bold fs-5">- 210,000</div>
+            
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1">
+                    <div class="legend-dot" style="background-color: #fd7e14;"></div>
+                    <span class="text-muted small">Total Expenses</span>
                 </div>
+                <h5 class="fw-bold text-dark mb-0">- {{ number_format(array_sum($monthlyExpense)) }}</h5>
             </div>
-            <div class="legend-item mb-0">
-                <div class="legend-dot bg-danger"></div>
-                <div>
-                    <div class="text-muted small">Net Cash Flow</div>
-                    <div class="fw-bold fs-5">- 210,000</div>
+            
+            <div>
+                <div class="d-flex align-items-center mb-1">
+                    <div class="legend-dot bg-danger"></div>
+                    <span class="text-muted small">Net Cash Flow</span>
                 </div>
+                <h5 class="fw-bold text-dark mb-0">
+                    @php $net = array_sum($monthlyNetCash); @endphp
+                    {{ $net > 0 ? '+' : ($net < 0 ? '-' : '') }} {{ number_format(abs($net)) }}
+                </h5>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bottom Row: Additional Charts and Tables -->
 <div class="row g-4 mb-4">
     <!-- Income & Expenses Bar Chart -->
     <div class="col-md-6">
@@ -182,23 +171,21 @@
                 <h6 class="fw-bold mb-0">Income & Expenses</h6>
                 <span class="text-muted small">This year - monthly</span>
             </div>
-            <div class="d-flex mb-4">
-                <div class="me-4">
-                    <div class="d-flex align-items-center mb-1">
-                        <div class="legend-dot bg-success"></div>
-                        <span class="text-muted small">Total Income</span>
-                    </div>
-                    <div class="fw-bold">0 TSh</div>
+            <div class="d-flex gap-4 mb-3">
+                <div class="d-flex align-items-center">
+                    <div class="legend-dot bg-success rounded-1"></div>
+                    <span class="text-muted small">Total Income</span>
                 </div>
-                <div>
-                    <div class="d-flex align-items-center mb-1">
-                        <div class="legend-dot" style="background: #fd7e14;"></div>
-                        <span class="text-muted small">Total Expenses</span>
-                    </div>
-                    <div class="fw-bold">210,000 TSh</div>
+                <div class="d-flex align-items-center">
+                    <div class="legend-dot rounded-1" style="background-color: #fd7e14;"></div>
+                    <span class="text-muted small">Total Expenses</span>
                 </div>
             </div>
-            <div style="height: 200px;">
+            <div class="d-flex justify-content-between mb-3">
+                <h6 class="fw-bold">{{ number_format(array_sum($monthlyIncome)) }} TSh</h6>
+                <h6 class="fw-bold">{{ number_format(array_sum($monthlyExpense)) }} TSh</h6>
+            </div>
+            <div style="position: relative; height: 200px; width: 100%;">
                 <canvas id="incomeExpenseChart"></canvas>
             </div>
             <p class="text-muted small mt-3 mb-0">* Income and expense values displayed are exclusive of taxes.</p>
@@ -214,17 +201,19 @@
             </div>
             <div class="row align-items-center h-100" style="min-height: 200px;">
                 <div class="col-md-6 text-center position-relative h-100">
-                    <canvas id="topExpensesChart"></canvas>
-                    <div class="position-absolute top-50 start-50 translate-middle text-center" style="width: 100%;">
-                        <div class="text-muted small">All Expenses</div>
-                        <div class="fw-bold">210,000</div>
+                    <div style="position: relative; height: 200px; width: 100%;">
+                        <canvas id="topExpensesChart"></canvas>
+                        <div class="position-absolute top-50 start-50 translate-middle text-center" style="width: 100%;">
+                            <div class="text-muted small">All Expenses</div>
+                            <div class="fw-bold">{{ number_format($totalExpense) }}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             <div class="legend-dot bg-success"></div>
-                            <span class="fw-bold text-muted">209,999.98</span>
+                            <span class="fw-bold text-muted">{{ number_format($totalExpense) }}</span>
                         </div>
                         <span class="text-muted small">(100%)</span>
                     </div>
@@ -234,7 +223,7 @@
     </div>
 </div>
 
-<div class="row g-4">
+<div class="row g-4 mb-4">
     <!-- Banking Table -->
     <div class="col-md-6">
         <div class="chart-container h-100">
@@ -307,7 +296,7 @@
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Cash Flow',
-                        data: [0, 0, 0, 0, -20000, -210000, -210000, -210000, -210000, -210000, -210000, -210000],
+                        data: {!! json_encode($monthlyNetCash) !!},
                         borderColor: '#0d6efd',
                         backgroundColor: gradientBlue,
                         borderWidth: 2,
@@ -343,8 +332,8 @@
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [
-                        { label: 'Income', data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], backgroundColor: '#198754', borderRadius: 4, barPercentage: 0.6 },
-                        { label: 'Expenses', data: [0, 0, 0, 0, 10000, 210000, 0, 0, 0, 0, 0, 0], backgroundColor: '#fd7e14', borderRadius: 4, barPercentage: 0.6 }
+                        { label: 'Income', data: {!! json_encode($monthlyIncome) !!}, backgroundColor: '#198754', borderRadius: 4, barPercentage: 0.6 },
+                        { label: 'Expenses', data: {!! json_encode($monthlyExpense) !!}, backgroundColor: '#fd7e14', borderRadius: 4, barPercentage: 0.6 }
                     ]
                 },
                 options: {

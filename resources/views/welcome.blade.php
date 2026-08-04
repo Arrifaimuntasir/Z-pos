@@ -84,15 +84,9 @@
                 </ul>
                 <ul class="navbar-nav align-items-center">
                     @if (Route::has('login'))
-                        @auth
-                            <li class="nav-item">
-                                <a href="{{ url('/home') }}" class="nav-link fw-bold text-dark me-3">Dashboard</a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a href="{{ route('login') }}" class="nav-link fw-bold text-dark me-3">Sign in</a>
-                            </li>
-                        @endauth
+                        <li class="nav-item">
+                            <a href="{{ route('login') }}" class="nav-link fw-bold text-dark me-3">Sign in</a>
+                        </li>
                     @endif
                     <li class="nav-item">
                         <a href="#contact" class="btn btn-success text-white fw-bold shadow-sm px-4 py-2" style="border-radius: 8px;">Try free for 14 days</a>

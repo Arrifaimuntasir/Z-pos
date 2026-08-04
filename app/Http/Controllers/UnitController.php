@@ -11,54 +11,60 @@ class UnitController extends Controller
      */
     public function index()
     {
-        //
+        $units = \App\Models\Unit::latest()->get();
+        return view('units.index', compact('units'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('units.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:50'
+        ]);
+
+        \App\Models\Unit::create([
+            'name' => $request->name,
+            'short_name' => $request->short_name,
+            'allow_decimal' => $request->has('allow_decimal')
+        ]);
+
+        return redirect()->route('units.index')->with('success', 'Unit created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(\App\Models\Unit $unit)
     {
-        //
+        return view('units.edit', compact('unit'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, \App\Models\Unit $unit)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:50'
+        ]);
+
+        $unit->update([
+            'name' => $request->name,
+            'short_name' => $request->short_name,
+            'allow_decimal' => $request->has('allow_decimal')
+        ]);
+
+        return redirect()->route('units.index')->with('success', 'Unit updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(\App\Models\Unit $unit)
     {
-        //
+        $unit->delete();
+        return redirect()->route('units.index')->with('success', 'Unit deleted successfully.');
     }
 }
