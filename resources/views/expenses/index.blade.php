@@ -18,6 +18,13 @@
 @endif
 
 <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Expense List</h5>
+        <form action="{{ route('expenses.index') }}" method="GET" class="d-flex">
+            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search expenses..." value="{{ $search ?? '' }}">
+            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
     <div class="card-body p-4">
         <div class="table-responsive">
             <table class="table table-hover align-middle">
@@ -62,6 +69,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        
+        <div class="mt-4 d-flex justify-content-end">
+            {{ $expenses->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

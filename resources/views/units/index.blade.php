@@ -21,7 +21,14 @@
 @endif
 
 <div class="card border-0 shadow-sm" style="border-radius: 16px;">
-    <div class="card-body p-0">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 text-dark fw-bold">All Units</h5>
+        <form action="{{ route('units.index') }}" method="GET" class="d-flex">
+            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search units..." value="{{ $search ?? '' }}">
+            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+    <div class="card-body p-0 mt-3">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted">
@@ -62,14 +69,18 @@
                     @empty
                     <tr>
                         <td colspan="4" class="text-center py-5 text-muted">
-                            <div class="mb-3"><i class="bi bi-rulers fs-1 text-light-secondary"></i></div>
-                            <h6 class="fw-bold">No units found</h6>
-                            <p class="small mb-0">Add your first unit to start measuring products.</p>
+                            <i class="bi bi-rulers fs-1 text-light-secondary mb-3 d-block"></i>
+                            <h5>No units found</h5>
+                            <p class="mb-0">Please add some units (like Pcs, Kg) first.</p>
                         </td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        
+        <div class="mt-4 px-4 pb-4 d-flex justify-content-end">
+            {{ $units->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

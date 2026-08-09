@@ -9,56 +9,59 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->query('search');
+        $brands = \App\Models\Brand::when($search, function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        })->paginate(15)->appends(['search' => $search]);
+        
+        return view('brands.index', compact('brands', 'search'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        // For modals, this might not be used, but if requested directly:
+        return view('brands.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        \App\Models\Brand::create($request->all());
+
+        return redirect()->route('brands.index')->with('success', 'Brand created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(\App\Models\Brand $brand)
     {
-        //
+        return view('brands.edit', compact('brand'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, \App\Models\Brand $brand)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string'
+        ]);
+
+        $brand->update($request->all());
+
+        return redirect()->route('brands.index')->with('success', 'Brand updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(\App\Models\Brand $brand)
     {
-        //
+        $brand->delete();
+        return redirect()->route('brands.index')->with('success', 'Brand deleted successfully.');
     }
 }

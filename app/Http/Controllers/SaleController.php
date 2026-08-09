@@ -10,10 +10,22 @@ class SaleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sales = \App\Models\Sale::with('customer')->latest()->get();
-        return view('sales.index', compact('sales'));
+        $search = $request->query('search');
+        $sales = \App\Models\Sale::with('customer')
+            ->when($search, function ($query) use ($search) {
+                $query->where('reference_no', 'like', "%{$search}%")
+                      ->orWhereHas('customer', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                      });
+            })
+            ->latest()
+            ->paginate(15)
+            ->appends(['search' => $search]);
+            
+        return view('sales.index', compact('sales', 'search'));
     }
 
     public function create()
@@ -67,20 +79,22 @@ class SaleController extends Controller
 
             foreach ($request->items as $item) {
                 $subtotal = $item['quantity'] * $item['price'];
+                $product = \App\Models\Product::find($item['product_id']);
+
+                if ($product->stock < $item['quantity']) {
+                    throw new \Exception("Not enough stock for {$product->name}");
+                }
                 
                 \App\Models\SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
+                    'unit_cost' => $product->cost_price,
                     'unit_price' => $item['price'],
                     'subtotal' => $subtotal,
                 ]);
 
                 // Deduct stock
-                $product = \App\Models\Product::find($item['product_id']);
-                if ($product->stock < $item['quantity']) {
-                    throw new \Exception("Not enough stock for {$product->name}");
-                }
                 $product->decrement('stock', $item['quantity']);
             }
 
@@ -111,6 +125,28 @@ class SaleController extends Controller
 
     public function destroy(string $id)
     {
-        //
+        try {
+            \Illuminate\Support\Facades\DB::beginTransaction();
+            
+            $sale = \App\Models\Sale::with('items')->findOrFail($id);
+
+            // Restore stock for each item
+            foreach ($sale->items as $item) {
+                $product = \App\Models\Product::find($item->product_id);
+                if ($product) {
+                    $product->increment('stock', $item->quantity);
+                }
+            }
+
+            // Delete sale items and the sale
+            \App\Models\SaleItem::where('sale_id', $sale->id)->delete();
+            $sale->delete();
+
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', 'Sale record deleted successfully. Stock has been restored.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error deleting sale: ' . $e->getMessage());
+        }
     }
 }

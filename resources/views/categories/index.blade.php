@@ -14,7 +14,10 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <span><i class="bi bi-list-ul me-2"></i> All Categories</span>
         <div class="search-box">
-            <input type="text" class="form-control form-control-sm" placeholder="Search categories...">
+            <form action="{{ route('categories.index') }}" method="GET" class="d-flex">
+                <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search categories..." value="{{ $search ?? '' }}">
+                <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
+            </form>
         </div>
     </div>
     <div class="card-body p-0">

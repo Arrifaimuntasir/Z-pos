@@ -3,6 +3,26 @@
 @section('title', 'Point of Sale (POS)')
 
 @section('content')
+
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--single {
+        height: 38px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 38px;
+        color: #212529;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px;
+    }
+</style>
+@endpush
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Point of Sale (POS)</h4>
@@ -34,7 +54,7 @@
                     </div>
                     
                     <div class="row mb-3">
-                        <div class="col-md-8">
+                        <div class="col-12 col-md-8 mb-2 mb-md-0">
                             <select id="productSelect" class="form-select border-0 shadow-sm bg-light" style="border-radius: 8px;">
                                 <option value="">-- Search & Select Product --</option>
                                 @foreach($products as $product)
@@ -47,7 +67,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-12 col-md-4">
                             <button type="button" id="addItemBtn" class="btn btn-primary w-100" style="border-radius: 8px;">
                                 <i class="bi bi-plus-lg"></i> Add to Cart
                             </button>
@@ -147,10 +167,31 @@
     </div>
 </form>
 
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+$(document).ready(function() {
+    $('#productSelect').select2({
+        placeholder: "-- Search & Select Product --",
+        allowClear: true,
+        width: '100%'
+    });
+    
+    // Also initialize customer select if you want
+    $('select[name="customer_id"]').select2({
+        placeholder: "Walk-in Customer (None)",
+        allowClear: true,
+        width: '100%'
+    });
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     let cart = [];
     let itemIndex = 0;
+    
+    // Since Select2 overrides the standard DOM select, we need to listen to its event if we want instant add, 
+    // but the user clicks "Add to Cart" anyway. So we just need to get value from the original select.
     
     const productSelect = document.getElementById('productSelect');
     const addItemBtn = document.getElementById('addItemBtn');
@@ -186,7 +227,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         updateTotals();
-        productSelect.value = ""; // Reset select
+        
+        // Reset select2
+        $('#productSelect').val(null).trigger('change');
     });
     
     function renderNewRow(id, name, price, stock, index) {
@@ -268,4 +311,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+@endpush
 @endsection

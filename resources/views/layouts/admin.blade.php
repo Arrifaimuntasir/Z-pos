@@ -18,25 +18,50 @@
 
     <!-- Styles -->
     @vite(['resources/sass/app.scss', 'resources/sass/admin.scss', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="admin-body">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="wrapper">
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar" style="background-color: #ffffff !important; border-right: 1px solid #e2e8f0;">
             <div class="sidebar-header py-3 d-flex align-items-center justify-content-center" style="background-color: #ffffff !important; border-bottom: 1px solid #e2e8f0;">
-                <div style="width: 100%; height: auto; max-width: 130px; display: flex; justify-content: center; align-items: center; padding: 5px; mix-blend-mode: multiply;">
-                    <img src="{{ asset('images/zamar_logo.jpg') }}" alt="ZAMAR STORE" style="width: 100%; height: auto; object-fit: contain; filter: brightness(1.2) contrast(1.8);">
+                <div style="width: 100%; height: auto; max-width: 130px; display: flex; justify-content: center; align-items: center; padding: 5px;">
+                    @if(Auth::check() && Auth::user()->shop)
+                        @if(Auth::user()->shop->logo_path)
+                            <img src="{{ asset(Auth::user()->shop->logo_path) }}" alt="{{ Auth::user()->shop->name }}" style="width: 100%; height: auto; object-fit: contain;">
+                        @else
+                            <h4 class="fw-bold text-primary mb-0 text-center" style="word-wrap: break-word;">{{ Auth::user()->shop->name }}</h4>
+                        @endif
+                    @elseif(Auth::check() && Auth::user()->hasRole('Super Admin'))
+                        <div class="d-flex flex-column align-items-center mb-2">
+                            <div class="d-flex align-items-center justify-content-center" style="white-space: nowrap;">
+                                <div style="width: 35px; height: 35px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
+                                    <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
+                                </div>
+                                <div class="ms-2 d-flex flex-column justify-content-center">
+                                    <span class="fw-bold lh-1" style="color: #0f172a; font-family: 'Inter', sans-serif; font-size: 1.4rem;">Z-pos</span>
+                                </div>
+                            </div>
+                            <div class="badge mt-2 px-3 py-1 shadow-sm" style="background-color: #0f172a; font-size: 0.7rem; letter-spacing: 0.5px;">SYSTEM ADMIN</div>
+                        </div>
+                    @else
+                        <img src="{{ asset('images/zamar_logo.jpg') }}" alt="ZAMAR STORE" style="width: 100%; height: auto; object-fit: contain;">
+                    @endif
                 </div>
             </div>
 
+            @if(!Auth::check() || !Auth::user()->hasRole('Super Admin') || Auth::user()->shop_id)
             <ul class="list-unstyled components" style="background-color: #ffffff;">
-                <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}" style="{{ request()->is('/') || request()->is('home') ? 'background-color: #eff6ff; border-radius: 8px; margin: 0 10px;' : 'margin: 0 10px;' }}">
-                    <a href="{{ url('/home') }}" style="{{ request()->is('/') || request()->is('home') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"><i class="bi bi-grid-fill me-3" style="{{ request()->is('/') || request()->is('home') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"></i> Dashboard</a>
+                <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}">
+                    <a href="{{ url('/home') }}">
+                        <i class="bi bi-grid-fill me-3"></i> Dashboard
+                    </a>
                 </li>
                 
-                <li class="{{ request()->is('sales*') ? 'active' : '' }}" style="{{ request()->is('sales*') ? 'background-color: #eff6ff; border-radius: 8px; margin: 0 10px;' : 'margin: 0 10px;' }}">
-                    <a href="{{ route('sales.create') }}" style="{{ request()->is('sales*') ? 'color: #2563eb !important;' : 'color: #64748b;' }}">
-                        <i class="bi bi-cart-check-fill me-3" style="{{ request()->is('sales*') ? 'color: #2563eb !important;' : 'color: #64748b;' }}"></i> POS / Sales
+                <li class="{{ request()->is('sales*') ? 'active' : '' }}">
+                    <a href="{{ route('sales.create') }}">
+                        <i class="bi bi-cart-check-fill me-3"></i> Sales
                     </a>
                 </li>
                 <li>
@@ -50,39 +75,86 @@
                         <li><a href="{{ route('units.index') }}" style="color: #64748b;">Units</a></li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#purchasesSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-cart-fill me-3"></i> Purchases
-                    </a>
-                    <ul class="collapse list-unstyled" id="purchasesSubmenu">
-                        <li><a href="{{ route('purchases.create') }}" style="color: #64748b;">Add Purchase</a></li>
-                        <li><a href="{{ route('purchases.index') }}" style="color: #64748b;">Purchase List</a></li>
-                        <li><a href="{{ route('suppliers.index') }}" style="color: #64748b;">Suppliers</a></li>
-                    </ul>
-                </li>
+                <!-- Purchases removed for small businesses -->
                 <li>
                     <a href="{{ route('expenses.index') }}" style="color: #64748b;"><i class="bi bi-graph-down-arrow me-3"></i> Expenses</a>
                 </li>
                 <li>
-                    <a href="{{ route('reports.index') }}" style="color: #64748b;"><i class="bi bi-pie-chart-fill me-3"></i> Reports</a>
+                    <a href="#reportsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
+                        <i class="bi bi-pie-chart-fill me-3"></i> Reports
+                    </a>
+                    <ul class="collapse list-unstyled {{ request()->is('reports*') ? 'show' : '' }}" id="reportsSubmenu">
+                        <li><a href="{{ route('reports.index') }}" style="color: #64748b;">Overview</a></li>
+                        <li><a href="{{ route('reports.profit_loss') }}" style="color: #64748b;">Profit and Loss</a></li>
+                        <li><a href="{{ route('reports.sales') }}" style="color: #64748b;">Sales</a></li>
+                        <li><a href="{{ route('reports.expenses') }}" style="color: #64748b;">Expenses</a></li>
+                    </ul>
+                </li>
+                <li class="{{ request()->is('staff*') ? 'active' : '' }}">
+                    <a href="{{ route('staff.index') }}" style="color: #64748b;">
+                        <i class="bi bi-people-fill me-3"></i> Staff & Users
+                    </a>
                 </li>
             </ul>
+            @endif
+
+            @if(auth()->check() && auth()->user()->hasRole('Super Admin'))
+            <ul class="list-unstyled components mt-4" style="background-color: #ffffff;">
+                <li class="px-3 mb-2 text-uppercase fw-bold text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">
+                    System Admin
+                </li>
+                <li class="{{ request()->routeIs('superadmin.shops.*') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.shops.index') }}" style="color: #64748b;">
+                        <i class="bi bi-buildings-fill me-3"></i> Manage Shops
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('superadmin.payments.*') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.payments.index') }}" style="color: #64748b;">
+                        <i class="bi bi-credit-card-fill me-3"></i> Manage Payments
+                        @php
+                            $pendingCount = \App\Models\Payment::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingCount > 0)
+                            <span class="badge bg-danger rounded-pill float-end">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
+                </li>
+            </ul>
+            @endif
 
             <div class="sidebar-bottom mt-auto" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
                 <div class="maintenance-toggle d-flex align-items-center justify-content-between p-3 bg-white rounded border mb-3 mx-3">
                     <div>
                         <div class="fw-bold text-dark" style="font-size: 0.85rem;">Maintenance</div>
-                        <div class="text-muted" style="font-size: 0.75rem;">Site Live</div>
+                        <div class="text-muted" style="font-size: 0.75rem;" id="maintenanceStatusText">{{ \Illuminate\Support\Facades\Cache::get('site_maintenance') ? 'Site Down' : 'Site Live' }}</div>
                     </div>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" role="switch" id="maintenanceSwitch" checked>
+                        <input class="form-check-input" type="checkbox" role="switch" id="maintenanceSwitch" {{ \Illuminate\Support\Facades\Cache::get('site_maintenance') ? 'checked' : '' }} onchange="toggleMaintenance()">
                     </div>
                 </div>
-                <div class="user-role px-3 pb-3 d-flex align-items-center justify-content-between text-muted" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
+                <a href="{{ route('superadmin.shops.index') }}" class="user-role px-3 pb-3 d-flex align-items-center justify-content-between text-muted text-decoration-none" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
                     SUPER ADMIN <i class="bi bi-chevron-right"></i>
-                </div>
+                </a>
             </div>
         </nav>
+        
+        <script>
+        function toggleMaintenance() {
+            fetch('{{ route('maintenance.toggle') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('maintenanceStatusText').innerText = data.status ? 'Site Down' : 'Site Live';
+                alert(data.status ? 'Maintenance Mode is now ON. Cashiers cannot access the system.' : 'Maintenance Mode is now OFF. System is live.');
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        </script>
 
         <!-- Page Content -->
         <div id="content" style="background-color: #f8fafc;">
@@ -102,8 +174,10 @@
                                 </div>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                                @if(Auth::user()->shop)
+                                <li><a class="dropdown-item py-2" href="{{ route('shop.settings') }}"><i class="bi bi-shop me-2"></i> Shop Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item py-2 text-danger" href="{{ route('logout') }}"
                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -143,11 +217,27 @@
     <!-- Admin Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('sidebarCollapse').addEventListener('click', function () {
-                document.getElementById('sidebar').classList.toggle('active');
-                document.getElementById('content').classList.toggle('active');
-            });
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggleBtn = document.getElementById('sidebarCollapse');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                if (window.innerWidth <= 768) {
+                    overlay.classList.toggle('active');
+                } else {
+                    content.classList.toggle('active');
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+            
+            if (overlay) {
+                overlay.addEventListener('click', toggleSidebar);
+            }
         });
     </script>
+    @stack('scripts')
 </body>
 </html>

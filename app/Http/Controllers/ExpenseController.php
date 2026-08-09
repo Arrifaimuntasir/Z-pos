@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $expenses = Expense::orderBy('expense_date', 'desc')->get();
-        return view('expenses.index', compact('expenses'));
+        $search = $request->query('search');
+        $expenses = Expense::when($search, function ($query) use ($search) {
+            $query->where('description', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+        })->orderBy('expense_date', 'desc')->paginate(15)->appends(['search' => $search]);
+        
+        return view('expenses.index', compact('expenses', 'search'));
     }
 
     public function create()

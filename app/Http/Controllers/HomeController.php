@@ -21,18 +21,56 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Revenue is total value of sales. Income is total amount paid.
-        $totalRevenue = \App\Models\Sale::sum('total_amount');
-        $totalIncome = \App\Models\Sale::sum('paid_amount');
-        $outstandingInvoices = \App\Models\Sale::where('payment_status', '!=', 'paid')
-            ->sum(\Illuminate\Support\Facades\DB::raw('total_amount - paid_amount'));
+        if (auth()->user()->hasRole('Super Admin') && !auth()->user()->shop_id) {
+            return redirect()->route('superadmin.shops.index');
+        }
 
-        // Total Expense is the sum of general expenses and stock purchases
-        $generalExpenses = \App\Models\Expense::sum('amount');
-        $purchaseExpenses = \App\Models\Purchase::sum('total_amount');
-        $totalExpense = $generalExpenses + $purchaseExpenses;
+        $filter = $request->query('filter', 'overall');
+        $startDate = null;
+        $endDate = null;
+
+        if ($filter === 'today') {
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+        } elseif ($filter === 'month') {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($filter === 'half_year') {
+            $startDate = now()->subMonths(6)->startOfDay();
+            $endDate = now()->endOfDay();
+        } elseif ($filter === 'year') {
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+        }
+
+        $salesQuery = \App\Models\Sale::query();
+        $profitQuery = \Illuminate\Support\Facades\DB::table('sale_items')
+            ->join('sales', 'sale_items.sale_id', '=', 'sales.id');
+        $expenseQuery = \App\Models\Expense::query();
+
+        if ($startDate && $endDate) {
+            $salesQuery->whereBetween('sale_date', [$startDate, $endDate]);
+            $profitQuery->whereBetween('sales.sale_date', [$startDate, $endDate]);
+            $expenseQuery->whereBetween('expense_date', [$startDate, $endDate]);
+        }
+
+        // Revenue is total value of sales. Income is total amount paid.
+        $totalSales = $salesQuery->sum('total_amount');
+        
+        // Calculate Gross Profit from Sale Items
+        $grossProfit = $profitQuery
+            ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_items.quantity) as profit')
+            ->value('profit') ?? 0;
+
+        // Total Expense is just the general expenses now
+        $totalExpense = $expenseQuery->sum('amount');
+        
+        $netProfit = $grossProfit - $totalExpense;
+
+        // Get Recent Sales
+        $recentSales = \App\Models\Sale::with('customer')->latest()->take(5)->get();
 
         // Generate Monthly Data for Charts
         $monthlyIncome = array_fill(0, 12, 0); 
@@ -69,13 +107,8 @@ class HomeController extends Controller
         }
 
         return view('home', compact(
-            'totalRevenue',
-            'totalIncome',
-            'totalExpense',
-            'outstandingInvoices',
-            'monthlyIncome',
-            'monthlyExpense',
-            'monthlyNetCash'
+            'totalSales', 'grossProfit', 'netProfit', 'totalExpense', 'recentSales',
+            'monthlyIncome', 'monthlyExpense', 'monthlyNetCash', 'filter'
         ));
     }
 }

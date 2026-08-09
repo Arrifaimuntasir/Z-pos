@@ -10,10 +10,25 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand', 'unit'])->get();
-        return view('products.index', compact('products'));
+        $search = $request->query('search');
+        $products = Product::with(['category', 'brand', 'unit'])
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('sku', 'like', "%{$search}%")
+                      ->orWhereHas('category', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      })
+                      ->orWhereHas('brand', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      });
+            })
+            ->latest()
+            ->paginate(15)
+            ->appends(['search' => $search]);
+            
+        return view('products.index', compact('products', 'search'));
     }
 
     public function create()

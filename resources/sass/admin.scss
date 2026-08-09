@@ -219,15 +219,46 @@
 
 // Media Queries
 @media (max-width: 768px) {
+    .wrapper {
+        display: block;
+    }
+    
     .sidebar {
+        min-width: 260px;
+        max-width: 260px;
         margin-left: -260px;
+        position: fixed;
+        height: 100vh;
+        z-index: 1050;
+        top: 0;
+        left: 0;
+        transition: all 0.3s ease;
+        box-shadow: none;
         
         &.active {
             margin-left: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
     }
-    
-    #content.active {
-        margin-left: 260px;
+
+    #content {
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.5);
+        z-index: 1040;
+        top: 0;
+        left: 0;
+        backdrop-filter: blur(2px);
+        
+        &.active {
+            display: block;
+        }
     }
 }

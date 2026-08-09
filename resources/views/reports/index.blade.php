@@ -5,79 +5,99 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold mb-1">Business Reports</h4>
-        <p class="text-muted small mb-0">Overview of your inventory and financials</p>
+        <h3 class="fw-bold mb-1 text-dark">Reports Overview</h3>
+        <p class="text-muted small mb-0">High-level view of your business</p>
     </div>
-    <button class="btn btn-light rounded-pill px-4 shadow-sm border" onclick="window.print()">
-        <i class="bi bi-printer me-2"></i> Print Report
-    </button>
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3">
-                        <i class="bi bi-box-seam fs-4"></i>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100" style="background: linear-gradient(135deg, #0d6efd, #0b5ed7); color: white;">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-white bg-opacity-25 rounded-3 d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="bi bi-box-seam fs-5"></i>
+                        </div>
+                        <h6 class="mb-0 fw-semibold text-white-50">Total Products</h6>
                     </div>
-                    <span class="text-muted fw-semibold">Total Products</span>
+                    <h3 class="fw-bold mb-0">{{ number_format($totalProducts) }}</h3>
                 </div>
-                <h3 class="fw-bold mb-0">{{ number_format($totalProducts) }}</h3>
             </div>
         </div>
     </div>
     
-    <div class="col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-info bg-opacity-10 text-info rounded-circle p-3 me-3">
-                        <i class="bi bi-cart-check fs-4"></i>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center me-3 text-success" style="width: 40px; height: 40px;">
+                            <i class="bi bi-cart-check fs-5"></i>
+                        </div>
+                        <h6 class="mb-0 fw-semibold text-muted">Total Sales (All Time)</h6>
                     </div>
-                    <span class="text-muted fw-semibold">Stock Value (Cost)</span>
+                    <h4 class="fw-bold mb-0 text-dark">{{ number_format($totalSalesReal) }} TSh</h4>
                 </div>
-                <h4 class="fw-bold mb-0">{{ number_format($totalStockValue) }} <small class="text-muted fs-6">TSh</small></h4>
             </div>
         </div>
     </div>
-
-    <div class="col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-success bg-opacity-10 text-success rounded-circle p-3 me-3">
-                        <i class="bi bi-graph-up-arrow fs-4"></i>
+    
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-danger bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center me-3 text-danger" style="width: 40px; height: 40px;">
+                            <i class="bi bi-graph-down-arrow fs-5"></i>
+                        </div>
+                        <h6 class="mb-0 fw-semibold text-muted">Total Expenses (All Time)</h6>
                     </div>
-                    <span class="text-muted fw-semibold">Stock Value (Sales)</span>
+                    <h4 class="fw-bold mb-0 text-dark">{{ number_format($totalExpenses) }} TSh</h4>
                 </div>
-                <h4 class="fw-bold mb-0">{{ number_format($totalSalesValue) }} <small class="text-muted fs-6">TSh</small></h4>
             </div>
         </div>
     </div>
-
-    <div class="col-md-6 col-lg-3">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-3 me-3">
-                        <i class="bi bi-graph-down-arrow fs-4"></i>
+    
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-warning bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center me-3 text-warning" style="width: 40px; height: 40px;">
+                            <i class="bi bi-cash-stack fs-5"></i>
+                        </div>
+                        <h6 class="mb-0 fw-semibold text-muted">Net Profit (All Time)</h6>
                     </div>
-                    <span class="text-muted fw-semibold">Total Expenses</span>
+                    <h4 class="fw-bold mb-0 text-dark">{{ number_format($grossProfit - $totalExpenses) }} TSh</h4>
                 </div>
-                <h4 class="fw-bold mb-0 text-danger">{{ number_format($totalExpenses) }} <small class="text-muted fs-6">TSh</small></h4>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4 bg-dark text-white">
-    <div class="card-body p-5 text-center">
-        <h5 class="fw-semibold opacity-75 mb-3">Estimated Gross Profit Potential</h5>
-        <h1 class="fw-bold mb-0 display-5 text-success">
-            + {{ number_format($potentialProfit) }} <span class="fs-4 opacity-75 fw-normal">TSh</span>
-        </h1>
-        <p class="mt-3 mb-0 opacity-50 small">This represents the theoretical profit if all current stock is sold at the specified selling price, minus total recorded expenses.</p>
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                <h5 class="fw-bold text-dark">Stock Value</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Total Cost Value of Current Stock</span>
+                    <span class="fw-bold">{{ number_format($totalStockValue) }} TSh</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Total Selling Value of Current Stock</span>
+                    <span class="fw-bold">{{ number_format($totalSalesValue) }} TSh</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-muted fw-semibold">Potential Profit from Stock</span>
+                    <span class="fw-bold text-success">{{ number_format($totalSalesValue - $totalStockValue) }} TSh</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

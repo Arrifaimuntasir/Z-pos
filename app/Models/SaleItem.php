@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasTenant;
 
 class SaleItem extends Model
 {
@@ -10,6 +11,7 @@ class SaleItem extends Model
         'sale_id',
         'product_id',
         'quantity',
+        'unit_cost',
         'unit_price',
         'subtotal',
     ];

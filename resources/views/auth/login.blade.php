@@ -188,7 +188,12 @@
                                 <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #10b981;">Forgot Password?</a>
                             @endif
                         </div>
-                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                        <div class="input-group">
+                            <input id="password" type="password" class="form-control border-end-0 @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                            <span class="input-group-text bg-white @error('password') border-danger @enderror" style="cursor: pointer;" onclick="togglePassword('password', this)">
+                                <i class="bi bi-eye"></i>
+                            </span>
+                        </div>
 
                         @error('password')
                             <span class="invalid-feedback" role="alert">
@@ -208,7 +213,7 @@
                         Log In
                     </button>
                     
-                    <a href="#" class="btn-google text-decoration-none">
+                    <a href="{{ route('auth.google') }}" class="btn-google text-decoration-none">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" height="20" class="me-2"> Continue with Google
                     </a>
                     
@@ -220,5 +225,21 @@
         </div>
     </div>
 
+    <script>
+        function togglePassword(inputId, iconElement) {
+            const input = document.getElementById(inputId);
+            const icon = iconElement.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+    </script>
 </body>
 </html>

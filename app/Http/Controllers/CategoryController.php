@@ -8,10 +8,14 @@ use App\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::latest()->paginate(10);
-        return view('categories.index', compact('categories'));
+        $search = $request->query('search');
+        $categories = Category::when($search, function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        })->paginate(15)->appends(['search' => $search]);
+        
+        return view('categories.index', compact('categories', 'search'));
     }
 
     public function create()

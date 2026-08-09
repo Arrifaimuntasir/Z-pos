@@ -18,6 +18,13 @@
 @endif
 
 <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Product List</h5>
+        <form action="{{ route('products.index') }}" method="GET" class="d-flex">
+            <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search products..." value="{{ $search ?? '' }}">
+            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
     <div class="card-body p-4">
         <div class="table-responsive">
             <table class="table table-hover align-middle">
@@ -37,8 +44,8 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="bg-light rounded p-2 me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                                    <i class="bi bi-box-seam text-secondary fs-4"></i>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white bg-primary me-3 shadow-sm" style="width: 28px; height: 28px; font-size: 0.85rem;">
+                                    {{ $loop->iteration }}
                                 </div>
                                 <div>
                                     <h6 class="mb-0 fw-bold">{{ $product->name }}</h6>
@@ -83,6 +90,10 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        
+        <div class="mt-4 d-flex justify-content-end">
+            {{ $products->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

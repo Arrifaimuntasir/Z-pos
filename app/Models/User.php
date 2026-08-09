@@ -27,6 +27,7 @@ class User extends Authenticatable
         'email',
         'phone',
         'branch_id',
+        'shop_id',
         'is_active',
         'password',
     ];
@@ -58,6 +59,11 @@ class User extends Authenticatable
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
     }
 
     public function getNameAttribute()

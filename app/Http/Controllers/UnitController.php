@@ -9,10 +9,15 @@ class UnitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $units = \App\Models\Unit::latest()->get();
-        return view('units.index', compact('units'));
+        $search = $request->query('search');
+        $units = \App\Models\Unit::when($search, function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_name', 'like', "%{$search}%");
+        })->latest()->paginate(15)->appends(['search' => $search]);
+        
+        return view('units.index', compact('units', 'search'));
     }
 
     public function create()
