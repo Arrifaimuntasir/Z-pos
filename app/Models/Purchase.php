@@ -7,13 +7,15 @@ use App\Traits\HasTenant;
 
 class Purchase extends Model
 {
+    use HasTenant;
     protected $fillable = [
         'supplier_id',
         'reference_no',
         'purchase_date',
         'total_amount',
         'status',
-        'notes'
+        'notes',
+        'branch_id',
     ];
 
     public function supplier()

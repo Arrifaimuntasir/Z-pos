@@ -176,14 +176,16 @@ body {
         
         .badge-popular {
             position: absolute;
-            top: 1rem;
-            right: -2rem;
+            top: 1.5rem;
+            right: -2.5rem;
             background: $accent;
             color: #fff;
-            padding: 0.25rem 3rem;
+            padding: 0.35rem 3.5rem;
             transform: rotate(45deg);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
         }
     }
     

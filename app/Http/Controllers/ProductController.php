@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -43,7 +44,12 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255|unique:products',
+            'sku' => [
+                'required', 'string', 'max:255',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                })
+            ],
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'model' => 'nullable|string|max:255',
@@ -51,9 +57,38 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'expiry_date' => 'nullable|date',
+            'requires_imei' => 'nullable|boolean',
         ]);
 
-        Product::create($validated);
+        if (!isset($validated['requires_imei'])) {
+            $validated['requires_imei'] = 0;
+        }
+
+        $product = Product::create($validated);
+
+        // Add initial stock to current user's active branch
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        if (auth()->user()->shop) {
+            // Validate that the branch actually exists for this shop
+            if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
+                $branchId = null;
+            }
+            if (!$branchId) {
+                $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+            }
+        } else {
+            $branchId = null;
+        }
+
+        if ($branchId && $request->stock > 0) {
+            \Illuminate\Support\Facades\DB::table('branch_product')->insert([
+                'branch_id' => $branchId,
+                'product_id' => $product->id,
+                'quantity' => $request->stock
+            ]);
+        }
+
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -69,7 +104,12 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
+            'sku' => [
+                'required', 'string', 'max:255',
+                Rule::unique('products')->where(function ($query) {
+                    return $query->where('shop_id', auth()->user()->shop_id);
+                })->ignore($product->id)
+            ],
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'model' => 'nullable|string|max:255',
@@ -77,9 +117,35 @@ class ProductController extends Controller
             'cost_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'expiry_date' => 'nullable|date',
+            'requires_imei' => 'nullable|boolean',
         ]);
 
+        $validated['requires_imei'] = $request->has('requires_imei') ? 1 : 0;
+
         $product->update($validated);
+        
+        // Update stock in current branch
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        if (auth()->user()->shop) {
+            // Validate that the branch actually exists for this shop
+            if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
+                $branchId = null;
+            }
+            if (!$branchId) {
+                $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+            }
+        } else {
+            $branchId = null;
+        }
+        
+        if ($branchId) {
+            \Illuminate\Support\Facades\DB::table('branch_product')->updateOrInsert(
+                ['branch_id' => $branchId, 'product_id' => $product->id],
+                ['quantity' => $request->stock]
+            );
+        }
+        
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
@@ -88,4 +154,17 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id'
+        ]);
+
+        Product::whereIn('id', $request->product_ids)->delete();
+
+        return redirect()->route('products.index')->with('success', 'Selected products deleted successfully.');
+    }
 }
+

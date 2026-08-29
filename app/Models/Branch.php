@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasTenant;
 
 class Branch extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasTenant;
 
     protected $fillable = [
+        'shop_id',
         'name',
         'address',
         'phone',

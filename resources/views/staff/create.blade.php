@@ -3,15 +3,13 @@
 @section('title', 'Add Staff')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Add New Staff</h4>
         <span class="text-muted small">Create an account for your shop cashier or manager</span>
     </div>
     <div>
-        <a href="{{ route('staff.index') }}" class="btn btn-light px-4 shadow-sm" style="border-radius: 8px;">
-            <i class="bi bi-arrow-left me-2"></i> Back to List
-        </a>
+        <a href="{{ route('staff.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
     </div>
 </div>
 
@@ -69,6 +67,22 @@
                         </div>
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Assign to Branch</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-shop"></i></span>
+                            <select name="branch_id" class="form-select bg-light border-start-0 @error('branch_id') is-invalid @enderror" required>
+                                <option value="">Select Branch</option>
+                                @foreach($branches as $branch)
+                                    <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('branch_id')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="alert alert-info border-0 bg-primary bg-opacity-10 d-flex align-items-center" role="alert">
                         <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
                         <div>
@@ -110,8 +124,12 @@
                         </div>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-1">User Limits</h6>
+                        <h6 class="fw-bold mb-1">User Limits ({{ ucfirst($shop->package ?? 'Starter') }} Plan)</h6>
+                        @if(($shop->package ?? 'starter') === 'starter')
                         <p class="text-white-50 small mb-0">The Starter plan allows a maximum of 2 users (You + 1 Staff). Upgrade your plan to add more staff.</p>
+                        @else
+                        <p class="text-white-50 small mb-0">Your {{ ucfirst($shop->package) }} plan allows unlimited users! Feel free to add as many staff members as you need.</p>
+                        @endif
                     </div>
                 </div>
             </div>

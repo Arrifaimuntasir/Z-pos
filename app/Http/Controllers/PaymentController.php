@@ -18,7 +18,12 @@ class PaymentController extends Controller
 
     public function suspended()
     {
-        return view('payments.suspended');
+        $shop = auth()->user()->shop;
+        $pendingPayment = \App\Models\Payment::where('shop_id', $shop->id)
+            ->where('status', 'pending')
+            ->first();
+
+        return view('payments.suspended', compact('shop', 'pendingPayment'));
     }
 
     public function upload(Request $request)

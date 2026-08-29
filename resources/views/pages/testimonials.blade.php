@@ -6,8 +6,8 @@
     <section id="testimonials" class="py-5 bg-light">
         <div class="container py-5">
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="fw-bold text-primary display-5">Loved by shop owners</h2>
-                <p class="text-muted fs-5 mt-3">See what our customers are saying about Z-pos.</p>
+                <h2 class="fw-bold text-primary display-5">{{ __('Loved by shop owners') }}</h2>
+                <p class="text-muted fs-5 mt-3">{{ __('See what our customers are saying about Z-pos.') }}</p>
             </div>
             
             <div class="row g-4">
@@ -17,7 +17,7 @@
                             <div class="d-flex text-warning mb-3">
                                 <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                             </div>
-                            <p class="fst-italic text-muted mb-4">"Tangu nianze kutumia Z-pos, nimeweza kudhibiti wizi wa bidhaa dukani kwangu. Mfumo ni rahisi sana kuelewa hata kwa vijana wangu."</p>
+                            <p class="fst-italic text-muted mb-4">"{{ __('Since I started using Z-pos, I've been able to control theft in my shop. The system is very easy to understand even for my young staff.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
                                 <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">AM</div>
                                 <div class="ms-3">
@@ -35,7 +35,7 @@
                             <div class="d-flex text-warning mb-3">
                                 <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                             </div>
-                            <p class="fst-italic text-muted mb-4">"The offline mode is a lifesaver! When Tanesco cuts power and internet goes down, my cashiers can still print receipts without any issues."</p>
+                            <p class="fst-italic text-muted mb-4">"{{ __('The offline mode is a lifesaver! When Tanesco cuts power and internet goes down, my cashiers can still print receipts without any issues.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
                                 <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">JK</div>
                                 <div class="ms-3">
@@ -53,7 +53,7 @@
                             <div class="d-flex text-warning mb-3">
                                 <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
                             </div>
-                            <p class="fst-italic text-muted mb-4">"I can see real-time sales on my phone while travelling. It gives me peace of mind knowing exactly what's happening in all my 3 branches."</p>
+                            <p class="fst-italic text-muted mb-4">"{{ __('I can see real-time sales on my phone while travelling. It gives me peace of mind knowing exactly what's happening in all my 3 branches.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
                                 <div class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">SJ</div>
                                 <div class="ms-3">

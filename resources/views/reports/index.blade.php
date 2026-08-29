@@ -3,7 +3,7 @@
 @section('title', 'Reports Overview')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h3 class="fw-bold mb-1 text-dark">Reports Overview</h3>
         <p class="text-muted small mb-0">High-level view of your business</p>
@@ -83,11 +83,11 @@
                 <h5 class="fw-bold text-dark">Stock Value</h5>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-2">
                     <span class="text-muted">Total Cost Value of Current Stock</span>
                     <span class="fw-bold">{{ number_format($totalStockValue) }} TSh</span>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-2">
                     <span class="text-muted">Total Selling Value of Current Stock</span>
                     <span class="fw-bold">{{ number_format($totalSalesValue) }} TSh</span>
                 </div>

@@ -10,5 +10,5 @@ class Expense extends Model
 {
     use HasFactory, HasTenant;
 
-    protected $fillable = ['description', 'amount', 'expense_date', 'category'];
+    protected $fillable = ['description', 'amount', 'expense_date', 'category', 'branch_id'];
 }

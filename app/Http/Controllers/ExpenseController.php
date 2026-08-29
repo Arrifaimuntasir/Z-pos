@@ -10,12 +10,19 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $expenses = Expense::when($search, function ($query) use ($search) {
-            $query->where('description', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
-        })->orderBy('expense_date', 'desc')->paginate(15)->appends(['search' => $search]);
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
         
-        return view('expenses.index', compact('expenses', 'search'));
+        $query = Expense::when($search, function ($q) use ($search) {
+            $q->where('description', 'like', "%{$search}%")
+              ->orWhere('category', 'like', "%{$search}%");
+        })->when($branchId, function($q) use ($branchId) {
+            $q->where('branch_id', $branchId);
+        });
+
+        $totalExpenses = $query->sum('amount');
+        $expenses = $query->orderBy('expense_date', 'desc')->paginate(15)->appends(['search' => $search]);
+        
+        return view('expenses.index', compact('expenses', 'search', 'totalExpenses'));
     }
 
     public function create()
@@ -31,6 +38,12 @@ class ExpenseController extends Controller
             'expense_date' => 'required|date',
             'category' => 'nullable|string|max:255',
         ]);
+
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        if (!$branchId) {
+            $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+        }
+        $validated['branch_id'] = $branchId;
 
         Expense::create($validated);
         return redirect()->route('expenses.index')->with('success', 'Expense recorded successfully.');

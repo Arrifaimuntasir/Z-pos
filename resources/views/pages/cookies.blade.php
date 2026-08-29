@@ -28,7 +28,7 @@
                 <p>Please note, however, that if you delete cookies or refuse to accept them, you might not be able to use all of the features we offer, you may not be able to store your preferences, and some of our pages might not display properly.</p>
 
                 <h4 class="text-dark fw-bold mt-5 mb-3">5. More Information</h4>
-                <p>If you are looking for more information, you can contact us through our email: arrifaimuntasir@gmail.com</p>
+                <p>If you are looking for more information, you can contact us through our email: info@z-pos.co.tz</p>
             </div>
         </div>
     </section>

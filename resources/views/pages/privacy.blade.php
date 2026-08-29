@@ -38,7 +38,7 @@
 
                 <h4 class="text-dark fw-bold mt-5 mb-3">6. Contact Details</h4>
                 <p>If you have any questions about this privacy policy or our privacy practices, please contact us at:</p>
-                <p>Email: arrifaimuntasir@gmail.com / yasirszahor@gmail.com<br>
+                <p>Email: info@z-pos.co.tz<br>
                 Phone: +255 683 628 142 / +255 716 465 511<br>
                 Address: Uhuru Plaza Kkoo, Dar es Salaam, Tanzania</p>
             </div>

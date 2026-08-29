@@ -3,9 +3,9 @@
 @section('title', 'Record Expense')
 
 @section('content')
-<div class="d-flex align-items-center mb-4">
-    <a href="{{ route('expenses.index') }}" class="btn btn-light rounded-circle me-3"><i class="bi bi-arrow-left"></i></a>
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h4 class="fw-bold mb-0">Record New Expense</h4>
+    <a href="{{ route('expenses.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4" style="max-width: 600px;">

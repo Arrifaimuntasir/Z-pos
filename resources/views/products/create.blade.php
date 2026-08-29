@@ -20,8 +20,9 @@
                     @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-muted small text-uppercase">SKU (Barcode/ID) <span class="text-danger">*</span></label>
-                    <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror" value="{{ old('sku') }}" required>
+                    <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('SKU (Barcode/ID)') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="sku" class="form-control @error('sku') is-invalid @enderror" value="{{ old('sku', 'PRD-' . rand(100000, 999999)) }}" required>
+                    <small class="text-muted">{{ __('You can leave this auto-generated SKU or scan a barcode.') }}</small>
                     @error('sku')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 
@@ -69,7 +70,7 @@
                 </div>
 
                 <div class="col-md-6 mt-4">
-                    <label class="form-label fw-semibold text-muted small text-uppercase">Buying Price (Bei uliyonunulia) <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('Buying Price') }} <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted">TSh</span>
                         <input type="number" step="0.01" name="cost_price" class="form-control border-start-0 @error('cost_price') is-invalid @enderror" value="{{ old('cost_price') }}" min="0" required>
@@ -78,12 +79,34 @@
                 </div>
 
                 <div class="col-md-6 mt-4">
-                    <label class="form-label fw-semibold text-muted small text-uppercase">Selling Price (Bei ya kuuza) <span class="text-danger">*</span></label>
+                    <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('Selling Price') }} <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted">TSh</span>
                         <input type="number" step="0.01" name="selling_price" class="form-control border-start-0 @error('selling_price') is-invalid @enderror" value="{{ old('selling_price') }}" min="0" required>
                     </div>
                     @error('selling_price')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                </div>
+                
+                <div class="col-md-12 mt-4">
+                    <hr>
+                    <h6 class="fw-bold mb-3">Additional Business Settings (Optional)</h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('Expiry Date (Pharmacies/Supermarkets)') }}</label>
+                    <input type="date" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" value="{{ old('expiry_date') }}">
+                    <small class="text-muted">{{ __('Leave blank if product does not expire.') }}</small>
+                    @error('expiry_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="requires_imei" name="requires_imei" value="1" {{ old('requires_imei') ? 'checked' : '' }}>
+                        <label class="form-check-label ms-2" for="requires_imei">
+                            <span class="fw-semibold">Requires IMEI / Serial Number</span><br>
+                            <small class="text-muted">For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.</small>
+                        </label>
+                    </div>
                 </div>
             </div>
 

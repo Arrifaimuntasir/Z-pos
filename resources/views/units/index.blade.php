@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Units (Vipimo)</h4>
         <span class="text-muted small">Manage how your products are measured</span>
@@ -13,15 +13,8 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
-
 <div class="card border-0 shadow-sm" style="border-radius: 16px;">
-    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
         <h5 class="mb-0 text-dark fw-bold">All Units</h5>
         <form action="{{ route('units.index') }}" method="GET" class="d-flex">
             <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search units..." value="{{ $search ?? '' }}">

@@ -29,7 +29,7 @@
                                     <div class="text-success fs-3 me-3"><i class="bi bi-envelope"></i></div>
                                     <div>
                                         <h6 class="fw-bold mb-1">Email Us</h6>
-                                        <p class="text-muted mb-0">arrifaimuntasir@gmail.com<br>yasirszahor@gmail.com</p>
+                                        <p class="text-muted mb-0">info@z-pos.co.tz</p>
                                     </div>
                                 </div>
                                 
@@ -43,22 +43,40 @@
                             </div>
                             
                             <div class="col-md-7 ps-md-4">
-                                <form>
+                                @if(session('success'))
+                                    <div class="alert alert-success rounded-3 mb-4">
+                                        <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+                                    </div>
+                                @endif
+                                <form action="{{ route('contact.submit') }}" method="POST">
+                                    @csrf
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Full Name</label>
-                                        <input type="text" class="form-control form-control-lg bg-light border-0" placeholder="Enter your name" required>
+                                        <input type="text" name="name" class="form-control form-control-lg bg-light border-0 @error('name') is-invalid @enderror" placeholder="Enter your name" value="{{ old('name') }}" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Email Address</label>
-                                        <input type="email" class="form-control form-control-lg bg-light border-0" placeholder="Enter your email" required>
+                                        <input type="email" name="email" class="form-control form-control-lg bg-light border-0 @error('email') is-invalid @enderror" placeholder="Enter your email" value="{{ old('email') }}" required>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Phone Number</label>
-                                        <input type="tel" class="form-control form-control-lg bg-light border-0" placeholder="Enter your phone number">
+                                        <input type="tel" name="phone" class="form-control form-control-lg bg-light border-0 @error('phone') is-invalid @enderror" placeholder="Enter your phone number" value="{{ old('phone') }}">
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">Message</label>
-                                        <textarea class="form-control bg-light border-0" rows="4" placeholder="How can we help you?" required></textarea>
+                                        <textarea name="message" class="form-control bg-light border-0 @error('message') is-invalid @enderror" rows="4" placeholder="How can we help you?" required>{{ old('message') }}</textarea>
+                                        @error('message')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <button type="submit" class="btn btn-success text-white w-100 py-3 fw-bold rounded-3">Send Message</button>
                                 </form>

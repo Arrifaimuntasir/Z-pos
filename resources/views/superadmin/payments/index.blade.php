@@ -3,7 +3,7 @@
 @section('title', 'Manage Payments')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h4 class="fw-bold mb-0">System Admin: Pending Payments</h4>
 </div>
 

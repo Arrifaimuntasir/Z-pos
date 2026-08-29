@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Unit extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasTenant;
 
     protected $fillable = ['name', 'short_name', 'allow_decimal', 'is_active'];
 

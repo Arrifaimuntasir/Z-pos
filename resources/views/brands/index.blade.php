@@ -3,7 +3,7 @@
 @section('title', 'Brands')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h2 class="fw-bold mb-0">Brands</h2>
     <a href="{{ route('brands.create') }}" class="btn btn-primary">
         <i class="bi bi-plus-lg me-1"></i> Add Brand

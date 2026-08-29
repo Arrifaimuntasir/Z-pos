@@ -18,8 +18,7 @@ class CustomMaintenance
     public function handle(Request $request, Closure $next): Response
     {
         if (Cache::get('site_maintenance') === true) {
-            // Allow admin/superadmin to bypass
-            if (Auth::check() && (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('Administrator'))) {
+            if (Auth::check() && Auth::user()->hasRole('Super Admin')) {
                 return $next($request);
             }
             

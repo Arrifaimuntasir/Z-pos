@@ -22,10 +22,11 @@ class PurchaseController extends Controller
     {
         $suppliers = \App\Models\Supplier::all();
         $products = \App\Models\Product::all();
+        $branches = \App\Models\Branch::where('shop_id', \Illuminate\Support\Facades\Auth::user()->shop_id)->get();
         
         $reference_no = 'PR-' . date('Ymd') . '-' . rand(1000, 9999);
         
-        return view('purchases.create', compact('suppliers', 'products', 'reference_no'));
+        return view('purchases.create', compact('suppliers', 'products', 'branches', 'reference_no'));
     }
 
     /**
@@ -35,7 +36,7 @@ class PurchaseController extends Controller
     {
         $request->validate([
             'supplier_id' => 'required|exists:suppliers,id',
-            'reference_no' => 'required|unique:purchases',
+            'reference_no' => ['required', \Illuminate\Validation\Rule::unique('purchases')->where('shop_id', \Illuminate\Support\Facades\Auth::user()->shop_id)],
             'purchase_date' => 'required|date',
             'status' => 'required|string',
             'product_id' => 'required|array',
@@ -61,13 +62,19 @@ class PurchaseController extends Controller
             ];
         }
 
+        $branchId = $request->branch_id ?? auth()->user()->branch_id ?? session('active_branch_id');
+        if (!$branchId) {
+            $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+        }
+
         $purchase = \App\Models\Purchase::create([
             'supplier_id' => $request->supplier_id,
             'reference_no' => $request->reference_no,
             'purchase_date' => $request->purchase_date,
             'status' => $request->status,
             'notes' => $request->notes,
-            'total_amount' => $total_amount
+            'total_amount' => $total_amount,
+            'branch_id' => $branchId
         ]);
 
         foreach ($items as $item) {
@@ -76,8 +83,11 @@ class PurchaseController extends Controller
             if ($request->status == 'completed') {
                 $product = \App\Models\Product::find($item['product_id']);
                 if ($product) {
-                    $product->stock_quantity += $item['quantity'];
-                    $product->save();
+                    $branchId = $purchase->branch_id;
+                    \Illuminate\Support\Facades\DB::table('branch_product')->updateOrInsert(
+                        ['branch_id' => $branchId, 'product_id' => $product->id],
+                        ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $item['quantity'])]
+                    );
                 }
             }
         }

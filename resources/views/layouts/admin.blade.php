@@ -19,6 +19,54 @@
     <!-- Styles -->
     @vite(['resources/sass/app.scss', 'resources/sass/admin.scss', 'resources/js/app.js'])
     @stack('styles')
+    
+    <style>
+        /* Force Sidebar Fixed Position (Bypass Cache) */
+        .sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            z-index: 1050 !important;
+        }
+        .sidebar-header, .sidebar-bottom {
+            flex-shrink: 0 !important;
+        }
+        .sidebar-scroll-area {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            min-height: 0 !important;
+        }
+        .sidebar-scroll-area::-webkit-scrollbar {
+            width: 5px !important;
+        }
+        .sidebar-scroll-area::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1 !important;
+            border-radius: 4px !important;
+        }
+        #content {
+            margin-left: 250px !important;
+            transition: margin-left 0.3s ease;
+        }
+        #content.active {
+            margin-left: 0 !important;
+        }
+        @media (max-width: 768px) {
+            #content {
+                margin-left: 0 !important;
+            }
+            .sidebar {
+                margin-left: -260px !important;
+                width: 260px !important;
+                max-width: 260px !important;
+            }
+            .sidebar.active {
+                margin-left: 0 !important;
+            }
+        }
+    </style>
 </head>
 <body class="admin-body">
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -51,48 +99,78 @@
                 </div>
             </div>
 
+            <div class="sidebar-scroll-area">
             @if(!Auth::check() || !Auth::user()->hasRole('Super Admin') || Auth::user()->shop_id)
             <ul class="list-unstyled components" style="background-color: #ffffff;">
                 <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}">
                     <a href="{{ url('/home') }}">
-                        <i class="bi bi-grid-fill me-3"></i> Dashboard
+                        <i class="bi bi-grid-fill me-3"></i> {{ __('Dashboard') }}
                     </a>
                 </li>
                 
                 <li class="{{ request()->is('sales*') ? 'active' : '' }}">
-                    <a href="{{ route('sales.create') }}">
-                        <i class="bi bi-cart-check-fill me-3"></i> Sales
+                    <a href="#salesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
+                        <i class="bi bi-cart-check-fill me-3"></i> {{ __('Sales') }}
                     </a>
+                    <ul class="collapse list-unstyled" id="salesSubmenu">
+                        <li><a href="{{ route('sales.index') }}" style="color: #64748b;">{{ __('Sales History') }}</a></li>
+                        <li><a href="{{ route('sales.create') }}" style="color: #64748b;">{{ __('New Sale') }}</a></li>
+                        <li><a href="{{ route('invoices.index') }}" style="color: #64748b;">{{ __('Invoices') }}</a></li>
+                    </ul>
                 </li>
+                
+
                 <li>
-                    <a href="#itemsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-box-seam-fill me-3"></i> Items
+                    <a href="#itemsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
+                        <i class="bi bi-box-seam-fill me-3"></i> {{ __('Items') }}
                     </a>
                     <ul class="collapse list-unstyled" id="itemsSubmenu">
-                        <li><a href="{{ route('products.index') }}" style="color: #64748b;">Products</a></li>
-                        <li><a href="{{ route('categories.index') }}" style="color: #64748b;">Categories</a></li>
-                        <li><a href="{{ route('brands.index') }}" style="color: #64748b;">Brands</a></li>
-                        <li><a href="{{ route('units.index') }}" style="color: #64748b;">Units</a></li>
+                        <li><a href="{{ route('products.index') }}" style="color: #64748b;">{{ __('Products') }}</a></li>
+                        <li><a href="{{ route('categories.index') }}" style="color: #64748b;">{{ __('Categories') }}</a></li>
+                        <li><a href="{{ route('brands.index') }}" style="color: #64748b;">{{ __('Brands') }}</a></li>
+                        <li><a href="{{ route('units.index') }}" style="color: #64748b;">{{ __('Units') }}</a></li>
                     </ul>
                 </li>
                 <!-- Purchases removed for small businesses -->
                 <li>
-                    <a href="{{ route('expenses.index') }}" style="color: #64748b;"><i class="bi bi-graph-down-arrow me-3"></i> Expenses</a>
+                    <a href="{{ route('expenses.index') }}" style="color: #64748b;"><i class="bi bi-graph-down-arrow me-3"></i> {{ __('Expenses') }}</a>
                 </li>
                 <li>
-                    <a href="#reportsSubmenu" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-pie-chart-fill me-3"></i> Reports
+                    <a href="#reportsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
+                        <i class="bi bi-pie-chart-fill me-3"></i> {{ __('Reports') }}
                     </a>
-                    <ul class="collapse list-unstyled {{ request()->is('reports*') ? 'show' : '' }}" id="reportsSubmenu">
-                        <li><a href="{{ route('reports.index') }}" style="color: #64748b;">Overview</a></li>
-                        <li><a href="{{ route('reports.profit_loss') }}" style="color: #64748b;">Profit and Loss</a></li>
-                        <li><a href="{{ route('reports.sales') }}" style="color: #64748b;">Sales</a></li>
-                        <li><a href="{{ route('reports.expenses') }}" style="color: #64748b;">Expenses</a></li>
+                    <ul class="collapse list-unstyled" id="reportsSubmenu">
+                        <li><a href="{{ route('reports.index') }}" style="color: #64748b;">{{ __('Overview') }}</a></li>
+                        <li><a href="{{ route('reports.profit_loss') }}" style="color: #64748b;">{{ __('Profit and Loss') }}</a></li>
+                        <li><a href="{{ route('reports.sales') }}" style="color: #64748b;">{{ __('Sales') }}</a></li>
+                        <li><a href="{{ route('reports.expenses') }}" style="color: #64748b;">{{ __('Expenses') }}</a></li>
                     </ul>
                 </li>
+                @if(Auth::user()->shop && in_array(Auth::user()->shop->package, ['professional', 'enterprise']))
+                <li class="{{ request()->is('branches*') ? 'active' : '' }}">
+                    <a href="{{ route('branches.index') }}" style="color: #64748b;">
+                        <i class="bi bi-shop me-3"></i> {{ __('Branches') }}
+                    </a>
+                </li>
+                @endif
+                
+                <li class="{{ request()->is('warranties*') ? 'active' : '' }}">
+                    <a href="{{ route('warranties.index') }}" style="color: #64748b;">
+                        <i class="bi bi-shield-check me-3"></i> {{ __('Warranties') }}
+                    </a>
+                </li>
+                
+                @if(Auth::user()->shop)
+                <li class="{{ request()->routeIs('shop.business-card') ? 'active' : '' }}">
+                    <a href="{{ route('shop.business-card') }}" style="color: #64748b;">
+                        <i class="bi bi-person-badge-fill me-3"></i> {{ __('Business Card') }}
+                    </a>
+                </li>
+                @endif
+                
                 <li class="{{ request()->is('staff*') ? 'active' : '' }}">
                     <a href="{{ route('staff.index') }}" style="color: #64748b;">
-                        <i class="bi bi-people-fill me-3"></i> Staff & Users
+                        <i class="bi bi-people-fill me-3"></i> {{ __('Staff & Users') }}
                     </a>
                 </li>
             </ul>
@@ -121,8 +199,10 @@
                 </li>
             </ul>
             @endif
+            </div>
 
             <div class="sidebar-bottom mt-auto" style="background-color: #f8fafc; border-top: 1px solid #e2e8f0;">
+                @if(auth()->check() && auth()->user()->hasRole('Super Admin'))
                 <div class="maintenance-toggle d-flex align-items-center justify-content-between p-3 bg-white rounded border mb-3 mx-3">
                     <div>
                         <div class="fw-bold text-dark" style="font-size: 0.85rem;">Maintenance</div>
@@ -132,9 +212,24 @@
                         <input class="form-check-input" type="checkbox" role="switch" id="maintenanceSwitch" {{ \Illuminate\Support\Facades\Cache::get('site_maintenance') ? 'checked' : '' }} onchange="toggleMaintenance()">
                     </div>
                 </div>
-                <a href="{{ route('superadmin.shops.index') }}" class="user-role px-3 pb-3 d-flex align-items-center justify-content-between text-muted text-decoration-none" style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1px;">
-                    SUPER ADMIN <i class="bi bi-chevron-right"></i>
-                </a>
+                @endif
+                
+                @if(auth()->check())
+                <div class="px-3 py-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center overflow-hidden">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center text-dark fw-bold" style="width: 40px; height: 40px; background-color: #facc15; font-size: 1.2rem; flex-shrink: 0;">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                        <div class="ms-3 overflow-hidden">
+                            <div class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;">{{ auth()->user()->name }}</div>
+                            <div class="text-muted text-truncate" style="font-size: 0.75rem;">{{ auth()->user()->roles->first()?->name ?? 'User' }}</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-dark text-white rounded-circle shadow-sm d-flex align-items-center justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#supportOffcanvas" title="{{ __('Customer Support') }}" style="width: 38px; height: 38px; flex-shrink: 0;">
+                        <i class="bi bi-headset"></i>
+                    </button>
+                </div>
+                @endif
             </div>
         </nav>
         
@@ -166,6 +261,19 @@
                     </button>
 
                     <div class="d-flex align-items-center ms-auto">
+                        <!-- Native Language Switcher -->
+                        <div class="me-3">
+                            @if(App::getLocale() == 'en')
+                                <a href="{{ route('lang.switch', 'sw') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
+                                    <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-2" style="width: 20px; border-radius: 2px;"> Swahili
+                                </a>
+                            @else
+                                <a href="{{ route('lang.switch', 'en') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
+                                    <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-2" style="width: 20px; border-radius: 2px;"> English
+                                </a>
+                            @endif
+                        </div>
+
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <div class="position-relative me-2">
@@ -195,28 +303,130 @@
 
             <!-- Main Content Area -->
             <div class="p-4">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
-                        <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-                
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
                 @yield('content')
             </div>
         </div>
     </div>
 
+    <!-- Main Content Area Ends -->
+
+    <div class="offcanvas offcanvas-end support-offcanvas border-0 shadow" tabindex="-1" id="supportOffcanvas" aria-labelledby="supportOffcanvasLabel">
+        <div class="offcanvas-header bg-primary text-white p-4">
+            <div class="d-flex align-items-center">
+                <div class="bg-white bg-opacity-25 rounded-circle p-2 me-3">
+                    <i class="bi bi-headset fs-3"></i>
+                </div>
+                <div>
+                    <h5 class="offcanvas-title fw-bold mb-0" id="supportOffcanvasLabel">{{ __('Customer Support') }}</h5>
+                    <small class="text-white-50">{{ __('Need Help with Z-pos?') }}</small>
+                </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="{{ __('Close') }}"></button>
+        </div>
+        <div class="offcanvas-body p-4 bg-light">
+            <p class="text-muted mb-4" style="font-size: 0.95rem;">{{ __('Our support team is always here to assist you. Choose a channel below to reach out.') }}</p>
+            
+            <a href="https://wa.me/255683628142" target="_blank" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 mb-3 support-card whatsapp-card">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="icon-wrapper bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                            <i class="bi bi-whatsapp fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ __('Chat on WhatsApp') }}</h6>
+                            <small class="text-success fw-semibold">+255 683 628 142</small>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+                    </div>
+                </div>
+            </a>
+
+            <a href="tel:+255683628142" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 mb-3 support-card phone-card">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                            <i class="bi bi-telephone-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ __('Call Us Directly') }}</h6>
+                            <small class="text-primary fw-semibold">+255 683 628 142</small>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@z-pos.co.tz" target="_blank" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 mb-3 support-card email-card">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="icon-wrapper bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                            <i class="bi bi-envelope-fill fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ __('Email Support') }}</h6>
+                            <small class="text-danger fw-semibold">info@z-pos.co.tz</small>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+                    </div>
+                </div>
+            </a>
+
+            <a href="https://instagram.com/zpos.tz" target="_blank" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 support-card instagram-card">
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="icon-wrapper bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background-color: rgba(225, 48, 108, 0.1); color: #e1306c;">
+                            <i class="bi bi-instagram fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold text-dark">{{ __('Instagram') }}</h6>
+                            <small class="fw-semibold" style="color: #e1306c;">@zpos.tz</small>
+                        </div>
+                        <i class="bi bi-chevron-right ms-auto text-muted"></i>
+                    </div>
+                </div>
+            </a>
+            
+            <div class="mt-5 text-center">
+                <div class="d-flex justify-content-center align-items-center opacity-50 mb-2">
+                    <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos" style="width: 30px;">
+                    <span class="fw-bold ms-2" style="font-size: 1.2rem; color: #0f172a;">Z-pos</span>
+                </div>
+                <div class="text-muted small">&copy; {{ date('Y') }} Z-pos. All rights reserved.</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Script -->
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            @if(session('success'))
+                Toast.fire({
+                    icon: 'success',
+                    title: "{{ session('success') }}"
+                });
+            @endif
+
+            @if(session('error'))
+                Toast.fire({
+                    icon: 'error',
+                    title: "{{ session('error') }}"
+                });
+            @endif
+
             const sidebar = document.getElementById('sidebar');
             const content = document.getElementById('content');
             const overlay = document.getElementById('sidebarOverlay');
@@ -236,7 +446,97 @@
             if (overlay) {
                 overlay.addEventListener('click', toggleSidebar);
             }
+
+            // Close sidebar on mobile when support offcanvas is opened
+            const supportBtn = document.querySelector('[data-bs-target="#supportOffcanvas"]');
+            if (supportBtn) {
+                supportBtn.addEventListener('click', function() {
+                    if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+                        toggleSidebar();
+                    }
+                });
+            }
         });
+
+        // --- Web Push Notifications Logic ---
+        const vapidPublicKey = "{{ env('VAPID_PUBLIC_KEY') }}";
+        
+        function urlB64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function subscribeUserToPush() {
+            navigator.serviceWorker.ready.then(function(registration) {
+                const subscribeOptions = {
+                    userVisibleOnly: true,
+                    applicationServerKey: urlB64ToUint8Array(vapidPublicKey)
+                };
+                return registration.pushManager.subscribe(subscribeOptions);
+            })
+            .then(function(pushSubscription) {
+                console.log('Received PushSubscription: ', JSON.stringify(pushSubscription));
+                sendSubscriptionToBackEnd(pushSubscription);
+            })
+            .catch(function(err) {
+                console.error('Failed to subscribe the user: ', err);
+            });
+        }
+
+        function sendSubscriptionToBackEnd(subscription) {
+            fetch('/push-subscriptions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(subscription)
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Bad status code from server.');
+                }
+                console.log('Successfully saved subscription to server.');
+            })
+            .catch(function(err) {
+                console.error('Failed to save subscription.', err);
+            });
+        }
+
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.register('/sw.js')
+            .then(function(swReg) {
+                console.log('Service Worker is registered', swReg);
+                
+                // If not denied, prompt user on first click anywhere
+                if (Notification.permission === 'default') {
+                    const promptOnce = () => {
+                        Notification.requestPermission().then(function(permission) {
+                            if (permission === 'granted') {
+                                subscribeUserToPush();
+                            }
+                        });
+                        document.removeEventListener('click', promptOnce);
+                    };
+                    document.addEventListener('click', promptOnce);
+                } else if (Notification.permission === 'granted') {
+                    // Always try to subscribe/refresh subscription on load if granted
+                    subscribeUserToPush();
+                }
+            })
+            .catch(function(error) {
+                console.error('Service Worker Error', error);
+            });
+        }
+        // -------------------------------------
     </script>
     @stack('scripts')
 </body>

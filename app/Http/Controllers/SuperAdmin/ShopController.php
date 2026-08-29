@@ -42,4 +42,10 @@ class ShopController extends Controller
         $status = $shop->is_active ? 'activated' : 'suspended';
         return back()->with('success', "Shop has been successfully {$status}.");
     }
+
+    public function destroy(\App\Models\Shop $shop)
+    {
+        $shop->delete();
+        return back()->with('success', 'Shop has been permanently deleted.');
+    }
 }

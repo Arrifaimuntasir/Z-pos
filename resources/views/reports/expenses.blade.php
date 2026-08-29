@@ -3,7 +3,7 @@
 @section('title', 'Expenses Report')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h3 class="fw-bold mb-1 text-dark">Expenses Report</h3>
         <p class="text-muted small mb-0">Detailed expense history</p>

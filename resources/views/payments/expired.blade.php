@@ -131,6 +131,27 @@
             width: 100%;
             margin-top: 10px;
         }
+        .payment-info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .payment-info-box h6 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .payment-info-box p {
+            margin: 0;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -167,11 +188,25 @@
                 </div>
             @endif
 
-            @if(session('success'))
-                <div class="alert alert-success border-0 bg-success bg-opacity-10 text-success rounded-3 small fw-semibold">
-                    <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
+            <div class="payment-info-box shadow-sm">
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-1">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/NMB_Bank_Plc.png" height="20" class="me-2" style="object-fit:contain" onerror="this.style.display='none'">
+                        <h6>NMB Bank</h6>
+                    </div>
+                    <p class="fw-bold text-dark fs-5">23710025242</p>
+                    <p class="small text-muted">Account Name: MUSTASIR KHAMIS MOHAMED</p>
                 </div>
-            @endif
+                <hr class="text-muted opacity-25">
+                <div>
+                    <div class="d-flex align-items-center mb-1">
+                        <i class="bi bi-phone-vibrate text-danger me-2 fs-5"></i>
+                        <h6>Lipa Namba (Airtel Money / All Networks)</h6>
+                    </div>
+                    <p class="fw-bold text-danger fs-5">135511433</p>
+                    <p class="small text-muted">Name: MUNTASIR MOHAMED</p>
+                </div>
+            </div>
 
             @if($pendingPayment)
                 <div class="alert alert-primary border-0 bg-primary bg-opacity-10 text-primary rounded-3 small p-3 text-start mb-4">

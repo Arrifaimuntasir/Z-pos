@@ -3,11 +3,9 @@
 @section('title', 'Create Category')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h2 class="fw-bold mb-0">Create Category</h2>
-    <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Back to List
-    </a>
+    <a href="{{ route('categories.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
 </div>
 
 <div class="row">

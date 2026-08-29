@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'shop_name' => ['required', 'string', 'max:255'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'package' => ['nullable', 'string', 'in:starter,professional,enterprise'],
         ]);
@@ -81,12 +81,29 @@ class RegisterController extends Controller
             'valid_until' => now()->addDays(7), // 7 days free trial
         ]);
 
-        return User::create([
+        $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'shop_id' => $shop->id,
         ]);
+
+        $user->assignRole('Administrator');
+
+        // Send welcome email to the new user
+        try {
+            $user->notify(new \App\Notifications\WelcomeNewShop($user));
+            
+            // Notify super admins
+            $superAdmins = User::role('Super Admin')->get();
+            foreach ($superAdmins as $admin) {
+                $admin->notify(new \App\Notifications\NewShopRegistration($shop, $user));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Registration notification failed: ' . $e->getMessage());
+        }
+
+        return $user;
     }
 }

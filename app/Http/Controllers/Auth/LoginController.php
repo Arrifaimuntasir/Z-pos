@@ -37,4 +37,16 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
     }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLoginForm()
+    {
+        return response()->view('auth.login')->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                                             ->header('Pragma', 'no-cache')
+                                             ->header('Expires', '0');
+    }
 }

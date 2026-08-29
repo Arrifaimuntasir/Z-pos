@@ -9,7 +9,7 @@ class Shop extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['name', 'logo_path', 'package', 'valid_until', 'is_active'];
+    protected $fillable = ['name', 'logo_path', 'package', 'valid_until', 'is_active', 'phone', 'address', 'tin_number', 'receipt_message'];
 
     protected $casts = [
         'valid_until' => 'date',

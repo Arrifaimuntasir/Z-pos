@@ -11,14 +11,37 @@ class ReportController extends Controller
 {
     public function index()
     {
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+
         $totalProducts = Product::count();
-        $totalStockValue = Product::sum(DB::raw('cost_price * stock'));
-        $totalSalesValue = Product::sum(DB::raw('selling_price * stock'));
-        $totalExpenses = Expense::sum('amount');
         
-        $totalSalesReal = \App\Models\Sale::sum('total_amount');
-        $grossProfit = DB::table('sale_items')
+        $totalStockValue = DB::table('branch_product')
+            ->join('products', 'branch_product.product_id', '=', 'products.id')
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_product.branch_id', $branchId);
+            })
+            ->sum(DB::raw('products.cost_price * branch_product.quantity'));
+
+        $totalSalesValue = DB::table('branch_product')
+            ->join('products', 'branch_product.product_id', '=', 'products.id')
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_product.branch_id', $branchId);
+            })
+            ->sum(DB::raw('products.selling_price * branch_product.quantity'));
+
+        $totalExpenses = Expense::when($branchId, function($q) use ($branchId) {
+            $q->where('branch_id', $branchId);
+        })->sum('amount');
+        
+        $totalSalesReal = \App\Models\Sale::when($branchId, function($q) use ($branchId) {
+            $q->where('branch_id', $branchId);
+        })->sum('total_amount');
+        
+        $grossProfit = \App\Models\SaleItem::query()
             ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('sales.branch_id', $branchId);
+            })
             ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_items.quantity) as profit')
             ->value('profit') ?? 0;
 
@@ -39,14 +62,21 @@ class ReportController extends Controller
     {
         $startDate = $request->query('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->query('end_date', now()->endOfMonth()->toDateString());
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
 
-        $grossProfit = DB::table('sale_items')
+        $grossProfit = \App\Models\SaleItem::query()
             ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
             ->whereBetween('sales.sale_date', [$startDate, $endDate])
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('sales.branch_id', $branchId);
+            })
             ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_items.quantity) as profit')
             ->value('profit') ?? 0;
 
-        $totalExpenses = Expense::whereBetween('expense_date', [$startDate, $endDate])->sum('amount');
+        $totalExpenses = Expense::whereBetween('expense_date', [$startDate, $endDate])
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })->sum('amount');
         
         $netProfit = $grossProfit - $totalExpenses;
 
@@ -58,8 +88,13 @@ class ReportController extends Controller
         $startDate = $request->query('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->query('end_date', now()->endOfMonth()->toDateString());
 
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+
         $sales = \App\Models\Sale::with('customer')
             ->whereBetween('sale_date', [$startDate, $endDate])
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
             ->orderBy('sale_date', 'desc')
             ->get();
 
@@ -73,7 +108,12 @@ class ReportController extends Controller
         $startDate = $request->query('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->query('end_date', now()->endOfMonth()->toDateString());
 
+        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+
         $expenses = \App\Models\Expense::whereBetween('expense_date', [$startDate, $endDate])
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
             ->orderBy('expense_date', 'desc')
             ->get();
 

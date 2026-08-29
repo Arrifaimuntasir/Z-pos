@@ -3,11 +3,9 @@
 @section('title', 'Add Brand')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h2 class="fw-bold mb-0">Add Brand</h2>
-    <a href="{{ route('brands.index') }}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-1"></i> Back to Brands
-    </a>
+    <a href="{{ route('brands.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
 </div>
 
 <div class="admin-card">

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Z-pos - Enterprise Point of Sale')</title>
@@ -18,6 +19,24 @@
 
     <!-- Styles -->
     @vite(['resources/sass/app.scss', 'resources/sass/landing.scss', 'resources/js/app.js'])
+
+    <!-- PWA Setup -->
+    <link rel="manifest" href="/manifest.json?v=4">
+    <meta name="theme-color" content="#10b981">
+    <link rel="apple-touch-icon" href="/images/logo_pos.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
     <style>
         /* Prevent global horizontal scroll on mobile */
         html, body {
@@ -64,65 +83,84 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">Home</a>
+                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">{{ __('Home') }}</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ request()->is('features') ? 'active' : '' }}" href="{{ url('/features') }}" id="megaMenu" role="button" data-bs-toggle="dropdown">
-                            Features
+                            {{ __('Features') }}
                         </a>
                         <div class="dropdown-menu shadow border-0 p-4 mt-0 mega-menu-dropdown" aria-labelledby="megaMenu">
                             <div class="d-flex gap-5">
                                 <div>
-                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-cart3 text-success me-2"></i> POS & Sales</h6>
+                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-cart3 text-success me-2"></i> {{ __('POS & Sales') }}</h6>
                                     <ul class="list-unstyled">
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Fast Checkout</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Barcode Scanning</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Split Payments</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Fast Checkout') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Barcode Scanning') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Multi-Payment') }}</a></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-box-seam text-success me-2"></i> Inventory</h6>
+                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-file-earmark-text text-success me-2"></i> {{ __('Documents') }}</h6>
                                     <ul class="list-unstyled">
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Multi-Warehouse</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Stock Alerts</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Stock Adjustments</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Custom Warranties') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('A4 Invoices') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Digital Receipts') }}</a></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-graph-up-arrow text-success me-2"></i> Analytics</h6>
+                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-box-seam text-success me-2"></i> {{ __('Inventory') }}</h6>
                                     <ul class="list-unstyled">
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Sales Reports</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Profit & Loss</a></li>
-                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">Staff Performance</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Multi-Warehouse') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Stock Alerts') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Stock Adjustments') }}</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h6 class="text-primary fw-bold mb-3"><i class="bi bi-graph-up-arrow text-success me-2"></i> {{ __('Analytics') }}</h6>
+                                    <ul class="list-unstyled">
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Sales Reports') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Profit & Loss') }}</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ url('/features') }}">{{ __('Staff Performance') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="mt-3 pt-3 border-top text-center">
-                                <a href="{{ url('/features') }}" class="text-decoration-none fw-bold text-primary">View All Features <i class="bi bi-arrow-right"></i></a>
+                                <a href="{{ url('/features') }}" class="text-decoration-none fw-bold text-primary">{{ __('View All Features') }} <i class="bi bi-arrow-right"></i></a>
                             </div>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('pricing') ? 'active' : '' }}" href="{{ url('/pricing') }}">Pricing</a>
+                        <a class="nav-link {{ request()->is('pricing') ? 'active' : '' }}" href="{{ url('/pricing') }}">{{ __('Pricing') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('testimonials') ? 'active' : '' }}" href="{{ url('/testimonials') }}">Testimonials</a>
+                        <a class="nav-link {{ request()->is('testimonials') ? 'active' : '' }}" href="{{ url('/testimonials') }}">{{ __('Testimonials') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('about') ? 'active' : '' }}" href="{{ url('/about') }}">About Us</a>
+                        <a class="nav-link {{ request()->is('about') ? 'active' : '' }}" href="{{ url('/about') }}">{{ __('About Us') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="{{ url('/contact') }}">Contact</a>
+                        <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="{{ url('/contact') }}">{{ __('Contact') }}</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-3">
+                        @if(App::getLocale() == 'en')
+                            <a href="{{ route('lang.switch', 'sw') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
+                                <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-2" style="width: 20px; border-radius: 2px;"> Swahili
+                            </a>
+                        @else
+                            <a href="{{ route('lang.switch', 'en') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-2" style="width: 20px; border-radius: 2px;"> English
+                            </a>
+                        @endif
+                    </li>
                     @if (Route::has('login'))
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link fw-bold text-dark me-3">Sign in</a>
+                            <a href="{{ route('login') }}" class="nav-link fw-bold text-dark me-3">{{ __('Sign in') }}</a>
                         </li>
                     @endif
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-4 py-2" style="border-radius: 8px;">Try free for 7 days</a>
+                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-4 py-2" style="border-radius: 8px;">{{ __('Try free for 7 days') }}</a>
                     </li>
                 </ul>
             </div>
@@ -144,47 +182,40 @@
                             <span class="fw-bold fs-4 text-primary lh-1">Z-pos</span>
                         </div>
                     </a>
-                    <p class="text-white-50">The most advanced and reliable Point of Sale system built for East African enterprises. Accelerate your growth today.</p>
+                    <p class="text-white-50">The most advanced and reliable Point of Sale system {{ __('Built for East Africa') }}n enterprises. Accelerate your growth today.</p>
                     <div class="social-icons">
                         <a href="https://wa.me/255683628142" target="_blank"><i class="bi bi-whatsapp"></i></a>
-                        <a href="https://instagram.com/zamarstore_" target="_blank"><i class="bi bi-instagram"></i></a>
-                        <a href="#" target="_blank"><i class="bi bi-telegram"></i></a>
+                        <a href="https://instagram.com/zpos.tz" target="_blank"><i class="bi bi-instagram"></i></a>
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@z-pos.co.tz" target="_blank"><i class="bi bi-envelope-fill"></i></a>
                     </div>
                 </div>
                 
                 <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <h5>Product</h5>
+                    <h5>{{ __('Product') }}</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url('/features') }}">Features</a></li>
-                        <li><a href="{{ url('/pricing') }}">Pricing</a></li>
+                        <li><a href="{{ url('/features') }}">{{ __('Features') }}</a></li>
+                        <li><a href="{{ url('/pricing') }}">{{ __('Pricing') }}</a></li>
                         <li><a href="#">Hardware</a></li>
                         <li><a href="#">Updates</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
-                    <h5>Company</h5>
+                    <h5>{{ __('Company') }}</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url('/about') }}">About Us</a></li>
+                        <li><a href="{{ url('/about') }}">{{ __('About Us') }}</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Partners</a></li>
-                        <li><a href="{{ url('/contact') }}">Contact</a></li>
+                        <li><a href="{{ url('/contact') }}">{{ __('Contact') }}</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-4 col-md-4">
-                    <h5>Find Us</h5>
+                    <h5>{{ __('Find Us') }}</h5>
                     <!-- Google Map -->
                     <div class="map-container mb-3" style="background: none; border: none; overflow: hidden; border-radius: 10px;">
                         <iframe src="https://www.google.com/maps?q=Uhuru+Plaza+Kariakoo+Dar+es+Salaam&output=embed" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
-                    <form>
-                        <h6 class="text-white mt-4 mb-3">Subscribe to Newsletter</h6>
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Email address" style="background: rgba(255,255,255,0.1); border: none; color: white;">
-                            <button class="btn btn-success text-white" type="button">Subscribe</button>
-                        </div>
-                    </form>
                 </div>
             </div>
             
@@ -201,13 +232,8 @@
         </div>
     </footer>
 
-    <!-- Back to top button -->
-    <a href="#" class="btn btn-primary position-fixed bottom-0 end-0 m-4 rounded-circle shadow-lg" style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; z-index: 1000;" aria-label="Back to top">
-        <i class="bi bi-arrow-up"></i>
-    </a>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Initialize Animations

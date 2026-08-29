@@ -164,15 +164,15 @@
                     </div>
                 </div>
 
-                <h4 class="fw-bold mb-1 text-center">Welcome Back</h4>
-                <p class="text-muted text-center mb-4">Log in to your account to continue</p>
+                <h4 class="fw-bold mb-1 text-center">{{ __('Welcome Back') }}</h4>
+                <p class="text-muted text-center mb-4">{{ __('Log in to your account to continue') }}</p>
 
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">Email Address</label>
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Enter your email">
+                        <label for="email" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Email Address') }}</label>
+                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="{{ __('Enter your email') }}">
 
                         @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -183,13 +183,13 @@
 
                     <div class="mb-4">
                         <div class="d-flex justify-content-between">
-                            <label for="password" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">Password</label>
+                            <label for="password" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Password') }}</label>
                             @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #10b981;">Forgot Password?</a>
+                                <a href="{{ route('password.request') }}" class="small text-decoration-none" style="color: #10b981;">{{ __('Forgot Password?') }}</a>
                             @endif
                         </div>
                         <div class="input-group">
-                            <input id="password" type="password" class="form-control border-end-0 @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                            <input id="password" type="password" class="form-control border-end-0 @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="{{ __('Enter your password') }}">
                             <span class="input-group-text bg-white @error('password') border-danger @enderror" style="cursor: pointer;" onclick="togglePassword('password', this)">
                                 <i class="bi bi-eye"></i>
                             </span>
@@ -209,16 +209,28 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn-login mt-2 mb-3">
-                        Log In
-                    </button>
+                    <button type="submit" class="btn-login mt-2 mb-3">{{ __('Log In') }}</button>
                     
+                    <!-- TEMPORARILY DISABLED FOR SAFE BROWSING REVIEW
                     <a href="{{ route('auth.google') }}" class="btn-google text-decoration-none">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" height="20" class="me-2"> Continue with Google
                     </a>
+                    -->
                     
                     <div class="mt-4 text-center">
-                        <span class="text-muted small">Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none" style="color: #10b981; font-weight: 600;">Sign Up</a></span>
+                        <span class="text-muted small">{{ __('Don\'t have an account?') }} <a href="{{ route('register') }}" class="text-decoration-none" style="color: #10b981; font-weight: 600;">{{ __('Sign Up') }}</a></span>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-top text-center">
+                        <div class="text-muted small mb-2 fw-semibold">Need Help? Contact Customer Support</div>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="mailto:info@z-pos.co.tz" class="text-decoration-none text-muted hover-primary small">
+                                <i class="bi bi-envelope-fill me-1"></i> info@z-pos.co.tz
+                            </a>
+                            <a href="https://wa.me/255683628142" target="_blank" class="text-decoration-none text-muted hover-primary small">
+                                <i class="bi bi-whatsapp me-1"></i> +255 683 628 142
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>

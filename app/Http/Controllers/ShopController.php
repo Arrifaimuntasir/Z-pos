@@ -19,6 +19,10 @@ class ShopController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string',
+            'tin_number' => 'nullable|string|max:50',
+            'receipt_message' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -27,6 +31,10 @@ class ShopController extends Controller
             return redirect()->route('home');
         }
         $shop->name = $request->name;
+        $shop->phone = $request->phone;
+        $shop->address = $request->address;
+        $shop->tin_number = $request->tin_number;
+        $shop->receipt_message = $request->receipt_message;
 
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('logos', 'public');

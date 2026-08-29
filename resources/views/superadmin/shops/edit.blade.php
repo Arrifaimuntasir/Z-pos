@@ -3,11 +3,9 @@
 @section('title', 'Edit Shop')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <h4 class="fw-bold mb-0">Edit Shop: {{ $shop->name }}</h4>
-    <a href="{{ route('superadmin.shops.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left"></i> Back
-    </a>
+    <a href="{{ route('superadmin.shops.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
 </div>
 
 <div class="row">

@@ -143,7 +143,7 @@
                     </div>
                 </div>
 
-                <h4 class="fw-bold mb-1 text-center">Create an Account</h4>
+                <h4 class="fw-bold mb-1 text-center">{{ __('Create an Account') }}</h4>
                 <p class="text-muted text-center mb-4">Sign up to get started with Z-pos</p>
 
                 <form method="POST" action="{{ route('register') }}">
@@ -192,8 +192,8 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="email" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">Email Address</label>
-                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Enter your email">
+                        <label for="email" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Email Address') }}</label>
+                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="{{ __('Enter your email') }}">
                         @error('email')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -202,7 +202,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">Password</label>
+                        <label for="password" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Password') }}</label>
                         <div class="input-group">
                             <input id="password" type="password" class="form-control border-end-0 @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Create a strong password">
                             <span class="input-group-text bg-white @error('password') border-danger @enderror" style="cursor: pointer;" onclick="togglePassword('password', this)">
@@ -217,19 +217,18 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="password-confirm" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">Confirm Password</label>
+                        <label for="password-confirm" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Confirm Password') }}</label>
                         <div class="input-group">
-                            <input id="password-confirm" type="password" class="form-control border-end-0" name="password_confirmation" required autocomplete="new-password" placeholder="Confirm your password">
+                            <input id="password-confirm" type="password" class="form-control border-end-0" name="password_confirmation" required autocomplete="new-password" placeholder="{{ __('Confirm your password') }}">
                             <span class="input-group-text bg-white" style="cursor: pointer;" onclick="togglePassword('password-confirm', this)">
                                 <i class="bi bi-eye"></i>
                             </span>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-login mt-2 mb-3">
-                        Create Account
-                    </button>
+                    <button type="submit" class="btn-login mt-2 mb-3">{{ __('Create Account') }}</button>
                     
+                    <!-- TEMPORARILY DISABLED FOR SAFE BROWSING REVIEW
                     <a href="#" id="googleAuthBtn" class="btn-google text-decoration-none mb-4" style="background-color: #ffffff; color: #334155; padding: 0.8rem; border-radius: 8px; font-weight: 600; width: 100%; border: 1px solid #e2e8f0; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" height="20" class="me-2"> Continue with Google
                     </a>
@@ -248,9 +247,10 @@
                             }
                         });
                     </script>
+                    -->
                     
                     <div class="text-center">
-                        <span class="text-muted small">Already have an account? <a href="{{ route('login') }}" class="text-decoration-none" style="color: #10b981; font-weight: 600;">Log In</a></span>
+                        <span class="text-muted small">{{ __('Already have an account?') }} <a href="{{ route('login') }}" class="text-decoration-none" style="color: #10b981; font-weight: 600;">{{ __('Log In') }}</a></span>
                     </div>
                 </form>
             </div>

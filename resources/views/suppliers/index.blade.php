@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Suppliers</h4>
         <span class="text-muted small">Manage your suppliers and distributors</span>
@@ -12,13 +12,6 @@
         </a>
     </div>
 </div>
-
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle me-2"></i>{{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-@endif
 
 <div class="card border-0 shadow-sm" style="border-radius: 16px;">
     <div class="card-body p-0">

@@ -3,7 +3,7 @@
 @section('title', 'Staff & Users')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Staff & Users</h4>
         <span class="text-muted small">Manage people who have access to your shop</span>

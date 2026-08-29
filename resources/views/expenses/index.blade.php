@@ -3,22 +3,25 @@
 @section('title', 'Expenses')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Expenses</h4>
-    <a href="{{ route('expenses.create') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
-        <i class="bi bi-plus-lg me-1"></i> Record Expense
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h4 class="fw-bold mb-1" style="font-size: 24px; color: #0f172a;">Expenses</h4>
+        <p class="text-muted mb-0" style="font-size: 14px;">Track and manage your business expenses</p>
+    </div>
+    <a href="{{ route('expenses.create') }}" class="btn btn-dark shadow-sm px-3" style="border-radius: 8px; font-weight: 500;">
+        <i class="bi bi-plus-lg me-1"></i> New Expense
     </a>
 </div>
 
-@if(session('success'))
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {{ session('success') }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="card border mb-4" style="border-radius: 12px; max-width: 280px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+    <div class="card-body p-3 py-4">
+        <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">TOTAL EXPENSES</div>
+        <h3 class="fw-bold mb-0" style="color: #0f172a; font-size: 24px;">{{ number_format($totalExpenses, 2) }}</h3>
+    </div>
 </div>
-@endif
 
 <div class="card border-0 shadow-sm rounded-4">
-    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
         <h5 class="mb-0">Expense List</h5>
         <form action="{{ route('expenses.index') }}" method="GET" class="d-flex">
             <input type="text" name="search" class="form-control form-control-sm me-2" placeholder="Search expenses..." value="{{ $search ?? '' }}">
@@ -44,7 +47,7 @@
                         <td class="fw-semibold">{{ $expense->description }}</td>
                         <td>
                             @if($expense->category)
-                                <span class="badge bg-light text-secondary border px-2 py-1">{{ $expense->category }}</span>
+                                <span class="badge bg-light text-dark border px-2 py-1">{{ $expense->category }}</span>
                             @else
                                 <span class="text-muted small">-</span>
                             @endif

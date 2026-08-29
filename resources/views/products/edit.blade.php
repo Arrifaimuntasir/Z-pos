@@ -86,6 +86,28 @@
                     </div>
                     @error('selling_price')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
+                
+                <div class="col-md-12 mt-4">
+                    <hr>
+                    <h6 class="fw-bold mb-3">Additional Business Settings (Optional)</h6>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('Expiry Date (Pharmacies/Supermarkets)') }}</label>
+                    <input type="date" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" value="{{ old('expiry_date', $product->expiry_date) }}">
+                    <small class="text-muted">{{ __('Leave blank if product does not expire.') }}</small>
+                    @error('expiry_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                
+                <div class="col-md-6 d-flex align-items-center">
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="requires_imei" name="requires_imei" value="1" {{ old('requires_imei', $product->requires_imei) ? 'checked' : '' }}>
+                        <label class="form-check-label ms-2" for="requires_imei">
+                            <span class="fw-semibold">Requires IMEI / Serial Number</span><br>
+                            <small class="text-muted">For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.</small>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="d-flex justify-content-end pt-3 border-top">

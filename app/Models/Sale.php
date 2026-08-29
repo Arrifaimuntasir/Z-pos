@@ -7,6 +7,7 @@ use App\Traits\HasTenant;
 
 class Sale extends Model
 {
+    use HasTenant;
     protected $fillable = [
         'customer_id',
         'reference_no',
@@ -16,6 +17,7 @@ class Sale extends Model
         'payment_method',
         'payment_status',
         'notes',
+        'branch_id',
     ];
 
     public function customer()

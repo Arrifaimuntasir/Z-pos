@@ -1,15 +1,13 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0 text-dark">Edit Supplier</h4>
         <span class="text-muted small">Update distributor/supplier details</span>
     </div>
     <div>
-        <a href="{{ route('suppliers.index') }}" class="btn btn-light px-4 shadow-sm" style="border-radius: 8px;">
-            <i class="bi bi-arrow-left me-2"></i> Back
-        </a>
+        <a href="{{ route('suppliers.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
     </div>
 </div>
 
