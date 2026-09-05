@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Invoice')
 
@@ -69,15 +69,17 @@
                         </thead>
                         <tbody>
                             @foreach($invoice->items as $index => $item)
+                                @if($item->net_quantity > 0)
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>
                                         <span class="fw-medium">{{ $item->product ? $item->product->name : 'Unknown Product' }}</span>
                                     </td>
-                                    <td class="text-center">{{ $item->quantity }}</td>
+                                    <td class="text-center">{{ $item->net_quantity }}</td>
                                     <td class="text-end">{{ number_format($item->unit_price) }}</td>
-                                    <td class="text-end fw-bold">{{ number_format($item->subtotal) }}</td>
+                                    <td class="text-end fw-bold">{{ number_format($item->net_total) }}</td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -88,7 +90,7 @@
                     <div class="col-sm-5">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted fw-medium">{{ __('Subtotal:') }}</span>
-                            <span class="fw-bold">{{ number_format($invoice->total_amount) }} TSh</span>
+                            <span class="fw-bold">{{ number_format($invoice->net_total_amount) }} TSh</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
                             <span class="text-muted fw-medium">{{ __('Discount:') }}</span>
@@ -96,17 +98,17 @@
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="fs-5 fw-bold text-dark">{{ __('Grand Total:') }}</span>
-                            <span class="fs-5 fw-bold text-primary">{{ number_format($invoice->total_amount) }} TSh</span>
+                            <span class="fs-5 fw-bold text-primary">{{ number_format($invoice->net_total_amount) }} TSh</span>
                         </div>
                         
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted fw-medium">{{ __('Amount Paid:') }}</span>
                             <span class="fw-bold text-success">{{ number_format($invoice->paid_amount) }} TSh</span>
                         </div>
-                        @if($invoice->total_amount - $invoice->paid_amount > 0)
+                        @if($invoice->net_total_amount - $invoice->paid_amount > 0)
                             <div class="d-flex justify-content-between text-danger">
                                 <span class="fw-medium">{{ __('Balance Due:') }}</span>
-                                <span class="fw-bold">{{ number_format($invoice->total_amount - $invoice->paid_amount) }} TSh</span>
+                                <span class="fw-bold">{{ number_format($invoice->net_total_amount - $invoice->paid_amount) }} TSh</span>
                             </div>
                         @endif
                     </div>

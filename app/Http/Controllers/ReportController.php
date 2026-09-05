@@ -13,11 +13,20 @@ class ReportController extends Controller
     {
         $branchId = $this->getActiveBranchId();
 
-        $totalProducts = Product::count();
+        $totalProducts = DB::table('branch_product')
+            ->join('products', 'branch_product.product_id', '=', 'products.id')
+            ->where('products.shop_id', auth()->user()->shop_id)
+            ->whereNull('products.deleted_at')
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_product.branch_id', $branchId);
+            })
+            ->distinct('products.id')
+            ->count('products.id');
         
         $totalStockValue = DB::table('branch_product')
             ->join('products', 'branch_product.product_id', '=', 'products.id')
             ->where('products.shop_id', auth()->user()->shop_id)
+            ->whereNull('products.deleted_at')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_product.branch_id', $branchId);
             })
@@ -26,6 +35,7 @@ class ReportController extends Controller
         $totalSalesValue = DB::table('branch_product')
             ->join('products', 'branch_product.product_id', '=', 'products.id')
             ->where('products.shop_id', auth()->user()->shop_id)
+            ->whereNull('products.deleted_at')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_product.branch_id', $branchId);
             })

@@ -180,17 +180,8 @@
 
                     <hr class="border-light-secondary">
 
-                    <div class="mb-4">
-                        <label class="form-label text-muted small fw-medium">{{ __('Customer (Optional)') }}</label>
-                        <select name="customer_id" class="form-select">
-                            <option value="">{{ __('Walk-in Customer (None)') }}</option>
-                            @foreach($customers as $customer)
-                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
 
-                    <hr class="border-light-secondary">
+
 
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted fw-medium">{{ __('Subtotal') }}</span>

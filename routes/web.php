@@ -143,6 +143,9 @@ Route::get('/testimonials', function () {
     return view('pages.testimonials');
 });
 
+// Language Switcher Route
+Route::get('/lang/{lang}', [App\Http\Controllers\LanguageController::class, 'switchLang'])->name('lang.switch');
+
 Route::get('/about', function () {
     return view('pages.about');
 });
@@ -195,7 +198,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->only(['index', 'show']);
     Route::get('/invoices/{invoice}/pdf', [App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
     Route::resource('warranties', App\Http\Controllers\WarrantyController::class);
-    Route::get('/warranties/{warranty}/show', [App\Http\Controllers\WarrantyController::class, 'show'])->name('warranties.show');
     Route::get('/warranties/{warranty}/pdf', [App\Http\Controllers\WarrantyController::class, 'downloadPdf'])->name('warranties.pdf');
     
     // Admin Only Routes

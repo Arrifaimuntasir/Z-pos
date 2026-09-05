@@ -29,8 +29,18 @@ class SaleItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function returnItems()
+    public function returns()
     {
         return $this->hasMany(SaleReturnItem::class);
+    }
+
+    public function getNetQuantityAttribute()
+    {
+        return max(0, $this->quantity - $this->returned_quantity);
+    }
+
+    public function getNetTotalAttribute()
+    {
+        return $this->net_quantity * $this->unit_price;
     }
 }

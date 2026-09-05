@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Sale Receipt')
 @section('hide_back_btn', true)
@@ -76,6 +76,7 @@
                         </thead>
                         <tbody>
                             @foreach($sale->items as $index => $item)
+                                @if($item->net_quantity > 0)
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>
@@ -84,10 +85,11 @@
                                             <br><small class="text-muted">IMEI/SN: {{ $item->imei_serial_number }}</small>
                                         @endif
                                     </td>
-                                    <td class="text-center">{{ $item->quantity }}</td>
+                                    <td class="text-center">{{ $item->net_quantity }}</td>
                                     <td class="text-end">{{ number_format($item->unit_price) }}</td>
-                                    <td class="text-end fw-bold">{{ number_format($item->subtotal) }}</td>
+                                    <td class="text-end fw-bold">{{ number_format($item->net_total) }}</td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -98,7 +100,7 @@
                     <div class="col-sm-5">
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted fw-medium">{{ __('Subtotal:') }}</span>
-                            <span class="fw-bold">{{ number_format($sale->total_amount) }} TSh</span>
+                            <span class="fw-bold">{{ number_format($sale->net_total_amount) }} TSh</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2 pb-2 border-bottom">
                             <span class="text-muted fw-medium">{{ __('Discount:') }}</span>
@@ -106,7 +108,7 @@
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="fs-5 fw-bold text-dark">{{ __('Grand Total:') }}</span>
-                            <span class="fs-5 fw-bold text-primary">{{ number_format($sale->total_amount) }} TSh</span>
+                            <span class="fs-5 fw-bold text-primary">{{ number_format($sale->net_total_amount) }} TSh</span>
                         </div>
                         
                         @if($sale->payment_status != 'proforma')
@@ -114,10 +116,10 @@
                                 <span class="text-muted fw-medium">{{ __('Amount Paid:') }}</span>
                                 <span class="fw-bold text-success">{{ number_format($sale->paid_amount) }} TSh</span>
                             </div>
-                            @if($sale->total_amount - $sale->paid_amount > 0)
+                            @if($sale->net_total_amount - $sale->paid_amount > 0)
                                 <div class="d-flex justify-content-between text-danger">
                                     <span class="fw-medium">{{ __('Balance Due:') }}</span>
-                                    <span class="fw-bold">{{ number_format($sale->total_amount - $sale->paid_amount) }} TSh</span>
+                                    <span class="fw-bold">{{ number_format($sale->net_total_amount - $sale->paid_amount) }} TSh</span>
                                 </div>
                             @endif
                         @else

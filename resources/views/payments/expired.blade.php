@@ -184,7 +184,7 @@
 
             @php
                 $isNewRegistration = $shop->valid_until && $shop->valid_until->isSameDay(now()->subDay());
-                $packagePrice = $shop->package === 'professional' ? '65,000' : ($shop->package === 'starter' ? '15,000' : 'Custom');
+                $packagePrice = $shop->package === 'enterprise' ? '110,000' : ($shop->package === 'professional' ? '45,000' : ($shop->package === 'starter' ? '15,000' : 'Custom'));
             @endphp
             
             @if($isNewRegistration)

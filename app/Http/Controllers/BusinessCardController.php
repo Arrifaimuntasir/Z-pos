@@ -23,6 +23,12 @@ class BusinessCardController extends Controller
             });
         }
         
+        if (!Schema::hasColumn('shops', 'card_logo')) {
+            Schema::table('shops', function($table) {
+                $table->string('card_logo')->nullable();
+            });
+        }
+        
         if (!$shop) {
             return redirect()->route('home')->with('error', 'No shop found for your account.');
         }
@@ -64,6 +70,25 @@ class BusinessCardController extends Controller
         $shop->card_phone = $request->card_phone;
         $shop->card_email = $request->card_email;
         $shop->card_message = $request->card_message;
+        
+        if ($request->has('card_logo_data') && !empty($request->card_logo_data)) {
+            $image_parts = explode(";base64,", $request->card_logo_data);
+            if (count($image_parts) == 2) {
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1]);
+                $fileName = 'card_logo_' . time() . '.' . $image_type;
+                
+                if (!file_exists(storage_path('app/public/shops'))) {
+                    mkdir(storage_path('app/public/shops'), 0777, true);
+                }
+                $file = storage_path('app/public/shops/' . $fileName);
+                file_put_contents($file, $image_base64);
+                
+                $shop->card_logo = 'shops/' . $fileName;
+            }
+        }
+        
         $shop->save();
 
         return response()->json(['success' => true, 'message' => 'Card design saved successfully!']);

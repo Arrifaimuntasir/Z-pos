@@ -133,7 +133,12 @@
                                 @endif
                             </td>
                             <td class="text-end fw-bold">
-                                {{ number_format($sale->total_amount) }} TSh
+                                @if($sale->net_total_amount < $sale->total_amount)
+                                    <span class="text-muted text-decoration-line-through me-1" style="font-size: 0.85em;">{{ number_format($sale->total_amount) }}</span>
+                                    <span class="text-danger">{{ number_format($sale->net_total_amount) }} TSh</span>
+                                @else
+                                    {{ number_format($sale->total_amount) }} TSh
+                                @endif
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('sales.show', $sale->id) }}" class="btn btn-sm btn-light text-primary shadow-sm" style="border-radius: 6px;" title="{{ __('View Receipt') }}">

@@ -107,6 +107,7 @@
         </thead>
         <tbody>
             @foreach($invoice->items as $index => $item)
+                @if($item->net_quantity > 0)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>
@@ -115,10 +116,11 @@
                             <br><small style="color: #7f8c8d;">SN/IMEI: {{ $item->imei_serial_number }}</small>
                         @endif
                     </td>
-                    <td class="text-center">{{ $item->quantity }}</td>
+                    <td class="text-center">{{ $item->net_quantity }}</td>
                     <td class="text-right">{{ number_format($item->unit_price) }}</td>
-                    <td class="text-right">{{ number_format($item->subtotal) }}</td>
+                    <td class="text-right">{{ number_format($item->net_total) }}</td>
                 </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
@@ -130,20 +132,20 @@
                 <table style="width: 100%; border: none; margin: 0;">
                     <tr>
                         <td style="border: none; padding: 5px 10px;" class="text-right font-bold">{{ __('Subtotal:') }}</td>
-                        <td style="border: none; padding: 5px 10px;" class="text-right">{{ number_format($invoice->total_amount) }} TSh</td>
+                        <td style="border: none; padding: 5px 10px;" class="text-right">{{ number_format($invoice->net_total_amount) }} TSh</td>
                     </tr>
                     <tr class="total-row">
                         <td style="border: none; padding: 10px;" class="text-right">{{ __('Grand Total:') }}</td>
-                        <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->total_amount) }} TSh</td>
+                        <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->net_total_amount) }} TSh</td>
                     </tr>
                     <tr>
                         <td style="border: none; padding: 5px 10px;" class="text-right">{{ __('Amount Paid:') }}</td>
                         <td style="border: none; padding: 5px 10px;" class="text-right">{{ number_format($invoice->paid_amount) }} TSh</td>
                     </tr>
-                    @if($invoice->total_amount - $invoice->paid_amount > 0)
+                    @if($invoice->net_total_amount - $invoice->paid_amount > 0)
                     <tr class="balance-row">
                         <td style="border: none; padding: 10px;" class="text-right">{{ __('Balance Due:') }}</td>
-                        <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->total_amount - $invoice->paid_amount) }} TSh</td>
+                        <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->net_total_amount - $invoice->paid_amount) }} TSh</td>
                     </tr>
                     @endif
                 </table>

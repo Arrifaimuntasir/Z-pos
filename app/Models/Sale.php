@@ -40,4 +40,9 @@ class Sale extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getNetTotalAmountAttribute()
+    {
+        return $this->items->sum('net_total');
+    }
 }

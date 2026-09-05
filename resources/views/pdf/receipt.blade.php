@@ -54,6 +54,7 @@
         </thead>
         <tbody>
             @foreach($sale->items as $item)
+                @if($item->net_quantity > 0)
                 <tr>
                     <td class="text-left">
                         <span class="item-name">{{ $item->product ? $item->product->name : 'Item' }}</span>
@@ -62,9 +63,10 @@
                         @endif
                         <span style="font-size: 10px; color: #555;">@ {{ number_format($item->unit_price) }}</span>
                     </td>
-                    <td class="text-center">{{ $item->quantity }}</td>
-                    <td class="text-right">{{ number_format($item->subtotal) }}</td>
+                    <td class="text-center">{{ $item->net_quantity }}</td>
+                    <td class="text-right">{{ number_format($item->net_total) }}</td>
                 </tr>
+                @endif
             @endforeach
         </tbody>
     </table>
@@ -72,17 +74,17 @@
     <table style="margin-top: 5px;">
         <tr class="border-top">
             <td class="text-left font-bold" style="padding-top: 5px;">{{ __('Total Amount:') }}</td>
-            <td class="text-right font-bold" style="padding-top: 5px; font-size: 14px;">{{ number_format($sale->total_amount) }} TSh</td>
+            <td class="text-right font-bold" style="padding-top: 5px; font-size: 14px;">{{ number_format($sale->net_total_amount) }} TSh</td>
         </tr>
         @if($sale->payment_status != 'proforma')
             <tr>
                 <td class="text-left">{{ __('Amount Paid:') }}</td>
                 <td class="text-right">{{ number_format($sale->paid_amount) }} TSh</td>
             </tr>
-            @if($sale->total_amount - $sale->paid_amount > 0)
+            @if($sale->net_total_amount - $sale->paid_amount > 0)
             <tr>
                 <td class="text-left font-bold">{{ __('Balance:') }}</td>
-                <td class="text-right font-bold">{{ number_format($sale->total_amount - $sale->paid_amount) }} TSh</td>
+                <td class="text-right font-bold">{{ number_format($sale->net_total_amount - $sale->paid_amount) }} TSh</td>
             </tr>
             @endif
         @else
