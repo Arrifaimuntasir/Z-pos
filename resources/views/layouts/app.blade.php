@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/icon-192.png') }}" type="image/png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -18,7 +18,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     <!-- PWA Setup -->
-    <link rel="manifest" href="/manifest.json?v=4">
+    <link rel="manifest" href="/manifest_v66.json">
     <meta name="theme-color" content="#10b981">
     <link rel="apple-touch-icon" href="/images/logo_pos.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,7 +26,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                navigator.serviceWorker.register('/sw.js?v=81').then(function(registration) {
                     console.log('ServiceWorker registration successful');
                 }, function(err) {
                     console.log('ServiceWorker registration failed: ', err);

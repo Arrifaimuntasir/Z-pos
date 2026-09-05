@@ -90,4 +90,25 @@ class BranchController extends Controller
 
         return redirect()->route('branches.index')->with('success', 'Branch updated successfully.');
     }
+
+    public function destroy(Branch $branch)
+    {
+        if ($branch->shop_id !== Auth::user()->shop_id) {
+            abort(403);
+        }
+
+        // Check if it's the last branch
+        $branchCount = Branch::where('shop_id', Auth::user()->shop_id)->count();
+        if ($branchCount <= 1) {
+            return back()->with('error', 'You cannot delete your only branch. You must have at least one branch.');
+        }
+
+        // Check for associated records before deleting to avoid foreign key constraint errors
+        try {
+            $branch->delete();
+            return redirect()->route('branches.index')->with('success', 'Branch deleted successfully.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->with('error', 'Cannot delete this branch because it has sales, products, or other records associated with it. Please edit or deactivate it instead.');
+        }
+    }
 }

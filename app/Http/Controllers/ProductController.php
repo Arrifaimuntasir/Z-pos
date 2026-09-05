@@ -14,22 +14,35 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $products = Product::with(['category', 'brand', 'unit'])
+        $branchId = $this->getActiveBranchId();
+
+        $products = Product::with(['category', 'brand', 'unit', 'branches'])
+            ->when($branchId, function ($query) use ($branchId) {
+                // If a branch is selected, show only products in that branch
+                $query->whereHas('branches', function ($q) use ($branchId) {
+                    $q->where('branch_id', $branchId);
+                });
+            })
             ->when($search, function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('sku', 'like', "%{$search}%")
-                      ->orWhereHas('category', function ($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%");
-                      })
-                      ->orWhereHas('brand', function ($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%");
-                      });
+                $query->where(function ($q1) use ($search) {
+                    $q1->where('name', 'like', "%{$search}%")
+                          ->orWhere('sku', 'like', "%{$search}%")
+                          ->orWhereHas('category', function ($q2) use ($search) {
+                              $q2->where('name', 'like', "%{$search}%");
+                          })
+                          ->orWhereHas('brand', function ($q2) use ($search) {
+                              $q2->where('name', 'like', "%{$search}%");
+                          });
+                });
             })
             ->latest()
             ->paginate(15)
             ->appends(['search' => $search]);
-            
-        return view('products.index', compact('products', 'search'));
+
+        $activeBranchId = $branchId;
+        $activeBranch = $branchId ? \App\Models\Branch::find($branchId) : null;
+
+        return view('products.index', compact('products', 'search', 'activeBranchId', 'activeBranch'));
     }
 
     public function create()
@@ -37,7 +50,10 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
         $units = Unit::all();
-        return view('products.create', compact('categories', 'brands', 'units'));
+        $branches = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->get();
+        $allProducts = Product::all();
+        $activeBranchId = $this->getActiveBranchId();
+        return view('products.create', compact('categories', 'brands', 'units', 'branches', 'allProducts', 'activeBranchId'));
     }
 
     public function store(Request $request)
@@ -52,41 +68,86 @@ class ProductController extends Controller
             ],
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'model' => 'nullable|string|max:255',
-            'unit_id' => 'required|exists:units,id',
-            'cost_price' => 'required|numeric|min:0',
+            'unit_id' => 'nullable|exists:units,id',
+            'cost_price' => 'nullable|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'expiry_date' => 'nullable|date',
+            'stock' => 'nullable|integer|min:0',
+            'expiry_date' => [
+                (auth()->user()->shop && auth()->user()->shop->business_type == 'Pharmacy / Health') ? 'required' : 'nullable',
+                'date'
+            ],
             'requires_imei' => 'nullable|boolean',
+            'track_stock' => 'nullable|boolean',
+            'ingredients' => 'nullable|array',
+            'ingredients.*.id' => 'nullable|exists:products,id',
+            'ingredients.*.quantity' => 'nullable|numeric|min:0',
         ]);
 
         if (!isset($validated['requires_imei'])) {
             $validated['requires_imei'] = 0;
         }
-
-        $product = Product::create($validated);
-
-        // Add initial stock to current user's active branch
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
-        if (auth()->user()->shop) {
-            // Validate that the branch actually exists for this shop
-            if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
-                $branchId = null;
+        $validated['track_stock'] = $request->has('track_stock') ? 1 : 0;
+        
+        if (!isset($validated['cost_price'])) $validated['cost_price'] = 0;
+        if (!isset($validated['stock'])) $validated['stock'] = 0;
+        if (!isset($validated['unit_id'])) {
+            $defaultUnit = \App\Models\Unit::first();
+            if (!$defaultUnit) {
+                $defaultUnit = \App\Models\Unit::create([
+                    'name' => 'Pieces',
+                    'short_name' => 'Pcs',
+                    'allow_decimal' => false,
+                    'is_active' => true
+                ]);
             }
-            if (!$branchId) {
-                $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
-            }
-        } else {
-            $branchId = null;
+            $validated['unit_id'] = $defaultUnit->id;
         }
 
-        if ($branchId && $request->stock > 0) {
+        // Extract branch_id and stock before creating product (they don't go directly into products table)
+        $branchId    = $request->input('branch_id');
+        $stockQty    = (int) $request->input('stock', 0);
+
+        // If no branch_id from form, fall back to active branch session
+        if (!$branchId) {
+            $branchId = $this->getActiveBranchId();
+            if (auth()->user()->shop) {
+                if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
+                    $branchId = null;
+                }
+                if (!$branchId) {
+                    $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+                }
+            } else {
+                $branchId = null;
+            }
+        }
+
+        $productData = collect($validated)->except(['ingredients', 'branch_id'])->toArray();
+        $product = Product::create($productData);
+
+        // Save initial stock to branch_product pivot table
+        if ($branchId) {
             \Illuminate\Support\Facades\DB::table('branch_product')->insert([
-                'branch_id' => $branchId,
+                'branch_id'  => $branchId,
                 'product_id' => $product->id,
-                'quantity' => $request->stock
+                'quantity'   => $stockQty,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
+        }
+
+        if (!empty($validated['ingredients'])) {
+            foreach ($validated['ingredients'] as $ingredient) {
+                if(!empty($ingredient['id']) && !empty($ingredient['quantity']) && $ingredient['quantity'] > 0) {
+                    \App\Models\ProductIngredient::create([
+                        'product_id' => $product->id,
+                        'ingredient_id' => $ingredient['id'],
+                        'quantity' => $ingredient['quantity']
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
@@ -97,7 +158,9 @@ class ProductController extends Controller
         $categories = Category::all();
         $brands = Brand::all();
         $units = Unit::all();
-        return view('products.edit', compact('product', 'categories', 'brands', 'units'));
+        $branches = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->get();
+        $allProducts = Product::where('id', '!=', $product->id)->get();
+        return view('products.edit', compact('product', 'categories', 'brands', 'units', 'branches', 'allProducts'));
     }
 
     public function update(Request $request, Product $product)
@@ -112,37 +175,70 @@ class ProductController extends Controller
             ],
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'nullable|exists:brands,id',
+            'branch_id' => 'nullable|exists:branches,id',
             'model' => 'nullable|string|max:255',
-            'unit_id' => 'required|exists:units,id',
-            'cost_price' => 'required|numeric|min:0',
+            'unit_id' => 'nullable|exists:units,id',
+            'cost_price' => 'nullable|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'expiry_date' => 'nullable|date',
+            'stock' => 'nullable|integer|min:0',
+            'expiry_date' => [
+                (auth()->user()->shop && auth()->user()->shop->business_type == 'Pharmacy / Health') ? 'required' : 'nullable',
+                'date'
+            ],
             'requires_imei' => 'nullable|boolean',
+            'track_stock' => 'nullable|boolean',
+            'ingredients' => 'nullable|array',
+            'ingredients.*.id' => 'nullable|exists:products,id',
+            'ingredients.*.quantity' => 'nullable|numeric|min:0',
         ]);
 
         $validated['requires_imei'] = $request->has('requires_imei') ? 1 : 0;
-
-        $product->update($validated);
+        $validated['track_stock'] = $request->has('track_stock') ? 1 : 0;
         
-        // Update stock in current branch
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
-        if (auth()->user()->shop) {
-            // Validate that the branch actually exists for this shop
-            if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
+        if (array_key_exists('unit_id', $validated) && $validated['unit_id'] === null) {
+            unset($validated['unit_id']);
+        }
+
+        // Extract branch_id and stock before updating product
+        $branchId = $request->input('branch_id');
+        $stockQty = (int) $request->input('stock', 0);
+
+        // If no branch_id from form, fall back to active branch session
+        if (!$branchId) {
+            $branchId = $this->getActiveBranchId();
+            if (auth()->user()->shop) {
+                if ($branchId && !\App\Models\Branch::where('id', $branchId)->where('shop_id', auth()->user()->shop_id)->exists()) {
+                    $branchId = null;
+                }
+                if (!$branchId) {
+                    $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+                }
+            } else {
                 $branchId = null;
             }
-            if (!$branchId) {
-                $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
+        }
+
+        $productData = collect($validated)->except(['ingredients', 'branch_id'])->toArray();
+        $product->update($productData);
+        
+        \App\Models\ProductIngredient::where('product_id', $product->id)->delete();
+        if (!empty($validated['ingredients'])) {
+            foreach ($validated['ingredients'] as $ingredient) {
+                if(!empty($ingredient['id']) && !empty($ingredient['quantity']) && $ingredient['quantity'] > 0) {
+                    \App\Models\ProductIngredient::create([
+                        'product_id'    => $product->id,
+                        'ingredient_id' => $ingredient['id'],
+                        'quantity'      => $ingredient['quantity']
+                    ]);
+                }
             }
-        } else {
-            $branchId = null;
         }
         
+        // Update stock in branch_product pivot table
         if ($branchId) {
             \Illuminate\Support\Facades\DB::table('branch_product')->updateOrInsert(
                 ['branch_id' => $branchId, 'product_id' => $product->id],
-                ['quantity' => $request->stock]
+                ['quantity' => $stockQty, 'updated_at' => now()]
             );
         }
         

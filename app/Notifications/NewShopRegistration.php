@@ -44,7 +44,9 @@ class NewShopRegistration extends Notification
                     ->line('A new shop has just registered on Z-POS.')
                     ->line('Shop Name: ' . $this->shop->name)
                     ->line('Owner: ' . $this->user->first_name . ' ' . $this->user->last_name)
+                    ->line('Phone: ' . ($this->user->phone ?? 'N/A'))
                     ->line('Email: ' . $this->user->email)
+                    ->line('Business Type: ' . ($this->shop->business_type ?? 'Not Specified'))
                     ->line('Package: ' . $this->shop->package)
                     ->action('View Shops', url('/superadmin/shops'))
                     ->line('Thank you for using Z-POS.');
@@ -60,7 +62,8 @@ class NewShopRegistration extends Notification
         return [
             'shop_id' => $this->shop->id,
             'shop_name' => $this->shop->name,
-            'message' => 'New shop registered: ' . $this->shop->name,
+            'business_type' => $this->shop->business_type ?? 'Not Specified',
+            'message' => 'New shop registered: ' . $this->shop->name . ' (' . ($this->shop->business_type ?? 'Not Specified') . ')',
         ];
     }
 }

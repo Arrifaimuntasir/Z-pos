@@ -31,6 +31,8 @@ class CategoryController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        $validated['is_service'] = $request->has('is_service');
+
         Category::create($validated);
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
@@ -52,6 +54,8 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
             'is_active' => 'boolean'
         ]);
+
+        $validated['is_service'] = $request->has('is_service');
 
         $category->update($validated);
         return redirect()->route('categories.index')->with('success', 'Category updated successfully.');

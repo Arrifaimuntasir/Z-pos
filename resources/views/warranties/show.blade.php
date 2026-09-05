@@ -140,7 +140,6 @@
 
         /* 9: Orange Energetic (Gradient) */
         .theme-9 { font-family: 'Inter', sans-serif; background: linear-gradient(45deg, #fff7ed 0%, #ffffff 100%); border-left: 15px solid #ea580c; border-bottom: 15px solid #f97316; }
-        .theme-9 .cert-header { text-align: left; }
         .theme-9 .cert-title { color: #9a3412; }
         .theme-9 .cert-subtitle { color: #f97316; }
         .theme-9 .info-label { color: #ea580c; }
@@ -182,13 +181,13 @@
 
     <div class="print-btn-container d-flex gap-2">
         <a href="{{ route('warranties.pdf', $warranty->id) }}?v={{ time() }}" class="btn btn-sm btn-danger shadow-sm px-3" style="border-radius: 6px;">
-            <i class="bi bi-file-earmark-pdf"></i> PDF
+            <i class="bi bi-file-earmark-pdf"></i> {{ __('PDF') }}
         </a>
         <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm px-3" style="border-radius: 6px;">
-            <i class="bi bi-printer"></i> Print Certificate
+            <i class="bi bi-printer"></i> {{ __('Print Certificate') }}
         </button>
         <button onclick="window.close()" class="btn btn-sm btn-light border shadow-sm px-3" style="border-radius: 6px;">
-            Close
+            {{ __('Close') }}
         </button>
     </div>
 
@@ -204,33 +203,33 @@
                 @else
                     <h5 style="font-weight: 900; letter-spacing: 2px; margin-bottom: 5px; margin-top:0;">{{ $warranty->shop->name }}</h5>
                 @endif
-                <div class="cert-title">WARRANTY CERTIFICATE</div>
-                <div class="cert-subtitle">Official Document of Guarantee</div>
+                <div class="cert-title">{{ __('WARRANTY CERTIFICATE') }}</div>
+                <div class="cert-subtitle">{{ __('Official Document of Guarantee') }}</div>
                 
                 <div style="margin-top: 10px; font-size: 10px; opacity: 0.8; font-weight: bold;">
-                    Warranty No: <span style="font-size: 12px; color: #000;">{{ $warranty->warranty_number }}</span>
+                    {{ __('Warranty No:') }} <span style="font-size: 12px; color: #000;">{{ $warranty->warranty_number }}</span>
                 </div>
             </div>
 
             <div class="cert-body">
                 <div class="row-info">
                     <div class="col-info" style="width: 50%;">
-                        <div class="info-label">Customer Name</div>
+                        <div class="info-label">{{ __('Customer Name') }}</div>
                         <div class="info-value">{{ $warranty->customer_name ?: 'Valued Customer' }}</div>
                     </div>
                     <div class="col-info" style="width: 50%;">
-                        <div class="info-label">Customer Phone</div>
+                        <div class="info-label">{{ __('Customer Phone') }}</div>
                         <div class="info-value">{{ $warranty->customer_phone ?: 'N/A' }}</div>
                     </div>
                 </div>
 
                 <div class="row-info">
                     <div class="col-info" style="width: 50%;">
-                        <div class="info-label">Region</div>
+                        <div class="info-label">{{ __('Region') }}</div>
                         <div class="info-value">{{ $warranty->region ?: 'N/A' }}</div>
                     </div>
                     <div class="col-info" style="width: 50%;">
-                        <div class="info-label">Gender</div>
+                        <div class="info-label">{{ __('Gender') }}</div>
                         <div class="info-value">{{ $warranty->gender ?: 'N/A' }}</div>
                     </div>
                 </div>
@@ -252,22 +251,22 @@
 
                 <div class="row-info">
                     <div class="col-info" style="width: 33.3%;">
-                        <div class="info-label">Duration</div>
+                        <div class="info-label">{{ __('Duration') }}</div>
                         <div class="info-value">{{ $warranty->duration }}</div>
                     </div>
                     <div class="col-info" style="width: 33.3%;">
-                        <div class="info-label">Valid From</div>
+                        <div class="info-label">{{ __('Valid From') }}</div>
                         <div class="info-value">{{ $warranty->start_date->format('d M, Y') }}</div>
                     </div>
                     <div class="col-info" style="width: 33.3%;">
-                        <div class="info-label">Valid Until</div>
+                        <div class="info-label">{{ __('Valid Until') }}</div>
                         <div class="info-value">{{ $warranty->end_date->format('d M, Y') }}</div>
                     </div>
                 </div>
 
                 @if($warranty->conditions)
                 <div style="margin-top: 5px;">
-                    <div class="info-label" style="margin-bottom: 3px;">Terms and Conditions</div>
+                    <div class="info-label" style="margin-bottom: 3px;">{{ __('Terms and Conditions') }}</div>
                     <div class="terms-box">
                         {!! $warranty->conditions !!}
                     </div>
@@ -277,11 +276,11 @@
 
             <div class="cert-footer">
                 <div style="text-align: center;">
-                    <div class="info-label">Date Issued</div>
+                    <div class="info-label">{{ __('Date Issued') }}</div>
                     <div style="font-weight: bold; font-size: 13px;">{{ $warranty->created_at->format('d M, Y') }}</div>
                 </div>
                 <div style="text-align: center;">
-                    <div class="info-label">Issued By</div>
+                    <div class="info-label">{{ __('Issued By') }}</div>
                     <div style="font-weight: bold; font-size: 13px;">{{ $warranty->shop->name }}</div>
                 </div>
             </div>

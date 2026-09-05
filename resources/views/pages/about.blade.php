@@ -7,7 +7,7 @@
         <div class="container py-5">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3 border border-success">Our Story</span>
+                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3 border border-success">{{ __('Our Story') }}</span>
                     <h2 class="fw-bold text-primary display-5 mb-4">{{ __('Empowering Tanzanian Businesses') }}</h2>
                     <p class="text-muted fs-5 mb-4">
                         {{ __('Z-pos was built with a simple mission: to provide a world-class Point of Sale system tailored specifically for the East African market. We understand the unique challenges faced by local shop owners, from internet connectivity issues to complex inventory tracking.') }}

@@ -5,8 +5,8 @@
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h3 class="fw-bold mb-1 text-dark">Profit & Loss</h3>
-        <p class="text-muted small mb-0">Financial performance report</p>
+        <h3 class="fw-bold mb-1 text-dark">{{ __('Profit & Loss') }}</h3>
+        <p class="text-muted small mb-0">{{ __('Financial performance report') }}</p>
     </div>
 </div>
 
@@ -14,15 +14,15 @@
     <div class="card-body p-4">
         <form action="{{ route('reports.profit_loss') }}" method="GET" class="row g-3 align-items-end">
             <div class="col-md-4">
-                <label class="form-label">Start Date</label>
+                <label class="form-label">{{ __('Start Date') }}</label>
                 <input type="date" name="start_date" class="form-control" value="{{ $startDate }}">
             </div>
             <div class="col-md-4">
-                <label class="form-label">End Date</label>
+                <label class="form-label">{{ __('End Date') }}</label>
                 <input type="date" name="end_date" class="form-control" value="{{ $endDate }}">
             </div>
             <div class="col-md-4">
-                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-funnel me-2"></i> Filter</button>
+                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-funnel me-2"></i> {{ __('Filter') }}</button>
             </div>
         </form>
     </div>
@@ -36,7 +36,7 @@
                     <div class="bg-success bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center me-3 text-success" style="width: 40px; height: 40px;">
                         <i class="bi bi-graph-up-arrow fs-5"></i>
                     </div>
-                    <h6 class="mb-0 fw-semibold text-muted">Gross Profit</h6>
+                    <h6 class="mb-0 fw-semibold text-muted">{{ __('Gross Profit') }}</h6>
                 </div>
                 <h3 class="fw-bold mb-0 text-dark">{{ number_format($grossProfit) }} TSh</h3>
             </div>
@@ -50,7 +50,7 @@
                     <div class="bg-danger bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center me-3 text-danger" style="width: 40px; height: 40px;">
                         <i class="bi bi-graph-down-arrow fs-5"></i>
                     </div>
-                    <h6 class="mb-0 fw-semibold text-muted">Total Expenses</h6>
+                    <h6 class="mb-0 fw-semibold text-muted">{{ __('Total Expenses') }}</h6>
                 </div>
                 <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalExpenses) }} TSh</h3>
             </div>

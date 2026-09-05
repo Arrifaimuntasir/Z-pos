@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\HasTenant;
+use App\Models\Branch;
 
 class Warranty extends Model
 {
@@ -12,6 +13,7 @@ class Warranty extends Model
 
     protected $fillable = [
         'shop_id',
+        'branch_id',
         'sale_id',
         'warranty_number',
         'customer_name',
@@ -37,6 +39,11 @@ class Warranty extends Model
     public function shop()
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function sale()

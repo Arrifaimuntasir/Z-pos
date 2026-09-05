@@ -68,16 +68,16 @@
                 @endif
             </td>
             <td class="text-right" style="width: 50%;">
-                <div class="invoice-title">INVOICE</div>
-                <div><span class="font-bold">Invoice No:</span> {{ $invoice->reference_no }}</div>
-                <div><span class="font-bold">Date:</span> {{ \Carbon\Carbon::parse($invoice->sale_date)->format('d M Y') }}</div>
-                <div><span class="font-bold">Status:</span> 
+                <div class="invoice-title">{{ __('INVOICE') }}</div>
+                <div><span class="font-bold">{{ __('Invoice No:') }}</span> {{ $invoice->reference_no }}</div>
+                <div><span class="font-bold">{{ __('Date:') }}</span> {{ \Carbon\Carbon::parse($invoice->sale_date)->format('d M Y') }}</div>
+                <div><span class="font-bold">{{ __('Status:') }}</span> 
                     @if($invoice->payment_status == 'paid')
-                        <span style="color: #27ae60;">PAID</span>
+                        <span style="color: #27ae60;">{{ __('PAID') }}</span>
                     @elseif($invoice->payment_status == 'partial')
-                        <span style="color: #f39c12;">PARTIAL</span>
+                        <span style="color: #f39c12;">{{ __('PARTIAL') }}</span>
                     @else
-                        <span style="color: #e74c3c;">UNPAID</span>
+                        <span style="color: #e74c3c;">{{ __('UNPAID') }}</span>
                     @endif
                 </div>
             </td>
@@ -85,7 +85,7 @@
     </table>
 
     <div class="info-box mb-2">
-        <div class="font-bold" style="margin-bottom: 5px; font-size: 12px; color: #7f8c8d; text-transform: uppercase;">Billed To:</div>
+        <div class="font-bold" style="margin-bottom: 5px; font-size: 12px; color: #7f8c8d; text-transform: uppercase;">{{ __('Billed To:') }}</div>
         <div style="font-size: 16px; font-weight: bold;">{{ $invoice->customer ? $invoice->customer->name : 'Walk-in Customer' }}</div>
         @if($invoice->customer && $invoice->customer->phone)
             <div>{{ $invoice->customer->phone }}</div>
@@ -99,10 +99,10 @@
         <thead>
             <tr>
                 <th style="width: 5%;">#</th>
-                <th style="width: 45%;">Item Description</th>
-                <th class="text-center" style="width: 15%;">Quantity</th>
-                <th class="text-right" style="width: 15%;">Unit Price</th>
-                <th class="text-right" style="width: 20%;">Amount</th>
+                <th style="width: 45%;">{{ __('Product Name') }}</th>
+                <th class="text-center" style="width: 15%;">{{ __('Quantity') }}</th>
+                <th class="text-right" style="width: 15%;">{{ __('Unit Price') }}</th>
+                <th class="text-right" style="width: 20%;">{{ __('Amount') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -129,20 +129,20 @@
             <td style="width: 50%; border: none; padding: 0;">
                 <table style="width: 100%; border: none; margin: 0;">
                     <tr>
-                        <td style="border: none; padding: 5px 10px;" class="text-right font-bold">Subtotal:</td>
+                        <td style="border: none; padding: 5px 10px;" class="text-right font-bold">{{ __('Subtotal:') }}</td>
                         <td style="border: none; padding: 5px 10px;" class="text-right">{{ number_format($invoice->total_amount) }} TSh</td>
                     </tr>
                     <tr class="total-row">
-                        <td style="border: none; padding: 10px;" class="text-right">Grand Total:</td>
+                        <td style="border: none; padding: 10px;" class="text-right">{{ __('Grand Total:') }}</td>
                         <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->total_amount) }} TSh</td>
                     </tr>
                     <tr>
-                        <td style="border: none; padding: 5px 10px;" class="text-right">Amount Paid:</td>
+                        <td style="border: none; padding: 5px 10px;" class="text-right">{{ __('Amount Paid:') }}</td>
                         <td style="border: none; padding: 5px 10px;" class="text-right">{{ number_format($invoice->paid_amount) }} TSh</td>
                     </tr>
                     @if($invoice->total_amount - $invoice->paid_amount > 0)
                     <tr class="balance-row">
-                        <td style="border: none; padding: 10px;" class="text-right">Balance Due:</td>
+                        <td style="border: none; padding: 10px;" class="text-right">{{ __('Balance Due:') }}</td>
                         <td style="border: none; padding: 10px;" class="text-right">{{ number_format($invoice->total_amount - $invoice->paid_amount) }} TSh</td>
                     </tr>
                     @endif
@@ -153,16 +153,16 @@
 
     <div class="mt-4" style="border-top: 1px solid #ddd; padding-top: 20px; font-size: 12px; color: #7f8c8d;">
         @if($invoice->total_amount - $invoice->paid_amount > 0)
-        <p><strong>Payment Terms:</strong> Please pay the balance due within the agreed period.</p>
+        <p><strong>{{ __('Payment Terms:') }}</strong> {{ __('Please pay the balance due within the agreed period.') }}</p>
         @endif
        <div class="footer">
         @if($shop && $shop->receipt_message)
             <p>{{ $shop->receipt_message }}</p>
         @else
-            <p>Thank you for your business!</p>
+            <p>{{ __('Thank you for your business!') }}</p>
         @endif
         <p style="margin-top: 10px; font-size: 10px; color: #777;">
-            <strong>Powered by Z-POS SYSTEM</strong> - Smart Point of Sale & Inventory Management
+            <strong>{{ __('Powered by Z-POS SYSTEM') }}</strong> {{ __('- Smart Point of Sale & Inventory Management') }}
         </p>
     </div>
 

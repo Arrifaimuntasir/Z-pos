@@ -10,11 +10,13 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        $branchId = $this->getActiveBranchId();
         
         $query = Expense::when($search, function ($q) use ($search) {
-            $q->where('description', 'like', "%{$search}%")
-              ->orWhere('category', 'like', "%{$search}%");
+            $q->where(function ($q1) use ($search) {
+                $q1->where('description', 'like', "%{$search}%")
+                   ->orWhere('category', 'like', "%{$search}%");
+            });
         })->when($branchId, function($q) use ($branchId) {
             $q->where('branch_id', $branchId);
         });
@@ -39,7 +41,7 @@ class ExpenseController extends Controller
             'category' => 'nullable|string|max:255',
         ]);
 
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        $branchId = $request->branch_id ?? $this->getActiveBranchId();
         if (!$branchId) {
             $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
         }

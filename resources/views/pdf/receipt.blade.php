@@ -35,23 +35,21 @@
         @if($shop && $shop->phone)
             <div class="subtitle">Tel: {{ $shop->phone }}</div>
         @endif
-        @if($shop && $shop->tin_number)
-            <div class="subtitle">TIN: {{ $shop->tin_number }}</div>
-        @endif
+
     </div>
 
     <div style="margin-bottom: 10px;">
         <div><span class="font-bold">{{ $sale->payment_status == 'proforma' ? 'Pro-Forma Invoice' : 'Receipt' }}:</span> {{ $sale->reference_no }}</div>
-        <div><span class="font-bold">Date:</span> {{ \Carbon\Carbon::parse($sale->sale_date)->format('d-M-Y H:i') }}</div>
-        <div><span class="font-bold">Customer:</span> {{ $sale->customer ? $sale->customer->name : 'Walk-in' }}</div>
+        <div><span class="font-bold">{{ __('Date:') }}</span> {{ \Carbon\Carbon::parse($sale->sale_date)->format('d-M-Y H:i') }}</div>
+        <div><span class="font-bold">{{ __('Customer:') }}</span> {{ $sale->customer ? $sale->customer->name : 'Walk-in' }}</div>
     </div>
 
     <table>
         <thead>
             <tr class="border-bottom border-top">
-                <th class="text-left" style="width: 50%;">Item</th>
-                <th class="text-center" style="width: 15%;">Qty</th>
-                <th class="text-right" style="width: 35%;">Total</th>
+                <th style="width: 45%;">{{ __('Product Name') }}</th>
+                <th class="text-center" style="width: 15%;">{{ __('Qty') }}</th>
+                <th class="text-right" style="width: 35%;">{{ __('Total') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -73,24 +71,24 @@
 
     <table style="margin-top: 5px;">
         <tr class="border-top">
-            <td class="text-left font-bold" style="padding-top: 5px;">Total Amount:</td>
+            <td class="text-left font-bold" style="padding-top: 5px;">{{ __('Total Amount:') }}</td>
             <td class="text-right font-bold" style="padding-top: 5px; font-size: 14px;">{{ number_format($sale->total_amount) }} TSh</td>
         </tr>
         @if($sale->payment_status != 'proforma')
             <tr>
-                <td class="text-left">Amount Paid:</td>
+                <td class="text-left">{{ __('Amount Paid:') }}</td>
                 <td class="text-right">{{ number_format($sale->paid_amount) }} TSh</td>
             </tr>
             @if($sale->total_amount - $sale->paid_amount > 0)
             <tr>
-                <td class="text-left font-bold">Balance:</td>
+                <td class="text-left font-bold">{{ __('Balance:') }}</td>
                 <td class="text-right font-bold">{{ number_format($sale->total_amount - $sale->paid_amount) }} TSh</td>
             </tr>
             @endif
         @else
             <tr>
-                <td class="text-left font-bold">Status:</td>
-                <td class="text-right font-bold">PRO-FORMA</td>
+                <td class="text-left font-bold">{{ __('Status:') }}</td>
+                <td class="text-right font-bold">{{ __('PRO-FORMA') }}</td>
             </tr>
         @endif
     </table>
@@ -99,9 +97,9 @@
         @if($shop && $shop->receipt_message)
             <p>{{ $shop->receipt_message }}</p>
         @else
-            <p>Thank you for your business!</p>
+            <p>{{ __('Thank you for your business!') }}</p>
         @endif
-        <p>Powered by Z-POS</p>
+        <p>{{ __('Powered by Z-POS') }}</p>
     </div>
 </body>
 </html>

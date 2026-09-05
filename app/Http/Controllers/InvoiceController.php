@@ -14,13 +14,19 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $isAdmin = auth()->user()->hasRole('Administrator');
         $invoices = Sale::with('customer')
+            ->when(!$isAdmin, function ($q) {
+                $q->where('user_id', auth()->id());
+            })
             ->when($search, function ($query) use ($search) {
-                $query->where('reference_no', 'like', "%{$search}%")
-                      ->orWhereHas('customer', function ($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', "%{$search}%");
-                      });
+                $query->where(function ($q1) use ($search) {
+                    $q1->where('reference_no', 'like', "%{$search}%")
+                        ->orWhereHas('customer', function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%")
+                              ->orWhere('phone', 'like', "%{$search}%");
+                        });
+                });
             })
             ->latest()
             ->paginate(15)

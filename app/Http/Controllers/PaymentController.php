@@ -42,6 +42,10 @@ class PaymentController extends Controller
                 'receipt_path' => 'storage/' . $path,
                 'status' => 'pending',
             ]);
+            
+            // Notify super admins
+            $superAdmins = \App\Models\User::role('Super Admin')->get();
+            \Illuminate\Support\Facades\Notification::send($superAdmins, new \App\Notifications\PaymentReceiptUploaded($shop));
         }
 
         return back()->with('success', 'Receipt uploaded successfully. Please wait for admin approval.');

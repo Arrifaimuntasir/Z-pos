@@ -11,28 +11,45 @@ class WarrantyController extends Controller
 {
     public function index(Request $request)
     {
-        $shopId = auth()->user()->shop_id;
-        $query = Warranty::where('shop_id', $shopId);
+        $shopId        = auth()->user()->shop_id;
+        $isAdmin       = auth()->user()->hasRole('Administrator');
+        $search        = $request->search;
+        $branchId      = $this->getActiveBranchId();
+        $hasBranchCol  = \Illuminate\Support\Facades\Schema::hasColumn('warranties', 'branch_id');
 
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('customer_name', 'like', "%{$search}%")
-                  ->orWhere('warranty_number', 'like', "%{$search}%")
-                  ->orWhere('product_name', 'like', "%{$search}%");
+        $query = Warranty::where('shop_id', $shopId)
+            ->when($isAdmin && $branchId && $hasBranchCol, function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function ($q) {
+                $q->where('created_by', auth()->id());
+            })
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('customer_name', 'like', "%{$search}%")
+                       ->orWhere('warranty_number', 'like', "%{$search}%")
+                       ->orWhere('product_name', 'like', "%{$search}%");
+                });
             });
-        }
 
         $warranties = $query->orderBy('created_at', 'desc')->paginate(15);
-        $warranties->appends(['search' => $request->search]);
+        $warranties->appends(['search' => $search]);
 
-        // Metrics
-        $totalWarranties = Warranty::where('shop_id', $shopId)->count();
-        $activeWarranties = Warranty::where('shop_id', $shopId)->where('end_date', '>=', now()->startOfDay())->count();
-        $expiredWarranties = Warranty::where('shop_id', $shopId)->where('end_date', '<', now()->startOfDay())->count();
+        // Metrics (scoped same as list)
+        $metricsBase = Warranty::where('shop_id', $shopId)
+            ->when($isAdmin && $branchId && $hasBranchCol, function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function ($q) {
+                $q->where('created_by', auth()->id());
+            });
+        $totalWarranties   = (clone $metricsBase)->count();
+        $activeWarranties  = (clone $metricsBase)->where('end_date', '>=', now()->startOfDay())->count();
+        $expiredWarranties = (clone $metricsBase)->where('end_date', '<', now()->startOfDay())->count();
 
         return view('warranties.index', compact('warranties', 'totalWarranties', 'activeWarranties', 'expiredWarranties'));
     }
+
 
     public function create(Request $request)
     {
@@ -71,26 +88,34 @@ class WarrantyController extends Controller
             $shop->save();
         }
 
+        $branchId = $this->getActiveBranchId();
+        // If branch not found via session, try to get from sale
+        if (!$branchId && $request->sale_id) {
+            $sale = Sale::find($request->sale_id);
+            $branchId = $sale?->branch_id;
+        }
+
         foreach ($request->products as $product) {
             $warrantyNumber = 'WAR-' . strtoupper(Str::random(8));
 
             Warranty::create([
-                'shop_id' => auth()->user()->shop_id,
-                'sale_id' => $request->sale_id,
-                'warranty_number' => $warrantyNumber,
-                'customer_name' => $request->customer_name,
+                'shop_id'        => auth()->user()->shop_id,
+                'branch_id'      => $branchId,
+                'sale_id'        => $request->sale_id,
+                'warranty_number'=> $warrantyNumber,
+                'customer_name'  => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
-                'region' => $request->region,
-                'gender' => $request->gender,
-                'product_name' => $product['name'],
-                'price' => $product['price'] ?? null,
-                'serial_number' => $product['serial'] ?? null,
-                'duration' => $request->duration,
-                'start_date' => $request->start_date ?? date('Y-m-d'),
-                'end_date' => $request->end_date,
-                'design_theme' => $request->design_theme ?? 1,
-                'conditions' => $request->conditions,
-                'created_by' => auth()->id(),
+                'region'         => $request->region,
+                'gender'         => $request->gender,
+                'product_name'   => $product['name'],
+                'price'          => $product['price'] ?? null,
+                'serial_number'  => $product['serial'] ?? null,
+                'duration'       => $request->duration,
+                'start_date'     => $request->start_date ?? date('Y-m-d'),
+                'end_date'       => $request->end_date,
+                'design_theme'   => $request->design_theme ?? 1,
+                'conditions'     => $request->conditions ? strip_tags($request->conditions, '<p><br><b><i><u><strong><em><ul><ol><li><h1><h2><h3><h4><h5><h6><blockquote><span>') : null,
+                'created_by'     => auth()->id(),
             ]);
         }
 
@@ -136,7 +161,7 @@ class WarrantyController extends Controller
             'duration' => $request->duration,
             'end_date' => $request->end_date,
             'design_theme' => $request->design_theme ?? 1,
-            'conditions' => $request->conditions,
+            'conditions' => $request->conditions ? strip_tags($request->conditions, '<p><br><b><i><u><strong><em><ul><ol><li><h1><h2><h3><h4><h5><h6><blockquote><span>') : null,
         ]);
 
         return redirect()->route('warranties.index')->with('success', 'Warranty updated successfully.');

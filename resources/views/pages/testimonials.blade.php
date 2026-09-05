@@ -19,10 +19,10 @@
                             </div>
                             <p class="fst-italic text-muted mb-4">"{{ __('Since I started using Z-pos, I've been able to control theft in my shop. The system is very easy to understand even for my young staff.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
-                                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">AM</div>
+                                <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">{{ __('AM') }}</div>
                                 <div class="ms-3">
-                                    <h6 class="mb-0 fw-bold">Amina M.</h6>
-                                    <span class="text-muted small">Hardware Store, Kariakoo</span>
+                                    <h6 class="mb-0 fw-bold">{{ __('Amina M.') }}</h6>
+                                    <span class="text-muted small">{{ __('Hardware Store, Kariakoo') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -37,10 +37,10 @@
                             </div>
                             <p class="fst-italic text-muted mb-4">"{{ __('The offline mode is a lifesaver! When Tanesco cuts power and internet goes down, my cashiers can still print receipts without any issues.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
-                                <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">JK</div>
+                                <div class="bg-success text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">{{ __('JK') }}</div>
                                 <div class="ms-3">
-                                    <h6 class="mb-0 fw-bold">John K.</h6>
-                                    <span class="text-muted small">Supermarket, Mbezi</span>
+                                    <h6 class="mb-0 fw-bold">{{ __('John K.') }}</h6>
+                                    <span class="text-muted small">{{ __('Supermarket, Mbezi') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -55,10 +55,10 @@
                             </div>
                             <p class="fst-italic text-muted mb-4">"{{ __('I can see real-time sales on my phone while travelling. It gives me peace of mind knowing exactly what's happening in all my 3 branches.') }}"</p>
                             <div class="d-flex align-items-center mt-auto">
-                                <div class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">SJ</div>
+                                <div class="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center fw-bold" style="width: 45px; height: 45px;">{{ __('SJ') }}</div>
                                 <div class="ms-3">
-                                    <h6 class="mb-0 fw-bold">Sarah J.</h6>
-                                    <span class="text-muted small">Pharmacy Chain, Arusha</span>
+                                    <h6 class="mb-0 fw-bold">{{ __('Sarah J.') }}</h6>
+                                    <span class="text-muted small">{{ __('Pharmacy Chain, Arusha') }}</span>
                                 </div>
                             </div>
                         </div>

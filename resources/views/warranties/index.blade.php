@@ -1,9 +1,9 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', __('Warranties'))
 
 @section('content')
-<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3 pb-2">
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h2 class="fw-bold mb-1" style="color: #0f172a;">{{ __('Warranties') }}</h2>
         <p class="text-muted small mb-0" style="font-size: 14px;">{{ __('Manage customer warranties') }}</p>
@@ -62,12 +62,14 @@
 <div class="card border-0 shadow-sm rounded-4" style="background: #fff;">
     <div class="card-header bg-white border-bottom-0 pt-4 pb-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <h4 class="mb-0 fw-bold" style="color: #1e293b;">{{ __('Recent Warranties') }}</h4>
-        <form action="{{ route('warranties.index') }}" method="GET" class="d-flex align-items-center w-100 w-md-auto">
-            <div class="input-group border rounded-pill w-100" style="padding: 2px;">
-                <input type="text" name="search" class="form-control border-0 shadow-none rounded-pill ps-4" style="font-size: 13px;" placeholder="{{ __('Search customer or warrant') }}" value="{{ request('search') }}">
-                <button type="submit" class="btn rounded-pill px-3" style="background: #0f172a; color: white;"><i class="bi bi-search"></i></button>
-            </div>
-        </form>
+        <form action="{{ route('warranties.index') }}" method="GET" class="custom-search-bar d-flex align-items-center bg-white shadow-sm rounded-pill border" style="width: 100%; max-width: 450px;">
+    <span class="ps-3 pe-2 text-primary"><i class="bi bi-search fs-5"></i></span>
+    <input type="text" name="search" class="form-control border-0 shadow-none bg-transparent" placeholder="{{ __('Search customer or warrant') }}" value="{{ request('search') }}" style="font-size: 0.95rem; height: 42px;">
+    <button type="submit" class="btn btn-primary rounded-pill me-1 px-4 fw-semibold shadow-sm" style="height: 36px; display: flex; align-items: center;">
+        <span class="btn-search-text">{{ __('Search') }}</span>
+        <i class="bi bi-arrow-right-short btn-search-icon d-none fs-5"></i>
+    </button>
+</form>
     </div>
     <div class="card-body p-0">
         <!-- Desktop Table View -->
@@ -107,10 +109,10 @@
                         </td>
                         <td class="px-4 text-end">
                             <a href="{{ route('warranties.edit', $warranty->id) }}" class="btn btn-sm rounded-pill px-3 me-2" style="border: 1px solid #3b82f6; color: #3b82f6; background: transparent; font-weight: 500;">
-                                <i class="bi bi-pencil-square me-1"></i> Edit
+                                <i class="bi bi-pencil-square me-1"></i> {{ __('Edit') }}
                             </a>
                             <a href="{{ route('warranties.show', $warranty->id) }}" target="_blank" class="btn btn-sm rounded-pill px-3 me-2" style="border: 1px solid #0f172a; color: #0f172a; background: transparent; font-weight: 500;">
-                                <i class="bi bi-printer-fill me-1"></i> Print
+                                <i class="bi bi-printer-fill me-1"></i> {{ __('Print') }}
                             </a>
                             <form action="{{ route('warranties.destroy', $warranty->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this warranty?') }}')">
                                 @csrf
@@ -139,9 +141,9 @@
             @forelse($warranties as $warranty)
             <div class="card mb-3 shadow-sm border border-light">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-secondary" style="width: 45px; height: 45px;">
+                    <div class="search-toolbar">
+                        <div class="search-toolbar">
+                            <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-dark" style="width: 45px; height: 45px;">
                                 <i class="bi bi-shield-check fs-5"></i>
                             </div>
                             <div>
@@ -167,18 +169,18 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2">
+                    <div class="search-toolbar">
                         <a href="{{ route('warranties.edit', $warranty->id) }}" class="btn btn-outline-primary flex-fill" style="font-weight: 500;">
-                            <i class="bi bi-pencil-square me-1"></i> Edit
+                            <i class="bi bi-pencil-square me-1"></i> {{ __('Edit') }}
                         </a>
                         <a href="{{ route('warranties.show', $warranty->id) }}" target="_blank" class="btn btn-outline-dark flex-fill" style="font-weight: 500;">
-                            <i class="bi bi-printer-fill me-1"></i> Print
+                            <i class="bi bi-printer-fill me-1"></i> {{ __('Print') }}
                         </a>
                         <form action="{{ route('warranties.destroy', $warranty->id) }}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('{{ __('Are you sure you want to delete this warranty?') }}')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-outline-danger w-100" style="font-weight: 500;">
-                                <i class="bi bi-trash-fill"></i> Del
+                                <i class="bi bi-trash-fill"></i> {{ __('Del') }}
                             </button>
                         </form>
                     </div>

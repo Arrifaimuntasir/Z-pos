@@ -15,8 +15,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="pricing-card h-100">
                         <h4 class="fw-bold text-primary mb-3">{{ __('Starter') }}</h4>
-                        <p class="text-muted">Perfect for single retail shops.</p>
-                        <div class="price mt-4">TZS 15K<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">TZS 20K</small></div>
+                        <p class="text-muted">{{ __('Perfect for single retail shops.') }}</p>
+                        <div class="price mt-4">{{ __('TZS 15K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 20K') }}</small></div>
                         <ul class="mb-4">
                             <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('1 Branch') }}</li>
@@ -36,8 +36,8 @@
                     <div class="pricing-card popular h-100">
                         <div class="badge-popular">{{ __('MOST POPULAR') }}</div>
                         <h4 class="fw-bold text-success mb-3">{{ __('Professional') }}</h4>
-                        <p class="text-muted">For growing multi-branch businesses.</p>
-                        <div class="price mt-4">TZS 45K<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">TZS 50K</small></div>
+                        <p class="text-muted">{{ __('For growing multi-branch businesses.') }}</p>
+                        <div class="price mt-4">{{ __('TZS 45K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 50K') }}</small></div>
                         <ul class="mb-4">
                             <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Up to 5 Branches') }}</li>
@@ -56,8 +56,8 @@
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="pricing-card h-100">
                         <h4 class="fw-bold text-primary mb-3">{{ __('Enterprise') }}</h4>
-                        <p class="text-muted">Custom solutions for large chains.</p>
-                        <div class="price mt-4">TZS 110K<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">TZS 130K</small></div>
+                        <p class="text-muted">{{ __('Custom solutions for large chains.') }}</p>
+                        <div class="price mt-4">{{ __('TZS 110K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 130K') }}</small></div>
                         <ul class="mb-4">
                             <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Branches') }}</li>

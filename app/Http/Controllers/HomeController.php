@@ -45,20 +45,28 @@ class HomeController extends Controller
             $endDate = now()->endOfYear();
         }
 
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        $branchId = $this->getActiveBranchId();
         if ($branchId && !\App\Models\Branch::where('id', $branchId)->exists()) {
             $branchId = null;
         }
 
+        $isAdmin = auth()->user()->hasRole('Administrator') || auth()->user()->hasRole('Super Admin');
+
         $salesQuery = \App\Models\Sale::query()
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->where('user_id', auth()->id());
             });
             
         $profitQuery = \App\Models\SaleItem::query()
             ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('sales.branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->where('sales.user_id', auth()->id());
             });
             
         $expenseQuery = \App\Models\Expense::query()
@@ -66,19 +74,50 @@ class HomeController extends Controller
                 $q->where('branch_id', $branchId);
             });
 
+        $returnsQuery = \App\Models\SaleReturn::query()
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->whereHas('sale', function($sq) {
+                    $sq->where('user_id', auth()->id());
+                });
+            });
+
+        $returnProfitQuery = \App\Models\SaleReturnItem::query()
+            ->join('sale_returns', 'sale_return_items.sale_return_id', '=', 'sale_returns.id')
+            ->join('sale_items', 'sale_return_items.sale_item_id', '=', 'sale_items.id')
+            ->where('sale_returns.shop_id', auth()->user()->shop_id)
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('sale_returns.branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->whereHas('saleReturn.sale', function($sq) {
+                    $sq->where('user_id', auth()->id());
+                });
+            });
+
         if ($startDate && $endDate) {
             $salesQuery->whereBetween('sale_date', [$startDate, $endDate]);
             $profitQuery->whereBetween('sales.sale_date', [$startDate, $endDate]);
             $expenseQuery->whereBetween('expense_date', [$startDate, $endDate]);
+            $returnsQuery->whereBetween('return_date', [$startDate, $endDate]);
+            $returnProfitQuery->whereBetween('sale_returns.return_date', [$startDate, $endDate]);
         }
 
         // Revenue is total value of sales. Income is total amount paid.
-        $totalSales = $salesQuery->sum('total_amount');
+        $totalSales = $salesQuery->sum('total_amount') - $returnsQuery->sum('total_refund');
         
         // Calculate Gross Profit from Sale Items
-        $grossProfit = $profitQuery
+        $grossProfitGross = $profitQuery
             ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_items.quantity) as profit')
             ->value('profit') ?? 0;
+            
+        $returnProfit = $returnProfitQuery
+            ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_return_items.quantity) as profit')
+            ->value('profit') ?? 0;
+            
+        $grossProfit = $grossProfitGross - $returnProfit;
 
         // Total Expense is just the general expenses now
         $totalExpense = $expenseQuery->sum('amount');
@@ -89,6 +128,9 @@ class HomeController extends Controller
         $recentSales = \App\Models\Sale::with('customer')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->where('user_id', auth()->id());
             })
             ->latest()->take(5)->get();
 
@@ -104,7 +146,24 @@ class HomeController extends Controller
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
+            ->when(!$isAdmin, function($q) {
+                $q->where('user_id', auth()->id());
+            })
             ->selectRaw('MONTH(sale_date) as month, SUM(paid_amount) as total')
+            ->groupBy('month')
+            ->pluck('total', 'month')->toArray();
+
+        // Fetch returns grouped by month
+        $returnsByMonth = \App\Models\SaleReturn::whereYear('return_date', $currentYear)
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->whereHas('sale', function($sq) {
+                    $sq->where('user_id', auth()->id());
+                });
+            })
+            ->selectRaw('MONTH(return_date) as month, SUM(total_refund) as total')
             ->groupBy('month')
             ->pluck('total', 'month')->toArray();
 
@@ -127,7 +186,7 @@ class HomeController extends Controller
             ->pluck('total', 'month')->toArray();
 
         for ($i = 1; $i <= 12; $i++) {
-            $inc = $incomeByMonth[$i] ?? 0;
+            $inc = ($incomeByMonth[$i] ?? 0) - ($returnsByMonth[$i] ?? 0);
             $exp = ($expensesByMonth[$i] ?? 0) + ($purchasesByMonth[$i] ?? 0);
             
             $monthlyIncome[$i-1] = $inc;
@@ -166,8 +225,8 @@ class HomeController extends Controller
         $topExpenseData = array_values($topExpensesRaw);
 
         return view('home', compact(
-            'totalSales', 'grossProfit', 'netProfit', 'totalExpense', 'recentSales',
-            'monthlyIncome', 'monthlyExpense', 'monthlyNetCash', 'topExpenseLabels', 'topExpenseData', 'filter'
+            'totalSales', 'totalPurchases', 'grossProfit', 'netProfit', 'totalExpense', 'recentSales',
+            'monthlyIncome', 'monthlyExpense', 'monthlyNetCash', 'topExpenseLabels', 'topExpenseData', 'filter', 'isAdmin'
         ));
     }
 }

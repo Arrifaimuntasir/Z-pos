@@ -47,6 +47,30 @@ class LoginController extends Controller
     {
         return response()->view('auth.login')->header('Cache-Control', 'no-cache, no-store, must-revalidate')
                                              ->header('Pragma', 'no-cache')
-                                             ->header('Expires', '0');
+                                             ->header('Expires', '0')
+                                             ->header('X-LiteSpeed-Cache-Control', 'no-cache');
+    }
+
+    /**
+     * The user has logged out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return mixed
+     */
+    protected function loggedOut(\Illuminate\Http\Request $request)
+    {
+        return redirect()->route('login');
+    }
+
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(\Illuminate\Http\Request $request, $user)
+    {
+        \Illuminate\Support\Facades\Cookie::queue(\Illuminate\Support\Facades\Cookie::forever('pwa_onboarding_seen', 'true'));
     }
 }

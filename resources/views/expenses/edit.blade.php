@@ -1,11 +1,11 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Expense')
 
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
-    <h4 class="fw-bold mb-0">Edit Expense</h4>
-    <a href="{{ route('expenses.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
+    <h4 class="fw-bold mb-0">{{ __('Edit Expense') }}</h4>
+    
 </div>
 
 <div class="row">
@@ -17,8 +17,8 @@
                     @method('PUT')
                     
                     <div class="mb-4">
-                        <label class="form-label fw-semibold text-muted">Expense Description <span class="text-danger">*</span></label>
-                        <input type="text" name="description" class="form-control form-control-lg bg-light border-0" value="{{ old('description', $expense->description) }}" placeholder="e.g. Electricity Bill, Transport..." required>
+                        <label class="form-label fw-semibold text-muted">{{ __('Expense Description') }} <span class="text-danger">*</span></label>
+                        <input type="text" name="description" class="form-control form-control-lg bg-light border-0" value="{{ old('description', $expense->description) }}" placeholder="{{ __('e.g. Electricity Bill, Transport...') }}" required>
                         @error('description') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
@@ -29,7 +29,7 @@
                             @error('amount') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="col-md-6 mt-4 mt-md-0">
-                            <label class="form-label fw-semibold text-muted">Date <span class="text-danger">*</span></label>
+                            <label class="form-label fw-semibold text-muted">{{ __('Date') }} <span class="text-danger">*</span></label>
                             <input type="date" name="expense_date" class="form-control form-control-lg bg-light border-0" value="{{ old('expense_date', $expense->expense_date) }}" required>
                             @error('expense_date') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
@@ -37,12 +37,12 @@
 
                     <div class="mb-5">
                         <label class="form-label fw-semibold text-muted">Category (Optional)</label>
-                        <input type="text" name="category" class="form-control bg-light border-0" value="{{ old('category', $expense->category) }}" placeholder="e.g. Utilities, Operations, Office">
+                        <input type="text" name="category" class="form-control bg-light border-0" value="{{ old('category', $expense->category) }}" placeholder="{{ __('e.g. Utilities, Operations, Office') }}">
                         @error('category') <small class="text-danger">{{ $message }}</small> @enderror
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">
-                        <i class="bi bi-check-circle me-1"></i> Update Expense
+                        <i class="bi bi-check-circle me-1"></i> {{ __('Update Expense') }}
                     </button>
                 </form>
             </div>

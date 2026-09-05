@@ -1,3 +1,23 @@
+@php
+    $cat = strtolower($shop->business_type ?? '');
+    $bgImage = 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80'; // Default: people working/office
+    
+    if (strpos($cat, 'electronics') !== false || strpos($cat, 'phone') !== false || strpos($cat, 'computer') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1519389953888-9d31c4fcc025?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'restaurant') !== false || strpos($cat, 'food') !== false || strpos($cat, 'cafe') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'pharmacy') !== false || strpos($cat, 'medical') !== false || strpos($cat, 'health') !== false || strpos($cat, 'clinic') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'hardware') !== false || strpos($cat, 'construction') !== false || strpos($cat, 'tools') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1581166397057-235af2b3c6dd?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'boutique') !== false || strpos($cat, 'clothes') !== false || strpos($cat, 'fashion') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'beauty') !== false || strpos($cat, 'salon') !== false || strpos($cat, 'cosmetics') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80';
+    } elseif (strpos($cat, 'supermarket') !== false || strpos($cat, 'grocery') !== false || strpos($cat, 'mini mart') !== false) {
+        $bgImage = 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=600&q=80';
+    }
+@endphp
 @extends('layouts.admin')
 
 @section('title', 'Business Card')
@@ -84,94 +104,128 @@
             </div>
         </div>
 
-        <!-- Card Container (Right Side) -->
+                <!-- Card Container (Right Side) -->
         <div class="col-lg-7 d-flex flex-column align-items-center justify-content-start pt-3">
-            <div class="bg-light w-100 rounded-4 d-flex justify-content-center align-items-start pt-5 pb-5 shadow-sm border h-100" style="min-height: 450px;">
-                <div class="business-card-container {{ $shop->card_theme ?? 'theme-dark' }}" id="business-card" style="{{ $shop->card_color ? '--brand-color:'.$shop->card_color.';--logo-bg:'.$shop->card_color.';--accent-bg:'.$shop->card_color.';--icon-color:'.$shop->card_color.';' : '' }}">
-                    <div class="business-card">
+            <div class="bg-light w-100 rounded-4 d-flex flex-column justify-content-center align-items-center pt-5 pb-5 shadow-sm border h-100 position-relative" style="min-height: 500px; overflow: hidden;">
+                
+                <div class="tap-instruction mb-4 d-print-none text-center">
+                    <div class="d-inline-flex flex-column align-items-center justify-content-center">
+                        <i class="bi bi-hand-index-thumb fs-2 text-primary pulse-animation" style="transform: rotate(180deg) scaleX(-1);"></i>
+                        <span class="fw-bold text-muted mt-1 bg-white px-3 py-1 rounded-pill shadow-sm border">Tap to view back</span>
+                    </div>
+                </div>
+
+                <div class="business-card-container {{ $shop->card_theme ?? 'theme-dark' }}" id="business-card" style="{{ $shop->card_color ? '--brand-color:'.$shop->card_color.';--logo-bg:'.$shop->card_color.';--accent-bg:'.$shop->card_color.';--icon-color:'.$shop->card_color.';' : '' }}" onclick="this.classList.toggle('flipped')">
+                    <div class="business-card shadow-lg">
                         
                         <!-- Front Side -->
-                        <div class="card-face card-front overflow-hidden" id="card-front-capture">
-                            <div class="card-glass-overlay"></div>
-                            <!-- Urembo Urembo Floating Shapes -->
-                            <div class="floating-shape shape-1"></div>
-                            <div class="floating-shape shape-2"></div>
+                        <div class="card-face card-front d-flex overflow-hidden" id="card-front-capture" style="background: white;">
+                            
+                            <!-- Left White Section -->
+                            <div class="bg-white p-4 d-flex flex-column justify-content-center position-relative" style="width: 65%;">
+                                <!-- Theme color shape accent on far left -->
+                                <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 16px; background: var(--brand-color, #3b82f6); border-top-left-radius: 12px; border-bottom-left-radius: 12px; clip-path: polygon(0 0, 100% 0, 60% 100%, 0 100%);"></div>
+                                
+                                <div class="ps-3 position-relative z-1">
+                                    @if($shop->logo)
+                                        <img src="{{ asset('storage/' . $shop->logo) }}" alt="Logo" style="height: 65px; object-fit: contain; margin-bottom: 12px;">
+                                    @else
+                                        <img src="{{ asset('images/zamar_logo.jpg') }}" alt="Logo" style="height: 65px; object-fit: contain; margin-bottom: 12px;" onerror="this.style.display='none'">
+                                    @endif
+                                    
+                                    <h3 class="fw-bold mb-1 text-truncate" style="color: var(--brand-color, #0d6efd); font-family: 'Arial Black', impact, sans-serif; letter-spacing: 1px;">{{ strtoupper($shop->name) }}</h3>
+                                    <h6 class="fw-bold text-dark mb-4 text-truncate" id="display-message">{{ $shop->card_message ?: 'Scan for Details' }}</h6>
+                                    
+                                    <div class="d-flex gap-3 mt-2" style="font-size: 0.75rem; font-weight: 700; color: #4b5563;">
+                                        <div class="d-flex align-items-center"><i class="bi bi-clock me-1 fs-6" style="color: var(--brand-color, #3b82f6);"></i> FAST</div>
+                                        <div class="d-flex align-items-center"><i class="bi bi-shield-check me-1 fs-6" style="color: var(--brand-color, #3b82f6);"></i> SAFE</div>
+                                        <div class="d-flex align-items-center">RELIABLE</div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="card-content d-flex flex-column justify-content-center align-items-center text-center h-100 position-relative z-1">
-                                @if($shop->logo_path)
-                                    <div class="logo-wrapper mb-3">
-                                        <img src="{{ asset($shop->logo_path) }}" alt="{{ $shop->name }}" class="shop-logo">
-                                    </div>
-                                @else
-                                    <div class="logo-placeholder mb-3 d-flex align-items-center justify-content-center">
-                                        <span class="fw-bold fs-2 text-white">{{ substr($shop->name, 0, 1) }}</span>
-                                    </div>
-                                @endif
-                                <h2 class="fw-bolder text-white mb-1" style="letter-spacing: 1px;">{{ strtoupper($shop->name) }}</h2>
-                                <div class="accent-line my-2"></div>
-                                <p class="text-white-50 mb-0 small text-uppercase tracking-wider" id="display-message">{{ $shop->card_message ?: 'Scan for Details' }}</p>
+                            <!-- Right Image Section -->
+                            <div style="width: 35%; background-image: url('{{ $bgImage }}'); background-size: cover; background-position: center; border-radius: 0 12px 12px 0; border-left: 1px solid #f3f4f6;">
                             </div>
                         </div>
 
                         <!-- Back Side -->
-                        <div class="card-face card-back overflow-hidden" id="card-back-capture">
-                            <div class="card-glass-overlay"></div>
-                            <!-- Urembo Urembo Floating Shapes -->
-                            <div class="floating-shape shape-3"></div>
+                        <div class="card-face card-back d-flex overflow-hidden" id="card-back-capture" style="background: white;">
+                            
+                            <!-- Left Theme Section -->
+                            <div class="p-4 d-flex flex-column text-white justify-content-center" style="width: 62%; background-color: var(--brand-color, #3b82f6); border-radius: 12px 0 0 12px;">
+                                <div class="d-flex align-items-center mb-1">
+                                    <i class="bi bi-person-circle fs-4 me-2"></i>
+                                    <h4 class="fw-bold mb-0 text-truncate" style="letter-spacing: 0.5px;">{{ strtoupper($shop->name) }}</h4>
+                                </div>
+                                <span class="mb-4 d-block" style="font-size: 0.75rem; opacity: 0.85; font-weight: 500;">Head Office</span>
 
-                            <div class="card-content d-flex flex-row justify-content-between align-items-center h-100 position-relative z-1 w-100 p-4">
+                                @php
+                                    $displayPhone = $shop->card_phone ?? $shop->phone;
+                                    $displayEmail = $shop->card_email ?? auth()->user()->email;
+                                @endphp
+
+                                <div class="d-flex align-items-start mb-3" id="box-phone" style="{{ $displayPhone ? '' : 'display:none;' }}">
+                                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3 mt-1" style="width: 24px; height: 24px; background: rgba(255,255,255,0.2);">
+                                        <i class="bi bi-telephone-fill" style="font-size: 0.75rem;"></i>
+                                    </div>
+                                    <div style="width: calc(100% - 40px);">
+                                        <span class="d-block" style="font-size: 0.65rem; opacity: 0.85;">Phone Number</span>
+                                        <span class="fw-bold fs-6 text-truncate d-block" id="display-phone">{{ $displayPhone }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start mb-3" id="box-email" style="{{ $displayEmail ? '' : 'display:none;' }}">
+                                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3 mt-1" style="width: 24px; height: 24px; background: rgba(255,255,255,0.2);">
+                                        <i class="bi bi-envelope-fill" style="font-size: 0.75rem;"></i>
+                                    </div>
+                                    <div style="width: calc(100% - 40px);">
+                                        <span class="d-block" style="font-size: 0.65rem; opacity: 0.85;">Email Address</span>
+                                        <span class="fw-bold text-truncate d-block" style="font-size: 0.8rem;" id="display-email">{{ $displayEmail }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-start">
+                                    <div class="d-flex justify-content-center align-items-center rounded-circle me-3 mt-1" style="width: 24px; height: 24px; background: rgba(255,255,255,0.2);">
+                                        <i class="bi bi-geo-alt-fill" style="font-size: 0.75rem;"></i>
+                                    </div>
+                                    <div style="width: calc(100% - 40px);">
+                                        <span class="d-block" style="font-size: 0.65rem; opacity: 0.85;">Address</span>
+                                        <span class="fw-bold fs-6 text-truncate d-block">{{ $shop->address ?? 'kkoo, uhuru plaza' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Yellow Divider -->
+                            <div style="width: 3%; background-color: #fbbf24; z-index: 2;"></div>
+
+                            <!-- Right Image Section -->
+                            <div class="position-relative" style="width: 35%; background-image: url('{{ $bgImage }}'); background-size: cover; background-position: center; border-radius: 0 12px 12px 0;">
                                 
-                                <div class="info-section text-white flex-grow-1 pe-3">
-                                    <h4 class="fw-bold mb-3">{{ $shop->name }}</h4>
-                                    
-                                    @php
-                                        $displayPhone = $shop->card_phone ?? $shop->phone;
-                                        $displayEmail = $shop->card_email ?? auth()->user()->email;
-                                    @endphp
+                                <!-- Dark overlay to make QR pop slightly -->
+                                <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.15); border-radius: 0 12px 12px 0;"></div>
 
-                                    <div class="align-items-center mb-2" id="box-phone" style="{{ $displayPhone ? 'display:flex;' : 'display:none;' }}">
-                                        <div class="icon-box me-3"><i class="bi bi-telephone-fill"></i></div>
-                                        <span class="fs-6" id="display-phone">{{ $displayPhone }}</span>
-                                    </div>
-
-                                    <div class="align-items-center mb-2" id="box-email" style="{{ $displayEmail ? 'display:flex;' : 'display:none;' }}">
-                                        <div class="icon-box me-3"><i class="bi bi-envelope-fill"></i></div>
-                                        <span class="fs-6" id="display-email">{{ $displayEmail }}</span>
-                                    </div>
-
-                                    @if($shop->address)
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="icon-box me-3">
-                                            <i class="bi bi-geo-alt-fill"></i>
-                                        </div>
-                                        <span class="fs-6" style="word-break: break-word; line-height: 1.2;">{{ $shop->address }}</span>
-                                    </div>
-                                    @endif
-
-                                    @if($shop->tin_number)
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box me-3">
-                                            <i class="bi bi-hash"></i>
-                                        </div>
-                                        <span class="fs-6 text-white-50">TIN: {{ $shop->tin_number }}</span>
-                                    </div>
-                                    @endif
-                                </div>
-
-                                <div class="qr-section d-flex flex-column align-items-center justify-content-center p-2 bg-white rounded-4 shadow flex-shrink-0" style="width: 136px;">
+                                <!-- QR Code Overlay -->
+                                <div class="position-absolute top-50 start-50 translate-middle bg-white p-1 rounded-3 shadow-lg" style="border: 3px solid #fbbf24; width: 110px; z-index: 10;">
                                     <img src="{{ $qrCode }}" alt="QR Code" style="width: 100%; height: auto; border-radius: 4px;">
-                                    <span class="text-dark fw-bold mt-2" style="font-size: 0.7rem; letter-spacing: 0.5px;">SCAN ME</span>
+                                    <div class="w-100 text-center text-white mt-1 py-1 rounded-1 shadow-sm" style="background-color: var(--brand-color, #3b82f6); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;">SCAN TO SCAN</div>
                                 </div>
 
+                                <!-- Social Overlay -->
+                                <div class="position-absolute bottom-0 end-0 bg-white p-2 text-center" style="border-top-left-radius: 12px; margin-right: 12px; box-shadow: -2px -2px 15px rgba(0,0,0,0.15); z-index: 10;">
+                                    <div class="fw-bold text-dark mb-1" style="font-size: 0.6rem; letter-spacing: 0.5px;">Follow us</div>
+                                    <div class="d-flex gap-1 justify-content-center mb-1">
+                                        <div style="width: 18px; height: 18px; background: #1877F2; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="bi bi-facebook"></i></div>
+                                        <div style="width: 18px; height: 18px; background: #E1306C; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="bi bi-instagram"></i></div>
+                                        <div style="width: 18px; height: 18px; background: #000000; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px;"><i class="bi bi-tiktok"></i></div>
+                                    </div>
+                                    <span class="fw-bold text-dark" style="font-size: 0.55rem;">{{ strtolower(str_replace(' ', '_', $shop->name)) }}</span>
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
-            </div>
-            
-            <div class="text-center mt-3 d-print-none">
-                <p class="text-muted small"><i class="bi bi-info-circle me-1"></i> Hover (Weka mouse) kwenye kadi kuigeuza.</p>
             </div>
         </div>
     </div>
@@ -312,7 +366,7 @@
                 card.classList.add('capture-mode');
                 
                 setTimeout(() => {
-                    html2canvas(card, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+                    html2canvas(card, { scale: 4, useCORS: true, backgroundColor: null }).then(canvas => {
                         card.classList.remove('capture-mode');
                         forceDownload(canvas.toDataURL('image/png', 1.0), 'Business-Card.png');
                         btnDownloadImg.disabled = false;
@@ -342,19 +396,19 @@
                 setTimeout(async () => {
                     try {
                         const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF({ orientation: 'landscape', unit: 'px', format: [450, 260] });
+                        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [85, 55] });
                         
                         // Capture Front
                         const frontEl = document.getElementById('card-front-capture');
-                        const canvasFront = await html2canvas(frontEl, { scale: 2, useCORS: true });
-                        doc.addImage(canvasFront.toDataURL('image/png'), 'PNG', 0, 0, 450, 260);
+                        const canvasFront = await html2canvas(frontEl, { scale: 4, useCORS: true });
+                        doc.addImage(canvasFront.toDataURL('image/png', 1.0), 'PNG', 0, 0, 85, 55);
                         
                         doc.addPage();
                         
                         // Capture Back
                         const backEl = document.getElementById('card-back-capture');
-                        const canvasBack = await html2canvas(backEl, { scale: 2, useCORS: true });
-                        doc.addImage(canvasBack.toDataURL('image/png'), 'PNG', 0, 0, 450, 260);
+                        const canvasBack = await html2canvas(backEl, { scale: 4, useCORS: true });
+                        doc.addImage(canvasBack.toDataURL('image/png', 1.0), 'PNG', 0, 0, 85, 55);
                         
                         doc.save('Business-Card.pdf');
                     } catch (error) {
@@ -579,9 +633,7 @@
     cursor: pointer;
 }
 
-.business-card-container:hover .business-card {
-    transform: rotateY(180deg);
-}
+
 
 .card-face {
     position: absolute;
@@ -741,5 +793,37 @@
     box-shadow: none;
     border: 2px solid #e2e8f0;
 }
+    .business-card-container.flipped .business-card {
+        transform: rotateY(180deg);
+    }
+
+    /* Scaling for responsiveness */
+    @media (max-width: 768px) {
+        .business-card-container {
+            transform: scale(0.55);
+            transform-origin: top center;
+            margin-bottom: -150px;
+        }
+    }
+    @media (max-width: 480px) {
+        .business-card-container {
+            transform: scale(0.48);
+            transform-origin: top center;
+            margin-bottom: -180px;
+        }
+    }
+
+    .pulse-animation {
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: rotate(180deg) scaleX(-1) translateY(0); }
+        50% { transform: rotate(180deg) scaleX(-1) translateY(-10px); }
+        100% { transform: rotate(180deg) scaleX(-1) translateY(0); }
+    }
 </style>
 @endsection
+
+
+
+

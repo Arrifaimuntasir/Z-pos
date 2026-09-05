@@ -10,6 +10,7 @@ class Sale extends Model
     use HasTenant;
     protected $fillable = [
         'customer_id',
+        'user_id',
         'reference_no',
         'sale_date',
         'total_amount',
@@ -28,5 +29,15 @@ class Sale extends Model
     public function items()
     {
         return $this->hasMany(SaleItem::class);
+    }
+
+    public function returns()
+    {
+        return $this->hasMany(SaleReturn::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

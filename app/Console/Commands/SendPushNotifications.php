@@ -23,10 +23,12 @@ class SendPushNotifications extends Command
         
         foreach ($shops as $shop) {
             $owner = User::where('shop_id', $shop->id)->whereHas('roles', function($q) {
-                $q->where('name', 'Admin');
+                $q->where('name', 'Administrator');
             })->first();
 
             if (!$owner) continue;
+
+            \Illuminate\Support\Facades\App::setLocale($owner->locale ?? config('app.locale'));
 
             // Check if 0 sales today
             $salesCount = Sale::where('shop_id', $shop->id)

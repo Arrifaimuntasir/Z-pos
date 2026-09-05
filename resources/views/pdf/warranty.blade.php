@@ -136,18 +136,18 @@
             @elseif(isset($shop))
                 <h2 style="margin: 0; margin-bottom: 10px; text-transform: uppercase;">{{ $shop->name }}</h2>
             @endif
-            <h1>Warranty Certificate</h1>
-            <p>Official Coverage Document</p>
+            <h1>{{ __('Warranty Certificate') }}</h1>
+            <p>{{ __('Official Coverage Document') }}</p>
         </div>
         
         <table class="info-table">
             <tr>
                 <td>
-                    <span class="label">Warranty Number</span>
+                    <span class="label">{{ __('Warranty Number') }}</span>
                     <div class="value">{{ $warranty->warranty_number }}</div>
                 </td>
                 <td>
-                    <span class="label">Customer Name</span>
+                    <span class="label">{{ __('Customer Name') }}</span>
                     <div class="value">
                         {{ $warranty->customer_name ?? 'N/A' }}
                         @if($warranty->customer_phone)
@@ -158,17 +158,17 @@
             </tr>
             <tr>
                 <td>
-                    <span class="label">Region</span>
+                    <span class="label">{{ __('Region') }}</span>
                     <div class="value">{{ $warranty->region ?? 'N/A' }}</div>
                 </td>
                 <td>
-                    <span class="label">Gender</span>
+                    <span class="label">{{ __('Gender') }}</span>
                     <div class="value">{{ $warranty->gender ?? 'N/A' }}</div>
                 </td>
             </tr>
             <tr>
                 <td style="width: 40%;">
-                    <span class="label">Product Covered</span>
+                    <span class="label">{{ __('Product Covered') }}</span>
                     <div class="value">{{ $warranty->product_name }}</div>
                 </td>
                 <td style="width: 30%;">
@@ -182,11 +182,11 @@
             </tr>
             <tr>
                 <td>
-                    <span class="label">Duration</span>
+                    <span class="label">{{ __('Duration') }}</span>
                     <div class="value">{{ $warranty->duration }}</div>
                 </td>
                 <td colspan="2">
-                    <span class="label">Valid Until</span>
+                    <span class="label">{{ __('Valid Until') }}</span>
                     <div class="value">{{ \Carbon\Carbon::parse($warranty->end_date)->format('d M Y') }}</div>
                 </td>
             </tr>
@@ -194,7 +194,7 @@
         
         @if($warranty->conditions)
         <div class="terms-box">
-            <strong style="display:block; margin-bottom: 5px; font-size: 12px;">Terms & Conditions:</strong>
+            <strong style="display:block; margin-bottom: 5px; font-size: 12px;">{{ __('Terms & Conditions:') }}</strong>
             {!! $warranty->conditions !!}
         </div>
         @endif
@@ -202,11 +202,11 @@
         <table class="footer-table">
             <tr>
                 <td style="text-align: left;">
-                    <div class="label">Date Issued</div>
+                    <div class="label">{{ __('Date Issued') }}</div>
                     <div style="font-size: 13px; font-weight: bold;">{{ $warranty->created_at->format('d M Y') }}</div>
                 </td>
                 <td style="text-align: right;">
-                    <div class="label">Issued By</div>
+                    <div class="label">{{ __('Issued By') }}</div>
                     <div style="font-size: 13px; font-weight: bold;">{{ $warranty->shop->name }}</div>
                 </td>
             </tr>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Verify Email - Z-pos Enterprise</title>
+    <title>{{ __('Verify Email - Z-pos Enterprise') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -124,7 +124,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="btn btn-link text-muted text-decoration-none">
-                        <i class="bi bi-box-arrow-left me-1"></i> Logout and return to home
+                        <i class="bi bi-box-arrow-left me-1"></i> {{ __('Logout and return to home') }}
                     </button>
                 </form>
             </div>

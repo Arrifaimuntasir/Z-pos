@@ -12,6 +12,7 @@ class SaleItem extends Model
         'sale_id',
         'product_id',
         'quantity',
+        'returned_quantity',
         'unit_cost',
         'unit_price',
         'subtotal',
@@ -26,5 +27,10 @@ class SaleItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function returnItems()
+    {
+        return $this->hasMany(SaleReturnItem::class);
     }
 }

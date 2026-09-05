@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Account Suspended - Z-pos Enterprise</title>
+    <title>{{ __('Account Suspended - Z-pos Enterprise') }}</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -16,18 +16,21 @@
 
     <style>
         body, html {
-            height: 100%;
+            min-height: 100vh;
             margin: 0;
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+        }
+        body {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
         }
         .payment-container {
             width: 100%;
             max-width: 500px;
-            padding: 1.5rem;
+            margin: auto;
+            padding: 2.5rem 1rem;
         }
         .payment-card {
             background: white;
@@ -131,8 +134,24 @@
     </style>
 </head>
 <body>
+    <div class="payment-container position-relative">
+        
+        <div class="d-flex justify-content-end w-100 mb-3" style="max-width: 450px;">
+            <div class="dropdown">
+                <a class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.85rem; color: #334155;">
+                    @if(App::getLocale() == 'en')
+                        <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-1" style="width: 20px; border-radius: 2px;"> <span>{{ __('ENG') }}</span>
+                    @else
+                        <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-1" style="width: 20px; border-radius: 2px;"> <span>{{ __('SW') }}</span>
+                    @endif
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: auto; padding: 0.5rem;">
+                    <li><a class="dropdown-item d-flex align-items-center py-2" href="{{ route('lang.switch', 'sw') }}"><img src="https://flagcdn.com/w20/tz.png" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('Swahili') }}</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center py-2" href="{{ route('lang.switch', 'en') }}"><img src="https://flagcdn.com/w20/gb.png" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('English') }}</a></li>
+                </ul>
+            </div>
+        </div>
 
-    <div class="payment-container">
         <div class="payment-card">
             
             <div class="logo-container">
@@ -140,28 +159,46 @@
             </div>
 
             <i class="bi bi-exclamation-triangle-fill text-danger mb-2 d-block" style="font-size: 2.5rem;"></i>
-            <h4 class="fw-bold mb-2">Account Suspended</h4>
+            <h4 class="fw-bold mb-2">{{ __('Account Suspended') }}</h4>
             <p class="text-muted small px-2 mb-4">
-                Your shop account has been suspended by the administrator. This might be due to pending payments or other violations. Please complete your payment or contact support.
+                {{ __('Your shop account has been suspended by the administrator. This might be due to pending payments or other violations. Please complete your payment or contact support.') }}
             </p>
+
+            @php
+                $amountToPay = '0';
+                if ($shop->package === 'starter') $amountToPay = '15,000/=';
+                elseif ($shop->package === 'professional') $amountToPay = '45,000/=';
+                elseif ($shop->package === 'enterprise') $amountToPay = '110,000/=';
+            @endphp
+            <div class="alert alert-info text-start shadow-sm mb-4 border-0" style="background-color: #f0fdf4; color: #166534; border-left: 4px solid #16a34a !important;">
+                <p class="mb-1 fw-bold"><i class="bi bi-info-circle me-1"></i> {{ __('Subscription Details') }}</p>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="small">{{ __('Selected Package:') }}</span>
+                    <span class="badge bg-success bg-opacity-25 text-success text-uppercase">{{ $shop->package }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                    <span class="small">{{ __('Amount to Pay:') }}</span>
+                    <span class="fw-bold fs-5">TZS {{ $amountToPay }}</span>
+                </div>
+            </div>
 
             <div class="payment-info-box shadow-sm">
                 <div class="mb-3">
                     <div class="d-flex align-items-center mb-1">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/NMB_Bank_Plc.png" height="20" class="me-2" style="object-fit:contain" onerror="this.style.display='none'">
-                        <h6>NMB Bank</h6>
+                        <h6>{{ __('NMB Bank') }}</h6>
                     </div>
                     <p class="fw-bold text-dark fs-5">23710025242</p>
-                    <p class="small text-muted">Account Name: MUSTASIR KHAMIS MOHAMED</p>
+                    <p class="small text-muted">{{ __('Account Name: MUSTASIR KHAMIS MOHAMED') }}</p>
                 </div>
                 <hr class="text-muted opacity-25">
                 <div>
                     <div class="d-flex align-items-center mb-1">
                         <i class="bi bi-phone-vibrate text-danger me-2 fs-5"></i>
-                        <h6>Lipa Namba (Airtel Money / All Networks)</h6>
+                        <h6>{{ __('Lipa Namba (Airtel Money / All Networks)') }}</h6>
                     </div>
                     <p class="fw-bold text-danger fs-5">135511433</p>
-                    <p class="small text-muted">Name: MUNTASIR MOHAMED</p>
+                    <p class="small text-muted">{{ __('Name: MUNTASIR MOHAMED') }}</p>
                 </div>
             </div>
 
@@ -169,30 +206,30 @@
                 <div class="alert alert-primary border-0 bg-primary bg-opacity-10 text-primary rounded-3 small p-3 text-start mb-4">
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-clock-history fs-4 me-3"></i>
-                        <strong class="fw-bold">Payment Under Review</strong>
+                        <strong class="fw-bold">{{ __('Payment Under Review') }}</strong>
                     </div>
-                    You uploaded a receipt on <strong>{{ $pendingPayment->created_at->format('d M Y') }}</strong>. We are currently reviewing it. Please wait for admin approval.
+                    {{ __('You uploaded a receipt on') }} <strong>{{ $pendingPayment->created_at->format('d M Y') }}</strong>{{ __('. We are currently reviewing it. Please wait for admin approval.') }}
                 </div>
                 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>
                 <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn-outline-custom">
-                    <i class="bi bi-box-arrow-right me-2"></i> Logout for now
+                    <i class="bi bi-box-arrow-right me-2"></i> {{ __('Logout for now') }}
                 </button>
             @else
                 <form action="{{ route('payments.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="custom-file-upload text-start">
-                        <label class="form-label fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> Upload Receipt</label>
-                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">Take a screenshot of your payment and upload it here (JPG, PNG)</p>
+                        <label class="form-label fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> {{ __('Upload Receipt') }}</label>
+                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ __('Take a screenshot of your payment and upload it here (JPG, PNG)') }}</p>
                         <input type="file" name="receipt" class="form-control form-control-sm" required accept="image/*,.pdf">
                         @error('receipt') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
                     </div>
                     
                     <button type="submit" class="btn-custom mb-3">
-                        Submit Payment Receipt
+                        {{ __('Submit Payment Receipt') }}
                     </button>
                 </form>
 
@@ -200,7 +237,7 @@
                     @csrf
                 </form>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-muted small text-decoration-none fw-semibold">
-                    <i class="bi bi-arrow-left me-1"></i> Back to Login
+                    <i class="bi bi-arrow-left me-1"></i> {{ __('Back to Login') }}
                 </a>
             @endif
         </div>

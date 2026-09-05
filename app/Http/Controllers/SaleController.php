@@ -12,34 +12,48 @@ class SaleController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
-        if ($branchId && !\App\Models\Branch::where('id', $branchId)->exists()) {
-            $branchId = null;
-        }
+        $search   = $request->query('search');
+        $staffId  = $request->query('staff_id'); // admin filter by staff
+        $branchId = $this->getActiveBranchId();
+        $isAdmin  = auth()->user()->hasRole('Administrator');
 
-        $sales = \App\Models\Sale::with('customer')
+        $sales = \App\Models\Sale::with(['customer', 'items.product', 'user'])
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
+            ->when(!$isAdmin, function($q) {
+                // Cashier sees ONLY their own sales (including old sales with null user_id=none)
+                $q->where('user_id', auth()->id());
+            })
+            ->when($isAdmin && $staffId, function($q) use ($staffId) {
+                // Admin filters by a specific staff member
+                $q->where('user_id', $staffId);
+            })
             ->when($search, function ($query) use ($search) {
-                $query->where('reference_no', 'like', "%{$search}%")
-                      ->orWhereHas('customer', function ($q) use ($search) {
-                          $q->where('name', 'like', "%{$search}%")
-                            ->orWhere('phone', 'like', "%{$search}%");
-                      });
+                $query->where(function ($q1) use ($search) {
+                    $q1->where('reference_no', 'like', "%{$search}%")
+                          ->orWhereHas('customer', function ($q2) use ($search) {
+                              $q2->where('name', 'like', "%{$search}%")
+                                ->orWhere('phone', 'like', "%{$search}%");
+                          });
+                });
             })
             ->latest()
             ->paginate(15)
-            ->appends(['search' => $search]);
+            ->appends(['search' => $search, 'staff_id' => $staffId]);
+
+        // Staff list for admin dropdown
+        $staffList = [];
+        if ($isAdmin && auth()->user()->shop_id) {
+            $staffList = \App\Models\User::where('shop_id', auth()->user()->shop_id)->get();
+        }
             
-        return view('sales.index', compact('sales', 'search'));
+        return view('sales.index', compact('sales', 'search', 'staffId', 'staffList', 'isAdmin'));
     }
 
     public function create()
     {
-        $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+        $branchId = $this->getActiveBranchId();
         $hasBranches = false;
         
         if (auth()->user()->shop) {
@@ -100,7 +114,7 @@ class SaleController extends Controller
                 $payment_status = 'partial';
             }
 
-            $branchId = auth()->user()->branch_id ?: session('active_branch_id');
+            $branchId = $this->getActiveBranchId();
             $hasBranches = false;
             
             if (auth()->user()->shop) {
@@ -118,6 +132,7 @@ class SaleController extends Controller
 
             $sale = \App\Models\Sale::create([
                 'customer_id' => $request->customer_id,
+                'user_id'     => auth()->id(),
                 'reference_no' => 'SL-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(4)),
                 'sale_date' => $request->sale_date,
                 'total_amount' => $total_amount,
@@ -132,28 +147,64 @@ class SaleController extends Controller
                 $subtotal = $item['quantity'] * $item['price'];
                 $product = \App\Models\Product::find($item['product_id']);
 
-                if ($request->action !== 'proforma') {
-                    if ($hasBranches && $branchId) {
-                        $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
-                            ->where('branch_id', $branchId)
-                            ->where('product_id', $item['product_id'])
-                            ->first();
+                if ($request->action !== 'proforma' && (!$product->category || !$product->category->is_service) && $product->track_stock) {
+                    $ingredients = \App\Models\ProductIngredient::where('product_id', $product->id)->get();
+                    
+                    if ($ingredients->count() > 0) {
+                        // Deduct ingredients
+                        foreach ($ingredients as $ing) {
+                            $totalIngQty = $ing->quantity * $item['quantity'];
+                            $ingProduct = \App\Models\Product::find($ing->ingredient_id);
+                            
+                            if ($ingProduct) {
+                                if ($hasBranches && $branchId) {
+                                    $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
+                                        ->where('branch_id', $branchId)
+                                        ->where('product_id', $ingProduct->id)
+                                        ->first();
 
-                        $currentStock = $branchStock ? $branchStock->quantity : 0;
+                                    $currentStock = $branchStock ? $branchStock->quantity : 0;
 
-                        if ($currentStock < $item['quantity']) {
-                            throw new \Exception("Not enough stock for {$product->name} in your branch.");
+                                    if ($currentStock < $totalIngQty) {
+                                        throw new \Exception("Not enough stock for ingredient {$ingProduct->name} in your branch.");
+                                    }
+                                    
+                                    \Illuminate\Support\Facades\DB::table('branch_product')
+                                        ->where('branch_id', $branchId)
+                                        ->where('product_id', $ingProduct->id)
+                                        ->decrement('quantity', $totalIngQty);
+                                } else {
+                                    if ($ingProduct->stock < $totalIngQty) {
+                                        throw new \Exception("Not enough stock for ingredient {$ingProduct->name}");
+                                    }
+                                    $ingProduct->decrement('stock', $totalIngQty);
+                                }
+                            }
                         }
-                        
-                        \Illuminate\Support\Facades\DB::table('branch_product')
-                            ->where('branch_id', $branchId)
-                            ->where('product_id', $item['product_id'])
-                            ->decrement('quantity', $item['quantity']);
                     } else {
-                        if ($product->stock < $item['quantity']) {
-                            throw new \Exception("Not enough stock for {$product->name}");
+                        // Deduct normal product
+                        if ($hasBranches && $branchId) {
+                            $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
+                                ->where('branch_id', $branchId)
+                                ->where('product_id', $item['product_id'])
+                                ->first();
+
+                            $currentStock = $branchStock ? $branchStock->quantity : 0;
+
+                            if ($currentStock < $item['quantity']) {
+                                throw new \Exception("Not enough stock for {$product->name} in your branch.");
+                            }
+                            
+                            \Illuminate\Support\Facades\DB::table('branch_product')
+                                ->where('branch_id', $branchId)
+                                ->where('product_id', $item['product_id'])
+                                ->decrement('quantity', $item['quantity']);
+                        } else {
+                            if ($product->stock < $item['quantity']) {
+                                throw new \Exception("Not enough stock for {$product->name}");
+                            }
+                            $product->decrement('stock', $item['quantity']);
                         }
-                        $product->decrement('stock', $item['quantity']);
                     }
                 }
                 
@@ -169,6 +220,15 @@ class SaleController extends Controller
             }
 
             \Illuminate\Support\Facades\DB::commit();
+
+            // Notify Shop Admins
+            $admins = \App\Models\User::where('shop_id', $sale->shop_id)
+                ->whereHas('roles', function($q) {
+                    $q->where('name', 'Administrator');
+                })->get();
+                
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewSaleNotification($sale));
+
             return redirect()->route('sales.show', $sale->id)->with('success', 'Sale completed successfully!');
 
         } catch (\Exception $e) {
@@ -210,15 +270,31 @@ class SaleController extends Controller
             
             foreach ($sale->items as $item) {
                 $product = \App\Models\Product::find($item->product_id);
-                if ($product) {
-                    if ($hasBranches && $branchId) {
-                        \Illuminate\Support\Facades\DB::table('branch_product')
-                            ->updateOrInsert(
-                                ['branch_id' => $branchId, 'product_id' => $item->product_id],
-                                ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $item->quantity)]
-                            );
+                if ($product && (!$product->category || !$product->category->is_service) && $product->track_stock) {
+                    $ingredients = \App\Models\ProductIngredient::where('product_id', $product->id)->get();
+                    if ($ingredients->count() > 0) {
+                        foreach ($ingredients as $ing) {
+                            $totalIngQty = $ing->quantity * $item->quantity;
+                            if ($hasBranches && $branchId) {
+                                \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->updateOrInsert(
+                                        ['branch_id' => $branchId, 'product_id' => $ing->ingredient_id],
+                                        ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $totalIngQty)]
+                                    );
+                            } else {
+                                \App\Models\Product::where('id', $ing->ingredient_id)->increment('stock', $totalIngQty);
+                            }
+                        }
                     } else {
-                        $product->increment('stock', $item->quantity);
+                        if ($hasBranches && $branchId) {
+                            \Illuminate\Support\Facades\DB::table('branch_product')
+                                ->updateOrInsert(
+                                    ['branch_id' => $branchId, 'product_id' => $item->product_id],
+                                    ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $item->quantity)]
+                                );
+                        } else {
+                            $product->increment('stock', $item->quantity);
+                        }
                     }
                 }
             }
@@ -257,27 +333,64 @@ class SaleController extends Controller
             foreach ($sale->items as $item) {
                 $product = \App\Models\Product::find($item->product_id);
                 if (!$product) continue;
+                
+                if ($product->category && $product->category->is_service) continue;
+                if (!$product->track_stock) continue;
 
-                if ($hasBranches && $branchId) {
-                    $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
-                        ->where('branch_id', $branchId)
-                        ->where('product_id', $item->product_id)
-                        ->first();
+                $ingredients = \App\Models\ProductIngredient::where('product_id', $product->id)->get();
+                
+                if ($ingredients->count() > 0) {
+                    // Deduct ingredients
+                    foreach ($ingredients as $ing) {
+                        $totalIngQty = $ing->quantity * $item->quantity;
+                        $ingProduct = \App\Models\Product::find($ing->ingredient_id);
+                        
+                        if ($ingProduct) {
+                            if ($hasBranches && $branchId) {
+                                $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->where('branch_id', $branchId)
+                                    ->where('product_id', $ingProduct->id)
+                                    ->first();
 
-                    $currentStock = $branchStock ? $branchStock->quantity : 0;
-                    if ($currentStock < $item->quantity) {
-                        throw new \Exception("Not enough stock for {$product->name} in your branch.");
+                                $currentStock = $branchStock ? $branchStock->quantity : 0;
+                                if ($currentStock < $totalIngQty) {
+                                    throw new \Exception("Not enough stock for ingredient {$ingProduct->name} in your branch.");
+                                }
+                                
+                                \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->where('branch_id', $branchId)
+                                    ->where('product_id', $ingProduct->id)
+                                    ->decrement('quantity', $totalIngQty);
+                            } else {
+                                if ($ingProduct->stock < $totalIngQty) {
+                                    throw new \Exception("Not enough stock for ingredient {$ingProduct->name}");
+                                }
+                                $ingProduct->decrement('stock', $totalIngQty);
+                            }
+                        }
                     }
-                    
-                    \Illuminate\Support\Facades\DB::table('branch_product')
-                        ->where('branch_id', $branchId)
-                        ->where('product_id', $item->product_id)
-                        ->decrement('quantity', $item->quantity);
                 } else {
-                    if ($product->stock < $item->quantity) {
-                        throw new \Exception("Not enough stock for {$product->name}");
+                    if ($hasBranches && $branchId) {
+                        $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
+                            ->where('branch_id', $branchId)
+                            ->where('product_id', $item->product_id)
+                            ->first();
+
+                        $currentStock = $branchStock ? $branchStock->quantity : 0;
+                        if ($currentStock < $item->quantity) {
+                            throw new \Exception("Not enough stock for {$product->name} in your branch.");
+                        }
+                        
+                        \Illuminate\Support\Facades\DB::table('branch_product')
+                            ->where('branch_id', $branchId)
+                            ->where('product_id', $item->product_id)
+                            ->decrement('quantity', $item->quantity);
+                    } else {
+                        if ($product->stock < $item->quantity) {
+                            throw new \Exception("Not enough stock for {$product->name}");
+                        }
+                        $product->decrement('stock', $item->quantity);
                     }
-                    $product->decrement('stock', $item->quantity);
                 }
             }
 
@@ -292,6 +405,61 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             return back()->with('error', 'Error processing payment: ' . $e->getMessage());
+        }
+    }
+
+    public function bulkDestroy(\Illuminate\Http\Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No sales selected.');
+        }
+
+        $sales = \App\Models\Sale::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->with('items.product')
+            ->get();
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($sales as $sale) {
+                $branchId = $sale->branch_id;
+                $hasBranches = $branchId ? true : false;
+
+                foreach ($sale->items as $item) {
+                    $product = $item->product;
+                    if (!$product || ($product->category && $product->category->is_service) || !$product->track_stock) continue;
+
+                    $ingredients = \App\Models\ProductIngredient::where('product_id', $product->id)->get();
+                    if ($ingredients->count() > 0) {
+                        foreach ($ingredients as $ing) {
+                            $qty = $ing->quantity * $item->quantity;
+                            if ($hasBranches) {
+                                \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->where('branch_id', $branchId)->where('product_id', $ing->ingredient_id)
+                                    ->increment('quantity', $qty);
+                            } else {
+                                \App\Models\Product::where('id', $ing->ingredient_id)->increment('stock', $qty);
+                            }
+                        }
+                    } else {
+                        if ($hasBranches) {
+                            \Illuminate\Support\Facades\DB::table('branch_product')
+                                ->where('branch_id', $branchId)->where('product_id', $item->product_id)
+                                ->increment('quantity', $item->quantity);
+                        } else {
+                            $product->increment('stock', $item->quantity);
+                        }
+                    }
+                }
+                $sale->items()->delete();
+                $sale->delete();
+            }
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', count($sales) . ' sale(s) deleted and stock restored.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 

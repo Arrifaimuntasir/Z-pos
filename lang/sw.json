@@ -278,4 +278,11 @@
     "\"Switching to Z-pos was the best decision for our pharmacy chain. The multi-branch Inventory tracking is flawless and saved us millions in expired stock.\"": "\"Kuhamia Z-pos ulikuwa uamuzi bora zaidi kwa biashara yetu. Mfumo wa kusimamia stoo kwa matawi mengi ni mzuri sana na umetuokoa mamilioni ya bidhaa zilizokuwa zinaisha muda wake.\"",
     "\"The speed of the checkout screen is incredible. Even during peak evening hours, our queues move twice as fast as before. Highly recommended for supermarkets!\"": "\"Kasi ya mauzo (checkout) ni ya kushangaza. Hata nyakati za jioni kukiwa na foleni, wateja wanahudumiwa haraka mara mbili zaidi ya mwanzo. Naufurahia sana kwenye supermarket yangu!\"",
     "\"The detailed profit and loss reports finally gave me clarity on my wholesale business. I now know exactly which items are moving and which are tying up my capital.\"": "\"Ripoti za kina za faida na hasara zimenipa mwanga kwenye biashara yangu ya jumla. Sasa najua hasa ni bidhaa zipi zinatoka na zipi zimeshikilia mtaji wangu.\""
+,
+"Good (Add to Stock)": "Nzima (Zimerudi Stoo)",
+"Defective (No Stock)": "Mbovu (Hazijarudi Stoo)",
+"Condition": "Hali ya Bidhaa",
+"Good": "Nzima",
+"Defective": "Mbovu",
+"Unknown": "Haijulikani"
 }

@@ -5,12 +5,12 @@
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h4 class="fw-bold mb-0 text-dark">Staff & Users</h4>
-        <span class="text-muted small">Manage people who have access to your shop</span>
+        <h4 class="fw-bold mb-0 text-dark">{{ __('Staff & Users') }}</h4>
+        <span class="text-muted small">{{ __('Manage people who have access to your shop') }}</span>
     </div>
     <div>
         <a href="{{ route('staff.create') }}" class="btn btn-primary px-4 shadow-sm" style="border-radius: 8px;">
-            <i class="bi bi-person-plus me-2"></i> Add Staff
+            <i class="bi bi-person-plus me-2"></i> {{ __('Add Staff') }}
         </a>
     </div>
 </div>
@@ -28,10 +28,10 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted">
                     <tr>
-                        <th class="ps-4 fw-medium border-0 rounded-start py-3">Name</th>
-                        <th class="fw-medium border-0">Email</th>
-                        <th class="fw-medium border-0">Role</th>
-                        <th class="text-end pe-4 fw-medium border-0 rounded-end">Actions</th>
+                        <th class="ps-4 fw-medium border-0 rounded-start py-3">{{ __('Name') }}</th>
+                        <th class="fw-medium border-0">{{ __('Email') }}</th>
+                        <th class="fw-medium border-0">{{ __('Role') }}</th>
+                        <th class="text-end pe-4 fw-medium border-0 rounded-end">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -44,14 +44,16 @@
                                 </div>
                                 <div>
                                     <div class="fw-bold text-dark">{{ Auth::user()->name }} (You)</div>
-                                    <div class="text-muted small">Shop Owner</div>
+                                    <div class="text-muted small">{{ __('Shop Owner') }}</div>
                                 </div>
                             </div>
                         </td>
                         <td>{{ Auth::user()->email }}</td>
-                        <td><span class="badge bg-primary rounded-pill px-3">Admin</span></td>
+                        <td><span class="badge bg-primary rounded-pill px-3">{{ __('Admin') }}</span></td>
                         <td class="text-end pe-4">
-                            <!-- Cannot delete self -->
+                            <a href="{{ route('staff.edit', Auth::user()->id) }}" class="btn btn-sm btn-light text-primary shadow-sm rounded-3">
+                                <i class="bi bi-pencil"></i> {{ __('Edit') }}
+                            </a>
                         </td>
                     </tr>
                     
@@ -59,7 +61,7 @@
                     <tr>
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center">
-                                <div class="bg-light text-secondary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                <div class="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
                                     <i class="bi bi-person fs-5"></i>
                                 </div>
                                 <div>
@@ -70,17 +72,20 @@
                         <td>{{ $user->email }}</td>
                         <td>
                             @if($user->hasRole('Cashier'))
-                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Cashier</span>
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">{{ __('Cashier') }}</span>
                             @else
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Staff</span>
+                                <span class="badge bg-secondary bg-opacity-10 text-dark rounded-pill px-3">{{ __('Staff') }}</span>
                             @endif
                         </td>
                         <td class="text-end pe-4">
+                            <a href="{{ route('staff.edit', $user->id) }}" class="btn btn-sm btn-light text-primary shadow-sm rounded-3 me-1">
+                                <i class="bi bi-pencil"></i> {{ __('Edit') }}
+                            </a>
                             <form action="{{ route('staff.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-light text-danger shadow-sm rounded-3" onclick="return confirm('Are you sure you want to remove this user from your shop? They will no longer be able to log in.')">
-                                    <i class="bi bi-trash"></i> Remove
+                                    <i class="bi bi-trash"></i> {{ __('Remove') }}
                                 </button>
                             </form>
                         </td>
@@ -89,8 +94,8 @@
                     <tr>
                         <td colspan="4" class="text-center py-5 text-muted">
                             <i class="bi bi-people fs-1 text-light-secondary mb-3 d-block"></i>
-                            <h5>No other staff added yet</h5>
-                            <p class="mb-0">You can add staff like Cashiers to help you manage sales.</p>
+                            <h5>{{ __('No other staff added yet') }}</h5>
+                            <p class="mb-0">{{ __('You can add staff like Cashiers to help you manage sales.') }}</p>
                         </td>
                     </tr>
                     @endforelse

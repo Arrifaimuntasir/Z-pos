@@ -14,11 +14,98 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/onboarding', function () {
+    return view('pwa.onboarding');
+})->name('pwa.onboarding');
+
 Route::get('/safi', function () {
     \Illuminate\Support\Facades\Artisan::call('view:clear');
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
     return "<h2 style='color:green; text-align:center; margin-top:50px;'>Kila kitu kimesafishwa vizuri (Cache Cleared)!</h2><p style='text-align:center;'><a href='/home'>Rudi Kwenye Mfumo</a></p>";
 });
+
+Route::get('/fix_user_id', function () {
+    try {
+        $hasColumn = \Illuminate\Support\Facades\Schema::hasColumn('sales', 'user_id');
+        if (!$hasColumn) {
+            \Illuminate\Support\Facades\Schema::table('sales', function (\Illuminate\Database\Schema\Blueprint $table) {
+                $table->unsignedBigInteger('user_id')->nullable()->after('shop_id');
+            });
+            \Illuminate\Support\Facades\DB::table('migrations')->insertOrIgnore([
+                'migration' => '2026_09_05_023413_add_user_id_to_sales_table',
+                'batch' => \Illuminate\Support\Facades\DB::table('migrations')->max('batch') + 1,
+            ]);
+            return "<h2 style='color:green; text-align:center; margin-top:50px;'>✅ Kolamu ya user_id imeongezwa kwenye mauzo (sales) kikamilifu!</h2><p style='text-align:center;'><a href='/home'>Rudi Kwenye Mfumo</a></p>";
+        } else {
+            return "<h2 style='color:blue; text-align:center; margin-top:50px;'>ℹ️ Kolamu ya user_id tayari ipo - hakuna kitu cha kufanya.</h2><p style='text-align:center;'><a href='/home'>Rudi Kwenye Mfumo</a></p>";
+        }
+    } catch (\Exception $e) {
+        return "<h2 style='color:red; text-align:center; margin-top:50px;'>❌ Kuna hitilafu: " . $e->getMessage() . "</h2>";
+    }
+});
+
+Route::get('/debug_sales', function () {
+    if (!auth()->check()) return redirect('/login');
+    $user = auth()->user();
+    $roles = $user->getRoleNames()->implode(', ');
+    $isAdmin = $user->hasRole('Administrator');
+    $hasColumn = \Illuminate\Support\Facades\Schema::hasColumn('sales', 'user_id');
+    $totalSales = \App\Models\Sale::count();
+    $mySales = $hasColumn ? \App\Models\Sale::where('user_id', $user->id)->count() : 'N/A';
+    $nullSales = $hasColumn ? \App\Models\Sale::whereNull('user_id')->count() : 'N/A';
+
+    // Get last 5 sales with user_id to see what's stored
+    $lastSales = $hasColumn
+        ? \Illuminate\Support\Facades\DB::table('sales')
+            ->select('id','reference_no','user_id','created_at')
+            ->where('shop_id', $user->shop_id)
+            ->orderBy('created_at','desc')
+            ->limit(5)
+            ->get()
+        : collect();
+
+    $salesRows = '';
+    foreach ($lastSales as $s) {
+        $salesRows .= "  {$s->id} | {$s->reference_no} | user_id=" . ($s->user_id ?? 'NULL') . " | {$s->created_at}\n";
+    }
+
+    // Check if filter code exists in the controller file
+    $controllerPath = app_path('Http/Controllers/SaleController.php');
+    $controllerContent = file_exists($controllerPath) ? file_get_contents($controllerPath) : '';
+    $hasFilterCode = str_contains($controllerContent, 'isAdmin') && str_contains($controllerContent, 'user_id');
+    $hasUserIdStore = str_contains($controllerContent, "'user_id' => auth()->id()");
+
+    return "<pre style='font-family:monospace; font-size:15px; margin:40px;'>
+=== DEBUG: Sales Filter Check ===
+
+Logged-in User ID:   {$user->id}
+User Name:           {$user->name}
+Role(s):             {$roles}
+isAdmin check:       " . ($isAdmin ? 'TRUE (admin - sees all)' : 'FALSE (staff - filter applied)') . "
+
+--- Database ---
+user_id column exists:       " . ($hasColumn ? 'YES ✅' : 'NO ❌ - Visit /fix_user_id') . "
+Total sales in shop:         {$totalSales}
+My sales (user_id={$user->id}): {$mySales}
+Sales with NULL user_id:     {$nullSales}
+
+--- Last 5 Sales (newest first) ---
+{$salesRows}
+--- Controller File Check ---
+Filter code exists (isAdmin + user_id filter): " . ($hasFilterCode ? 'YES ✅' : 'NO ❌ - OLD Controller on server!') . "
+Stores user_id on sale create:                 " . ($hasUserIdStore ? 'YES ✅' : 'NO ❌ - OLD Controller on server!') . "
+
+--- Conclusion ---
+" . (!$hasColumn
+    ? '❌ PROBLEM: user_id column missing. Visit /fix_user_id first.'
+    : (!$hasFilterCode
+        ? '❌ PROBLEM: SaleController.php on server is OLD (no filter code). Must re-upload the controller file!'
+        : (!$isAdmin
+            ? "✅ Everything OK. Staff sees only their {$mySales} sales."
+            : "ℹ️ Admin mode. All {$totalSales} sales visible."))) . "
+</pre>";
+});
+
 
 Route::get('/fix_sku', function () {
     try {
@@ -78,6 +165,7 @@ Route::get('/cookies', function () {
 });
 
 Auth::routes(['verify' => true]);
+Route::get('/registration-success', [\App\Http\Controllers\Auth\RegisterController::class, 'success'])->name('registration.success');
 
 // Google Auth Routes
 Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
@@ -95,6 +183,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Cashier & Admin shared routes
     Route::resource('customers', App\Http\Controllers\CustomerController::class);
+    Route::get('/sales/{sale}/returns/create', [App\Http\Controllers\SaleReturnController::class, 'create'])->name('sales.returns.create');
+    Route::post('/sales/{sale}/returns', [App\Http\Controllers\SaleReturnController::class, 'store'])->name('sales.returns.store');
+    Route::get('/returns', [App\Http\Controllers\SaleReturnController::class, 'index'])->name('returns.index');
+    Route::get('/returns/defective', [App\Http\Controllers\SaleReturnController::class, 'defectiveItems'])->name('returns.defective');
+    Route::get('/returns/{return}/pdf', [App\Http\Controllers\SaleReturnController::class, 'downloadPdf'])->name('returns.pdf');
+    Route::post('/sales/bulk-destroy', [App\Http\Controllers\SaleController::class, 'bulkDestroy'])->name('sales.bulk-destroy');
     Route::resource('sales', App\Http\Controllers\SaleController::class);
     Route::post('/sales/{sale}/mark-paid', [App\Http\Controllers\SaleController::class, 'markAsPaid'])->name('sales.mark_paid');
     Route::get('/sales/{sale}/pdf', [App\Http\Controllers\SaleController::class, 'downloadPdf'])->name('sales.pdf');
@@ -106,6 +200,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // Admin Only Routes
     Route::middleware(['admin'])->group(function () {
+    // Profile
+    // Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    // Route::put('/profile/password', [App\Http\Controllers\ProfileController::class, 'password'])->name('profile.password');
+
+    // Notifications
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::delete('/notifications/destroy', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+    
     // Shop Settings
     Route::get('/shop/settings', [App\Http\Controllers\ShopController::class, 'edit'])->name('shop.settings');
     Route::put('/shop/settings', [App\Http\Controllers\ShopController::class, 'update'])->name('shop.settings.update');
@@ -133,11 +236,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/reports/expenses', [App\Http\Controllers\ReportController::class, 'expenses'])->name('reports.expenses');
     
     // Branches
-    Route::resource('branches', \App\Http\Controllers\BranchController::class)->except(['show', 'destroy']);
+    Route::resource('branches', \App\Http\Controllers\BranchController::class)->except(['show']);
     Route::post('/switch-branch', [\App\Http\Controllers\BranchSwitchController::class, 'switch'])->name('branch.switch');
     
     // Staff Management
-    Route::resource('staff', App\Http\Controllers\StaffController::class)->except(['show', 'edit', 'update']);
+    Route::resource('staff', App\Http\Controllers\StaffController::class)->except(['show']);
     
     // Maintenance Toggle
     Route::post('/maintenance/toggle', function (\Illuminate\Http\Request $request) {

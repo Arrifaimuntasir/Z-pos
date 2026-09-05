@@ -1,15 +1,15 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Add Staff')
 
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h4 class="fw-bold mb-0 text-dark">Add New Staff</h4>
-        <span class="text-muted small">Create an account for your shop cashier or manager</span>
+        <h4 class="fw-bold mb-0 text-dark">{{ __('Add New Staff') }}</h4>
+        <span class="text-muted small">{{ __('Create an account for your shop cashier or manager') }}</span>
     </div>
     <div>
-        <a href="{{ route('staff.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
+        
     </div>
 </div>
 
@@ -21,10 +21,10 @@
                     @csrf
                     
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Full Name</label>
+                        <label class="form-label fw-semibold">{{ __('Full Name') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
-                            <input type="text" name="name" class="form-control bg-light border-start-0 @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="e.g. arrifai muntasir">
+                            <input type="text" name="name" class="form-control bg-light border-start-0 @error('name') is-invalid @enderror" value="{{ old('name') }}" required placeholder="{{ __('e.g. arrifai muntasir') }}">
                         </div>
                         @error('name')
                             <div class="text-danger small mt-1">{{ $message }}</div>
@@ -43,10 +43,10 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Password</label>
+                        <label class="form-label fw-semibold">{{ __('Password') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
-                            <input type="password" name="password" id="password" class="form-control bg-light border-start-0 border-end-0 @error('password') is-invalid @enderror" required placeholder="Minimum 8 characters">
+                            <input type="password" name="password" id="password" class="form-control bg-light border-start-0 border-end-0 @error('password') is-invalid @enderror" required placeholder="{{ __('Minimum 8 characters') }}">
                             <span class="input-group-text bg-light @error('password') border-danger @enderror" style="cursor: pointer;" onclick="togglePassword('password', this)">
                                 <i class="bi bi-eye"></i>
                             </span>
@@ -57,22 +57,27 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Confirm Password</label>
+                        <label class="form-label fw-semibold">{{ __('Confirm Password') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control bg-light border-start-0 border-end-0" required placeholder="Type password again">
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control bg-light border-start-0 border-end-0" required placeholder="{{ __('Type password again') }}">
                             <span class="input-group-text bg-light" style="cursor: pointer;" onclick="togglePassword('password_confirmation', this)">
                                 <i class="bi bi-eye"></i>
                             </span>
                         </div>
                     </div>
 
+                    @if(empty($shop->package) || strtolower($shop->package) === 'starter')
+                        @if($branches->count() > 0)
+                            <input type="hidden" name="branch_id" value="{{ $branches->first()->id }}">
+                        @endif
+                    @else
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Assign to Branch</label>
+                        <label class="form-label fw-semibold">{{ __('Assign to Branch') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-shop"></i></span>
                             <select name="branch_id" class="form-select bg-light border-start-0 @error('branch_id') is-invalid @enderror" required>
-                                <option value="">Select Branch</option>
+                                <option value="">{{ __('Select Branch') }}</option>
                                 @foreach($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
                                 @endforeach
@@ -82,17 +87,18 @@
                             <div class="text-danger small mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                    @endif
 
                     <div class="alert alert-info border-0 bg-primary bg-opacity-10 d-flex align-items-center" role="alert">
                         <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
                         <div>
-                            This user will automatically be assigned the <strong>Cashier</strong> role and will only be able to see POS and Sales related features.
+                            {{ __('This user will automatically be assigned the') }} <strong>{{ __('Cashier') }}</strong> {{ __('role and will only be able to see POS and Sales related features.') }}
                         </div>
                     </div>
 
                     <div class="mt-4 pt-2 border-top">
                         <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold w-100" style="border-radius: 8px;">
-                            <i class="bi bi-check2-circle me-2"></i> Create Staff Account
+                            <i class="bi bi-check2-circle me-2"></i> {{ __('Create Staff Account') }}
                         </button>
                     </div>
                 </form>
@@ -103,7 +109,7 @@
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm bg-primary text-white" style="border-radius: 16px;">
             <div class="card-body p-5">
-                <h4 class="fw-bold mb-4"><i class="bi bi-shield-lock me-2"></i> Security First</h4>
+                <h4 class="fw-bold mb-4"><i class="bi bi-shield-lock me-2"></i> {{ __('Security First') }}</h4>
                 
                 <div class="d-flex mb-4">
                     <div class="me-3">
@@ -112,8 +118,8 @@
                         </div>
                     </div>
                     <div>
-                        <h6 class="fw-bold mb-1">Cashier Role</h6>
-                        <p class="text-white-50 small mb-0">Cashiers can only make sales and view their daily transactions. They cannot delete sales or view overall profit reports.</p>
+                        <h6 class="fw-bold mb-1">{{ __('Cashier Role') }}</h6>
+                        <p class="text-white-50 small mb-0">{{ __('Cashiers can only make sales and view their daily transactions. They cannot delete sales or view overall profit reports.') }}</p>
                     </div>
                 </div>
                 

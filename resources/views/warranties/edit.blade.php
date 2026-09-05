@@ -99,7 +99,7 @@
             <div class="col-md-6">
                 <label class="form-label">{{ __('Gender') }} *</label>
                 <select name="gender" class="form-select">
-                    <option value="">Select gender</option>
+                    <option value="">{{ __('Select gender') }}</option>
                     <option value="Male" {{ old('gender', $warranty->gender) == 'Male' ? 'selected' : '' }}>Male</option>
                     <option value="Female" {{ old('gender', $warranty->gender) == 'Female' ? 'selected' : '' }}>Female</option>
                 </select>
@@ -240,7 +240,7 @@
 
         <div class="text-end mt-4 pt-3 border-top">
             <button type="submit" class="btn btn-primary fw-bold px-5 py-2" style="border-radius: 8px;">
-                Update Warrant
+                {{ __('Update Warrant') }}
             </button>
         </div>
     </div>

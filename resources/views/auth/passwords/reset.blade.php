@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reset Password - Z-pos Enterprise</title>
+    <title>{{ __('Reset Password - Z-pos Enterprise') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -119,9 +119,9 @@
                     <div style="width: 55px; height: 55px; overflow: hidden; background: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; margin-right: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Logo" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                     </div>
-                    <h1 class="fw-bold mb-0">Z-pos Enterprise</h1>
+                    <h1 class="fw-bold mb-0">{{ __('Z-pos Enterprise') }}</h1>
                 </div>
-                <p class="fs-5 opacity-75 mb-0">Securely recover your account access.</p>
+                <p class="fs-5 opacity-75 mb-0">{{ __('Securely recover your account access.') }}</p>
             </div>
         </div>
 
@@ -133,12 +133,12 @@
                         <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                     </div>
                     <div class="ms-3 d-flex flex-column justify-content-center text-start">
-                        <span class="fw-bold fs-2 text-primary lh-1">Z-pos</span>
+                        <span class="fw-bold fs-2 text-primary lh-1">{{ __('Z-pos') }}</span>
                     </div>
                 </div>
 
                 <h4 class="fw-bold mb-1 text-center">{{ __('Reset Password') }}</h4>
-                <p class="text-muted text-center mb-4">Enter your new password below.</p>
+                <p class="text-muted text-center mb-4">{{ __('Enter your new password below.') }}</p>
 
                 <form method="POST" action="{{ route('password.update') }}">
                     @csrf
@@ -183,7 +183,7 @@
                     </div>
 
                     <button type="submit" class="btn-login mt-2 mb-3 d-flex justify-content-center align-items-center gap-2">
-                        <i class="bi bi-check2-circle"></i> Reset Password
+                        <i class="bi bi-check2-circle"></i> {{ __('Reset Password') }}
                     </button>
                     
                 </form>

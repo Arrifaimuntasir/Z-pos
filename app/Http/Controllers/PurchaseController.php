@@ -62,7 +62,7 @@ class PurchaseController extends Controller
             ];
         }
 
-        $branchId = $request->branch_id ?? auth()->user()->branch_id ?? session('active_branch_id');
+        $branchId = $request->branch_id ?? $this->getActiveBranchId();
         if (!$branchId) {
             $branchId = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->first()->id ?? null;
         }
@@ -126,14 +126,49 @@ class PurchaseController extends Controller
      */
     public function destroy(string $id)
     {
-        $purchase = \App\Models\Purchase::findOrFail($id);
-        
-        // If it was completed, we should ideally reverse the stock, but for simplicity we just delete it or prevent deletion
-        if ($purchase->status == 'completed') {
-            return redirect()->route('purchases.index')->with('error', 'Cannot delete a completed purchase. Stock has already been updated.');
+        $purchase = \App\Models\Purchase::with('items.product')->findOrFail($id);
+
+        // Security: make sure purchase belongs to this shop
+        if ($purchase->shop_id !== auth()->user()->shop_id) {
+            abort(403);
         }
-        
-        $purchase->delete();
-        return redirect()->route('purchases.index')->with('success', 'Purchase deleted successfully.');
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // If completed, reverse the stock
+            if ($purchase->status === 'completed') {
+                $branchId = $purchase->branch_id;
+
+                foreach ($purchase->items as $item) {
+                    $product = $item->product;
+                    if (!$product) continue;
+
+                    if ($branchId) {
+                        $branchStock = \Illuminate\Support\Facades\DB::table('branch_product')
+                            ->where('branch_id', $branchId)
+                            ->where('product_id', $product->id)
+                            ->value('quantity') ?? 0;
+
+                        $newQty = max(0, $branchStock - $item->quantity);
+                        \Illuminate\Support\Facades\DB::table('branch_product')
+                            ->where('branch_id', $branchId)
+                            ->where('product_id', $product->id)
+                            ->update(['quantity' => $newQty]);
+                    } else {
+                        $newStock = max(0, $product->stock - $item->quantity);
+                        $product->update(['stock' => $newStock]);
+                    }
+                }
+            }
+
+            $purchase->items()->delete();
+            $purchase->delete();
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('purchases.index')->with('success', 'Purchase deleted and stock reversed successfully.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return redirect()->route('purchases.index')->with('error', 'Error deleting purchase: ' . $e->getMessage());
+        }
     }
 }

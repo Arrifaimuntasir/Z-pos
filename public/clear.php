@@ -1,0 +1,1 @@
+<?php require __DIR__.'/../vendor/autoload.php'; \ = require_once __DIR__.'/../bootstrap/app.php'; \ = \->make(Illuminate\Contracts\Http\Kernel::class); \ = \->handle(Illuminate\Http\Request::capture()); \Artisan::call('optimize:clear'); echo 'Cache cleared successfully! Delete this file now.'; ?>

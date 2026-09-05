@@ -2,7 +2,7 @@
   "name": "Z-pos - Enterprise Point of Sale",
   "short_name": "Z-pos",
   "description": "Modern Cloud-based Point of Sale system.",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#10b981",

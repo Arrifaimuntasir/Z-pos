@@ -14,7 +14,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'sku', 'barcode', 'category_id', 'brand_id', 'model', 'unit_id',
         'cost_price', 'selling_price', 'alert_quantity', 'stock', 'image_path', 'is_active',
-        'requires_imei', 'expiry_date'
+        'requires_imei', 'expiry_date', 'track_stock'
     ];
 
     public function category()
@@ -37,5 +37,10 @@ class Product extends Model
         return $this->belongsToMany(Branch::class)
             ->withPivot('quantity')
             ->withTimestamps();
+    }
+
+    public function ingredients()
+    {
+        return $this->hasMany(ProductIngredient::class, 'product_id');
     }
 }

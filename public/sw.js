@@ -1,7 +1,10 @@
-const CACHE_NAME = 'zpos-cache-v3';
+const CACHE_NAME = 'zpos-cache-v81';
 const urlsToCache = [
   '/',
-  '/manifest.json'
+  '/manifest.json',
+  '/manifest_v66.json',
+  '/install-app?source=pwa',
+  '/pwa-onboarding'
 ];
 
 self.addEventListener('install', event => {

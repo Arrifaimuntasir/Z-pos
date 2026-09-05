@@ -11,7 +11,12 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes, HasTenant;
 
-    protected $fillable = ['name', 'description', 'is_active'];
+    protected $fillable = [
+        'name',
+        'description',
+        'is_active',
+        'is_service'
+    ];
 
     public function products()
     {

@@ -42,6 +42,18 @@
 </div>
 @endif
 
+@if($errors->any())
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i><strong>Validation Error:</strong>
+    <ul class="mb-0 mt-2">
+        @foreach($errors->all() as $err)
+            <li>{{ $err }}</li>
+        @endforeach
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+
 <form action="{{ route('sales.store') }}" method="POST" id="posForm">
     @csrf
     <div class="row g-4">
@@ -53,29 +65,67 @@
                         <h6 class="fw-bold mb-0">{{ __('Products List') }}</h6>
                     </div>
                     
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-8 mb-2 mb-md-0">
-                            <select id="productSelect" class="form-select border-0 shadow-sm bg-light" style="border-radius: 8px;">
-                                <option value="">{{ __('-- Search & Select Product --') }}</option>
-                                @foreach($products as $product)
-                                    <option value="{{ $product->id }}" 
-                                            data-name="{{ $product->name }}" 
-                                            data-price="{{ $product->selling_price }}"
-                                            data-stock="{{ $product->stock }}"
-                                            data-requires-imei="{{ $product->requires_imei ? 'true' : 'false' }}"
-                                            data-expiry="{{ $product->expiry_date ? \Carbon\Carbon::parse($product->expiry_date)->format('M d, Y') : '' }}"
-                                            data-is-expired="{{ $product->expiry_date && \Carbon\Carbon::parse($product->expiry_date)->isPast() ? 'true' : 'false' }}">
-                                        {{ $product->name }} (Stock: {{ $product->stock }}) - {{ number_format($product->selling_price) }} TSh
-                                    </option>
-                                @endforeach
-                            </select>
+                    @php
+                        $shopCategory = Auth::user()->shop->business_type;
+                        $showExpiry = in_array($shopCategory, ['Pharmacy / Health', 'Supermarket / Grocery', 'Restaurant / Food']);
+                        $showImei = in_array($shopCategory, ['Electronics / IT']);
+                        $isRestaurant = $shopCategory === 'Restaurant / Food';
+                    @endphp
+
+                    @if($isRestaurant)
+                        <div class="restaurant-pos-grid mb-4" style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                            @php
+                                $groupedProducts = $products->groupBy(function($p) {
+                                    return $p->category ? $p->category->name : 'Other';
+                                });
+                            @endphp
+                            
+                            @foreach($groupedProducts as $categoryName => $catProducts)
+                                <div class="mb-4">
+                                    <h6 class="fw-bold text-uppercase text-muted border-bottom pb-2">{{ $categoryName }}</h6>
+                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                        @foreach($catProducts as $p)
+                                            <button type="button" class="btn btn-outline-primary p-3 text-start product-btn position-relative" style="width: 140px; height: 100px; border-radius: 12px; transition: all 0.2s;"
+                                                data-id="{{ $p->id }}"
+                                                data-name="{{ $p->name }}"
+                                                data-price="{{ $p->selling_price }}"
+                                                data-stock="{{ $p->track_stock ? $p->stock : 999999 }}"
+                                                data-requires-imei="false"
+                                                data-expiry=""
+                                                data-is-expired="false">
+                                                <div class="fw-bold text-truncate" style="font-size: 0.9rem;">{{ $p->name }}</div>
+                                                <div class="small fw-bold text-success position-absolute bottom-0 start-0 m-2">{{ number_format($p->selling_price) }}</div>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        <div class="col-12 col-md-4">
-                            <button type="button" id="addItemBtn" class="btn btn-primary w-100" style="border-radius: 8px;">
-                                <i class="bi bi-plus-lg"></i> Add to Cart
-                            </button>
+                    @else
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-8 mb-2 mb-md-0">
+                                <select id="productSelect" class="form-select border-0 shadow-sm bg-light" style="border-radius: 8px;">
+                                    <option value="">{{ __('-- Search & Select Product --') }}</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" 
+                                                data-name="{{ $product->name }}" 
+                                                data-price="{{ $product->selling_price }}"
+                                                data-stock="{{ $product->track_stock ? $product->stock : 999999 }}"
+                                                data-requires-imei="{{ ($showImei && $product->requires_imei) ? 'true' : 'false' }}"
+                                                data-expiry="{{ ($showExpiry && $product->expiry_date) ? \Carbon\Carbon::parse($product->expiry_date)->format('M d, Y') : '' }}"
+                                                data-is-expired="{{ ($showExpiry && $product->expiry_date && \Carbon\Carbon::parse($product->expiry_date)->isPast()) ? 'true' : 'false' }}">
+                                            {{ $product->name }} (Stock: {{ $product->track_stock ? $product->stock : 'N/A' }}) - {{ number_format($product->selling_price) }} TSh
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <button type="button" id="addItemBtn" class="btn btn-primary w-100" style="border-radius: 8px;">
+                                    <i class="bi bi-plus-lg"></i> {{ __('Add to Cart') }}
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     <div class="table-responsive">
                         <table class="table align-middle" id="cartTable">
@@ -130,6 +180,18 @@
 
                     <hr class="border-light-secondary">
 
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-medium">{{ __('Customer (Optional)') }}</label>
+                        <select name="customer_id" class="form-select">
+                            <option value="">{{ __('Walk-in Customer (None)') }}</option>
+                            @foreach($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <hr class="border-light-secondary">
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted fw-medium">{{ __('Subtotal') }}</span>
                         <span class="fw-bold" id="cartSubtotal">0 TSh</span>
@@ -147,25 +209,25 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-medium">Payment Method <span class="text-danger">*</span></label>
+                        <label class="form-label text-muted small fw-medium">{{ __('Payment Method') }} <span class="text-danger">*</span></label>
                         <select name="payment_method" class="form-select">
-                            <option value="Cash">Cash</option>
+                            <option value="Cash">{{ __('Cash') }}</option>
                             <option value="Mpesa">Mpesa / Mobile Money</option>
-                            <option value="Bank">Bank Transfer</option>
+                            <option value="Bank">{{ __('Bank Transfer') }}</option>
                             <option value="Credit">Credit (Deni)</option>
                         </select>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-medium">Notes (Optional)</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="Any comments..."></textarea>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="{{ __('Any comments...') }}"></textarea>
                     </div>
 
                     <button type="submit" name="action" value="sale" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm" style="border-radius: 10px;" id="submitBtn" disabled>
-                        <i class="bi bi-check-circle me-2"></i> Complete Sale
+                        <i class="bi bi-check-circle me-2"></i> {{ __('Complete Sale') }}
                     </button>
                     <button type="submit" name="action" value="proforma" class="btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm mt-2" style="border-radius: 10px;" id="proformaBtn" disabled>
-                        <i class="bi bi-file-earmark-text me-2"></i> Save as Pro-forma
+                        <i class="bi bi-file-earmark-text me-2"></i> {{ __('Save as Pro-forma') }}
                     </button>
                 </div>
             </div>
@@ -208,18 +270,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const paidAmountInput = document.getElementById('paidAmount');
     const submitBtn = document.getElementById('submitBtn');
     
-    addItemBtn.addEventListener('click', function() {
-        if(productSelect.value === "") return;
-        
-        const selectedOption = productSelect.options[productSelect.selectedIndex];
-        const id = selectedOption.value;
-        const name = selectedOption.getAttribute('data-name');
-        const price = parseFloat(selectedOption.getAttribute('data-price'));
-        const stock = parseInt(selectedOption.getAttribute('data-stock'));
-        const requiresImei = selectedOption.getAttribute('data-requires-imei') === 'true';
-        const expiry = selectedOption.getAttribute('data-expiry');
-        const isExpired = selectedOption.getAttribute('data-is-expired') === 'true';
-        
+    // Restaurant Grid Clicks
+    document.querySelectorAll('.product-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const price = parseFloat(this.getAttribute('data-price'));
+            const stock = parseInt(this.getAttribute('data-stock'));
+            
+            // Add a little visual feedback effect
+            this.classList.add('bg-primary', 'text-white');
+            setTimeout(() => {
+                this.classList.remove('bg-primary', 'text-white');
+            }, 150);
+
+            addToCart(id, name, price, stock, false, '', false);
+        });
+    });
+
+    if(addItemBtn) {
+        addItemBtn.addEventListener('click', function() {
+            if(productSelect.value === "") return;
+            
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            const id = selectedOption.value;
+            const name = selectedOption.getAttribute('data-name');
+            const price = parseFloat(selectedOption.getAttribute('data-price'));
+            const stock = parseInt(selectedOption.getAttribute('data-stock'));
+            const requiresImei = selectedOption.getAttribute('data-requires-imei') === 'true';
+            const expiry = selectedOption.getAttribute('data-expiry');
+            const isExpired = selectedOption.getAttribute('data-is-expired') === 'true';
+            
+            addToCart(id, name, price, stock, requiresImei, expiry, isExpired);
+            
+            // Reset select2
+            $('#productSelect').val(null).trigger('change');
+        });
+    }
+
+    function addToCart(id, name, price, stock, requiresImei, expiry, isExpired) {
         if(isExpired) {
             if(!confirm('WARNING: This product is expired (' + expiry + '). Are you sure you want to sell it?')) {
                 return;
@@ -234,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             existingItem.qty++;
-            document.getElementById('qty_' + id).value = existingItem.qty;
+            let qtyInput = document.getElementById('qty_' + id);
+            if(qtyInput) qtyInput.value = existingItem.qty;
         } else {
             cart.push({ id: id, name: name, price: price, qty: 1, stock: stock, index: itemIndex, requiresImei: requiresImei, expiry: expiry, isExpired: isExpired });
             renderNewRow(id, name, price, stock, itemIndex, requiresImei, expiry, isExpired);
@@ -242,10 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         updateTotals();
-        
-        // Reset select2
-        $('#productSelect').val(null).trigger('change');
-    });
+    }
     
     function renderNewRow(id, name, price, stock, index, requiresImei, expiry, isExpired) {
         if(emptyCartRow) emptyCartRow.style.display = 'none';
@@ -255,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
             extraInfo += `<br><small class="${isExpired ? 'text-danger fw-bold' : 'text-warning'}">Exp: ${expiry}</small>`;
         }
         if(requiresImei) {
-            extraInfo += `<br><input type="text" name="items[${index}][imei]" class="form-control form-control-sm mt-1" placeholder="Enter IMEI / Serial" required>`;
+            extraInfo += `<div class="mt-2"><input type="text" name="items[${index}][imei]" class="form-control border-primary" style="min-width: 180px; padding: 0.5rem;" placeholder="Enter IMEI / Serial Number" required></div>`;
         }
 
         const tr = document.createElement('tr');

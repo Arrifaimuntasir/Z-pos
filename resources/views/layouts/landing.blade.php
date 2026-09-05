@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('images/icon-192.png') }}" type="image/png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Z-pos - Enterprise Point of Sale')</title>
@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -21,7 +21,7 @@
     @vite(['resources/sass/app.scss', 'resources/sass/landing.scss', 'resources/js/app.js'])
 
     <!-- PWA Setup -->
-    <link rel="manifest" href="/manifest.json?v=4">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#10b981">
     <link rel="apple-touch-icon" href="/images/logo_pos.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,7 +29,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                navigator.serviceWorker.register('/sw.js?v=81').then(function(registration) {
                     console.log('ServiceWorker registration successful');
                 }, function(err) {
                     console.log('ServiceWorker registration failed: ', err);
@@ -37,6 +37,7 @@
             });
         }
     </script>
+
     <style>
         /* Prevent global horizontal scroll on mobile */
         html, body {
@@ -74,7 +75,7 @@
                     <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                 </div>
                 <div class="ms-2 d-flex flex-column justify-content-center">
-                    <span class="fw-bold fs-4 text-primary lh-1">Z-pos</span>
+                    <span class="fw-bold fs-4 text-primary lh-1">{{ __('Z-pos') }}</span>
                 </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -146,11 +147,11 @@
                     <li class="nav-item me-3">
                         @if(App::getLocale() == 'en')
                             <a href="{{ route('lang.switch', 'sw') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
-                                <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-2" style="width: 20px; border-radius: 2px;"> Swahili
+                                <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('Swahili') }}
                             </a>
                         @else
                             <a href="{{ route('lang.switch', 'en') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
-                                <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-2" style="width: 20px; border-radius: 2px;"> English
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('English') }}
                             </a>
                         @endif
                     </li>
@@ -179,7 +180,7 @@
                             <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                         </div>
                         <div class="ms-2 d-flex flex-column justify-content-center text-start">
-                            <span class="fw-bold fs-4 text-primary lh-1">Z-pos</span>
+                            <span class="fw-bold fs-4 text-primary lh-1">{{ __('Z-pos') }}</span>
                         </div>
                     </a>
                     <p class="text-white-50">The most advanced and reliable Point of Sale system {{ __('Built for East Africa') }}n enterprises. Accelerate your growth today.</p>
@@ -195,8 +196,8 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/features') }}">{{ __('Features') }}</a></li>
                         <li><a href="{{ url('/pricing') }}">{{ __('Pricing') }}</a></li>
-                        <li><a href="#">Hardware</a></li>
-                        <li><a href="#">Updates</a></li>
+                        <li><a href="#">{{ __('Hardware') }}</a></li>
+                        <li><a href="#">{{ __('Updates') }}</a></li>
                     </ul>
                 </div>
                 
@@ -204,8 +205,8 @@
                     <h5>{{ __('Company') }}</h5>
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/about') }}">{{ __('About Us') }}</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Partners</a></li>
+                        <li><a href="#">{{ __('Careers') }}</a></li>
+                        <li><a href="#">{{ __('Partners') }}</a></li>
                         <li><a href="{{ url('/contact') }}">{{ __('Contact') }}</a></li>
                     </ul>
                 </div>
@@ -224,9 +225,9 @@
                     &copy; {{ date('Y') }} Z-pos. All rights reserved.
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <a href="{{ url('/privacy') }}" class="text-decoration-none me-3" style="color: rgba(255,255,255,0.7);">Privacy Policy</a>
-                    <a href="{{ url('/terms') }}" class="text-decoration-none me-3" style="color: rgba(255,255,255,0.7);">Terms of Service</a>
-                    <a href="{{ url('/cookies') }}" class="text-decoration-none" style="color: rgba(255,255,255,0.7);">Cookies</a>
+                    <a href="{{ url('/privacy') }}" class="text-decoration-none me-3" style="color: rgba(255,255,255,0.7);">{{ __('Privacy Policy') }}</a>
+                    <a href="{{ url('/terms') }}" class="text-decoration-none me-3" style="color: rgba(255,255,255,0.7);">{{ __('Terms of Service') }}</a>
+                    <a href="{{ url('/cookies') }}" class="text-decoration-none" style="color: rgba(255,255,255,0.7);">{{ __('Cookies') }}</a>
                 </div>
             </div>
         </div>
@@ -264,6 +265,75 @@
                 }
             });
         }
+    </script>
+    
+    <!-- PWA Install Button -->
+    <button id="pwa-install-btn" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 24px; border-radius: 50px; background-color: #1e293b; color: white; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-weight: 600; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; transition: all 0.3s ease;">
+        <i class="bi bi-phone"></i> {{ __('Install App') }}
+    </button>
+
+    <style>
+        @media all and (display-mode: standalone) {
+            #pwa-install-btn {
+                display: none !important;
+            }
+        }
+        #pwa-install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            background-color: #0f172a;
+        }
+    </style>
+
+    <script>
+        (function() {
+            let deferredPrompt = null;
+            const installBtn = document.getElementById('pwa-install-btn');
+            
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            const isInstalled = localStorage.getItem('pwa_installed') === 'true';
+
+            // Always show button by default if not standalone and not marked as installed
+            if(installBtn && !isStandalone && !isInstalled) {
+                installBtn.style.display = 'flex';
+            } else if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (installBtn && !isInstalled) {
+                    installBtn.style.display = 'flex';
+                }
+            });
+
+            if(installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        if (outcome === 'accepted') {
+                            localStorage.setItem('pwa_installed', 'true');
+                            installBtn.style.display = 'none';
+                        }
+                    } else {
+                        if (isIOS) {
+                            alert("Ili ku-install kwenye iPhone:\n\n1. Bofya alama ya 'Share' (mshale unaoangalia juu) hapo chini.\n2. Shuka chini na uchague 'Add to Home Screen'.");
+                        } else {
+                            alert("Tafadhali bofya 'Add to Home Screen' kwenye menyu ya browser yako ku-install App hii.");
+                        }
+                    }
+                });
+            }
+
+            window.addEventListener('appinstalled', () => {
+                localStorage.setItem('pwa_installed', 'true');
+                if(installBtn) installBtn.style.display = 'none';
+            });
+        })();
     </script>
 </body>
 </html>

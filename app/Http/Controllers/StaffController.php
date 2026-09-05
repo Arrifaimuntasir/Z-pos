@@ -51,13 +51,15 @@ class StaffController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'branch_id' => 'required|exists:branches,id',
+            'branch_id' => 'nullable|exists:branches,id',
         ]);
 
         // Ensure the branch belongs to the shop
-        $branch = \App\Models\Branch::find($validated['branch_id']);
-        if ($branch->shop_id !== $shopId) {
-            abort(403);
+        if (!empty($validated['branch_id'])) {
+            $branch = \App\Models\Branch::find($validated['branch_id']);
+            if ($branch && $branch->shop_id !== $shopId) {
+                abort(403);
+            }
         }
 
         $nameParts = explode(' ', $validated['name']);
@@ -70,12 +72,69 @@ class StaffController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'shop_id' => $shopId,
-            'branch_id' => $validated['branch_id'],
+            'branch_id' => $validated['branch_id'] ?? null,
         ]);
 
         $user->assignRole('Cashier');
 
         return redirect()->route('staff.index')->with('success', 'Staff member added successfully.');
+    }
+
+    public function edit(User $staff)
+    {
+        $shopId = Auth::user()->shop_id;
+        
+        // Ensure the staff belongs to the same shop
+        if ($staff->shop_id !== $shopId) {
+            abort(403);
+        }
+
+        $shop = \App\Models\Shop::find($shopId);
+        $branches = \App\Models\Branch::where('shop_id', $shopId)->get();
+
+        return view('staff.edit', compact('staff', 'shop', 'branches'));
+    }
+
+    public function update(Request $request, User $staff)
+    {
+        $shopId = Auth::user()->shop_id;
+
+        // Ensure the staff belongs to the same shop
+        if ($staff->shop_id !== $shopId) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email:rfc,dns|unique:users,email,' . $staff->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'branch_id' => 'nullable|exists:branches,id',
+        ]);
+
+        // Ensure the branch belongs to the shop
+        if (!empty($validated['branch_id'])) {
+            $branch = \App\Models\Branch::find($validated['branch_id']);
+            if ($branch && $branch->shop_id !== $shopId) {
+                abort(403);
+            }
+        }
+
+        $nameParts = explode(' ', $validated['name']);
+        $firstName = array_shift($nameParts);
+        $lastName = count($nameParts) > 0 ? implode(' ', $nameParts) : '';
+
+        $staff->first_name = $firstName;
+        $staff->last_name = $lastName;
+        $staff->email = $validated['email'];
+        $staff->branch_id = $validated['branch_id'] ?? null;
+
+        if (!empty($validated['password'])) {
+            $staff->password = Hash::make($validated['password']);
+        }
+
+        $staff->save();
+
+        return redirect()->route('staff.index')->with('success', 'Account updated successfully.');
     }
 
     public function destroy(User $staff)

@@ -6,7 +6,7 @@
     <section id="features" class="py-5 bg-light" style="min-height: 80vh;">
         <div class="container py-5">
             <div class="text-center mb-5" data-aos="fade-up">
-                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2 border border-success">Core Features</span>
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2 border border-success">{{ __('Core Features') }}</span>
                 <h2 class="fw-bold text-primary display-5">{{ __('Everything you need to scale') }}</h2>
                 <p class="text-muted fs-5 mt-3 max-w-2xl mx-auto">{{ __('From single shops to nationwide chains, we\'ve got you covered.') }}</p>
             </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Subscription - Z-pos Enterprise</title>
+    <title>{{ __('Subscription - Z-pos Enterprise') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -21,18 +21,21 @@
 
     <style>
         body, html {
-            height: 100%;
+            min-height: 100vh;
             margin: 0;
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+        }
+        body {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
         }
         .payment-container {
             width: 100%;
             max-width: 500px;
-            padding: 2rem;
+            margin: auto;
+            padding: 2.5rem 1rem;
         }
         .payment-card {
             background: white;
@@ -155,8 +158,24 @@
     </style>
 </head>
 <body>
+    <div class="payment-container position-relative">
+        
+        <div class="d-flex justify-content-end w-100 mb-3" style="max-width: 450px;">
+            <div class="dropdown">
+                <a class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.85rem; color: #334155;">
+                    @if(App::getLocale() == 'en')
+                        <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-1" style="width: 20px; border-radius: 2px;"> <span>{{ __('ENG') }}</span>
+                    @else
+                        <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-1" style="width: 20px; border-radius: 2px;"> <span>{{ __('SW') }}</span>
+                    @endif
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: auto; padding: 0.5rem;">
+                    <li><a class="dropdown-item d-flex align-items-center py-2" href="{{ route('lang.switch', 'sw') }}"><img src="https://flagcdn.com/w20/tz.png" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('Swahili') }}</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center py-2" href="{{ route('lang.switch', 'en') }}"><img src="https://flagcdn.com/w20/gb.png" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('English') }}</a></li>
+                </ul>
+            </div>
+        </div>
 
-    <div class="payment-container">
         <div class="payment-card">
             
             <div class="logo-container">
@@ -169,22 +188,22 @@
             @endphp
             
             @if($isNewRegistration)
-                <h4 class="fw-bold mb-2">Complete Your Subscription</h4>
+                <h4 class="fw-bold mb-2">{{ __('Complete Your Subscription') }}</h4>
                 <p class="text-muted small px-3">
-                    You have selected the <strong class="text-primary text-uppercase">{{ $shop->package }}</strong> Plan. 
-                    Upload your payment receipt below to activate your account instantly.
+                    {{ __('You have selected the') }} <strong class="text-primary text-uppercase">{{ $shop->package }}</strong> {{ __('Plan. 
+                    Upload your payment receipt below to activate your account instantly.') }}
                 </p>
                 <div class="price-tag">
-                    {{ $packagePrice }}<span>TZS</span>
+                    {{ $packagePrice }}<span>{{ __('TZS') }}</span>
                 </div>
             @else
-                <h4 class="fw-bold mb-2">Subscription Expired</h4>
+                <h4 class="fw-bold mb-2">{{ __('Subscription Expired') }}</h4>
                 <p class="text-muted small px-3">
-                    Your shop subscription expired on <strong>{{ $shop->valid_until ? $shop->valid_until->format('d M Y') : 'Unknown' }}</strong>. 
-                    Please pay your subscription fee to continue.
+                    {{ __('Your shop subscription expired on') }} <strong>{{ $shop->valid_until ? $shop->valid_until->format('d M Y') : 'Unknown' }}</strong>{{ __('. 
+                    Please pay your subscription fee to continue.') }}
                 </p>
                 <div class="price-tag">
-                    {{ $packagePrice }}<span>TZS</span>
+                    {{ $packagePrice }}<span>{{ __('TZS') }}</span>
                 </div>
             @endif
 
@@ -192,19 +211,19 @@
                 <div class="mb-3">
                     <div class="d-flex align-items-center mb-1">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/NMB_Bank_Plc.png" height="20" class="me-2" style="object-fit:contain" onerror="this.style.display='none'">
-                        <h6>NMB Bank</h6>
+                        <h6>{{ __('NMB Bank') }}</h6>
                     </div>
                     <p class="fw-bold text-dark fs-5">23710025242</p>
-                    <p class="small text-muted">Account Name: MUSTASIR KHAMIS MOHAMED</p>
+                    <p class="small text-muted">{{ __('Account Name: MUSTASIR KHAMIS MOHAMED') }}</p>
                 </div>
                 <hr class="text-muted opacity-25">
                 <div>
                     <div class="d-flex align-items-center mb-1">
                         <i class="bi bi-phone-vibrate text-danger me-2 fs-5"></i>
-                        <h6>Lipa Namba (Airtel Money / All Networks)</h6>
+                        <h6>{{ __('Lipa Namba (Airtel Money / All Networks)') }}</h6>
                     </div>
                     <p class="fw-bold text-danger fs-5">135511433</p>
-                    <p class="small text-muted">Name: MUNTASIR MOHAMED</p>
+                    <p class="small text-muted">{{ __('Name: MUNTASIR MOHAMED') }}</p>
                 </div>
             </div>
 
@@ -212,30 +231,30 @@
                 <div class="alert alert-primary border-0 bg-primary bg-opacity-10 text-primary rounded-3 small p-3 text-start mb-4">
                     <div class="d-flex align-items-center mb-2">
                         <i class="bi bi-clock-history fs-4 me-3"></i>
-                        <strong class="fw-bold">Payment Under Review</strong>
+                        <strong class="fw-bold">{{ __('Payment Under Review') }}</strong>
                     </div>
-                    You uploaded a receipt on <strong>{{ $pendingPayment->created_at->format('d M Y') }}</strong>. We are currently reviewing it. Please wait for admin approval.
+                    {{ __('You uploaded a receipt on') }} <strong>{{ $pendingPayment->created_at->format('d M Y') }}</strong>{{ __('. We are currently reviewing it. Please wait for admin approval.') }}
                 </div>
                 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
                 </form>
                 <button onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="btn-outline-custom">
-                    <i class="bi bi-box-arrow-right me-2"></i> Logout for now
+                    <i class="bi bi-box-arrow-right me-2"></i> {{ __('Logout for now') }}
                 </button>
             @else
                 <form action="{{ route('payments.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="custom-file-upload text-start">
-                        <label class="form-label fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> Upload Receipt</label>
-                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">Supported formats: JPG, PNG, PDF (Max 2MB)</p>
+                        <label class="form-label fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> {{ __('Upload Receipt') }}</label>
+                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ __('Supported formats: JPG, PNG, PDF (Max 2MB)') }}</p>
                         <input type="file" name="receipt" class="form-control form-control-sm" required accept="image/*,.pdf">
                         @error('receipt') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
                     </div>
                     
                     <button type="submit" class="btn-custom mb-3">
-                        Submit Payment Receipt
+                        {{ __('Submit Payment Receipt') }}
                     </button>
                 </form>
 
@@ -243,7 +262,7 @@
                     @csrf
                 </form>
                 <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-muted small text-decoration-none fw-semibold">
-                    <i class="bi bi-arrow-left me-1"></i> Back to Login
+                    <i class="bi bi-arrow-left me-1"></i> {{ __('Back to Login') }}
                 </a>
             @endif
         </div>

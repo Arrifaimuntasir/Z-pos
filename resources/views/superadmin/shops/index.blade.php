@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
-    <h4 class="fw-bold mb-0">System Admin: Manage Shops</h4>
+    <h4 class="fw-bold mb-0">{{ __('System Admin: Manage Shops') }}</h4>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">
@@ -14,12 +14,12 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="border-0 rounded-top-start ps-4 py-3">Shop Name</th>
-                        <th class="border-0 py-3">Owner Email</th>
-                        <th class="border-0 py-3">Registered At</th>
-                        <th class="border-0 py-3">Valid Until</th>
-                        <th class="border-0 py-3">Status</th>
-                        <th class="border-0 rounded-top-end text-end pe-4 py-3">Actions</th>
+                        <th class="border-0 rounded-top-start ps-4 py-3">{{ __('Shop Name') }}</th>
+                        <th class="border-0 py-3">{{ __('Owner Email') }}</th>
+                        <th class="border-0 py-3">{{ __('Registered At') }}</th>
+                        <th class="border-0 py-3">{{ __('Valid Until') }}</th>
+                        <th class="border-0 py-3">{{ __('Status') }}</th>
+                        <th class="border-0 rounded-top-end text-end pe-4 py-3">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -30,8 +30,8 @@
                                 @if($shop->logo_path)
                                     <img src="{{ asset($shop->logo_path) }}" class="rounded-circle me-3 border" width="40" height="40" style="object-fit: cover;">
                                 @else
-                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-secondary" style="width: 40px; height: 40px;">
-                                        <i class="bi bi-shop"></i>
+                                    <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-dark fw-bold" style="width: 40px; height: 40px; font-size: 18px;">
+                                        {{ strtoupper(substr(trim($shop->name), 0, 1)) }}
                                     </div>
                                 @endif
                                 <span class="fw-bold text-dark">{{ $shop->name }}</span>
@@ -54,13 +54,13 @@
                         </td>
                         <td>
                             @if($shop->is_active)
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Active</span>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">{{ __('Active') }}</span>
                             @else
-                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">Suspended</span>
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">{{ __('Suspended') }}</span>
                             @endif
                         </td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('superadmin.shops.edit', $shop) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                            <a href="{{ route('superadmin.shops.edit', $shop) }}" class="btn btn-sm btn-outline-primary me-1" title="{{ __('Edit') }}">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <form action="{{ route('superadmin.shops.toggle-status', $shop) }}" method="POST" class="d-inline">
@@ -72,7 +72,7 @@
                             <form action="{{ route('superadmin.shops.destroy', $shop) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to PERMANENTLY delete this shop and all its data?');" title="Delete">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to PERMANENTLY delete this shop and all its data?');" title="{{ __('Delete') }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </form>
@@ -93,17 +93,17 @@
                             @if($shop->logo_path)
                                 <img src="{{ asset($shop->logo_path) }}" class="rounded-circle me-3 border" width="50" height="50" style="object-fit: cover;">
                             @else
-                                <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-secondary" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-shop fs-4"></i>
+                                <div class="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 border text-dark fw-bold" style="width: 50px; height: 50px; font-size: 24px;">
+                                    {{ strtoupper(substr(trim($shop->name), 0, 1)) }}
                                 </div>
                             @endif
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">{{ $shop->name }}</h6>
                                 <div>
                                     @if($shop->is_active)
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small">Active</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 small">{{ __('Active') }}</span>
                                     @else
-                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 small">Suspended</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 small">{{ __('Suspended') }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
 
                     <div class="d-flex gap-2">
                         <a href="{{ route('superadmin.shops.edit', $shop) }}" class="btn btn-outline-primary flex-fill">
-                            <i class="bi bi-pencil"></i> Edit
+                            <i class="bi bi-pencil"></i> {{ __('Edit') }}
                         </a>
                         <form action="{{ route('superadmin.shops.toggle-status', $shop) }}" method="POST" class="d-inline flex-fill">
                             @csrf
@@ -142,7 +142,7 @@
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Are you sure you want to PERMANENTLY delete this shop and all its data?');">
-                                <i class="bi bi-trash"></i> Delete
+                                <i class="bi bi-trash"></i> {{ __('Delete') }}
                             </button>
                         </form>
                     </div>
@@ -151,7 +151,7 @@
             @empty
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-shop fs-1 d-block mb-3"></i>
-                No shops registered yet.
+                {{ __('No shops registered yet.') }}
             </div>
             @endforelse
         </div>

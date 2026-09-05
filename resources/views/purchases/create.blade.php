@@ -1,13 +1,13 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h4 class="fw-bold mb-0 text-dark">Add Purchase</h4>
-        <span class="text-muted small">Record new stock intake</span>
+        <h4 class="fw-bold mb-0 text-dark">{{ __('Add Purchase') }}</h4>
+        <span class="text-muted small">{{ __('Record new stock intake') }}</span>
     </div>
     <div>
-        <a href="{{ route('purchases.index') }}" class="btn btn-light border bg-white shadow-sm rounded-pill px-4" style="font-weight: 500; font-size: 14px;"><i class="bi bi-arrow-left me-1"></i> Back</a>
+        
     </div>
 </div>
 
@@ -19,16 +19,16 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4" style="border-radius: 16px;">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-4">Purchase Items</h6>
+                    <h6 class="fw-bold mb-4">{{ __('Purchase Items') }}</h6>
                     
                     <div class="table-responsive mb-3">
                         <table class="table table-bordered align-middle" id="itemsTable">
                             <thead class="bg-light">
                                 <tr>
-                                    <th style="width: 40%">Product</th>
-                                    <th style="width: 20%">Unit Cost</th>
-                                    <th style="width: 15%">Quantity</th>
-                                    <th style="width: 20%">Subtotal</th>
+                                    <th style="width: 40%">{{ __('Product') }}</th>
+                                    <th style="width: 20%">{{ __('Unit Cost') }}</th>
+                                    <th style="width: 15%">{{ __('Quantity') }}</th>
+                                    <th style="width: 20%">{{ __('Subtotal') }}</th>
                                     <th style="width: 5%"></th>
                                 </tr>
                             </thead>
@@ -36,7 +36,7 @@
                                 <tr class="item-row">
                                     <td>
                                         <select name="product_id[]" class="form-select product-select" required>
-                                            <option value="">Select Product...</option>
+                                            <option value="">{{ __('Select Product...') }}</option>
                                             @foreach($products as $product)
                                                 <option value="{{ $product->id }}">{{ $product->name }}</option>
                                             @endforeach
@@ -60,7 +60,7 @@
                                 <tr>
                                     <td colspan="5">
                                         <button type="button" class="btn btn-sm btn-outline-primary" id="addItemBtn">
-                                            <i class="bi bi-plus"></i> Add Another Item
+                                            <i class="bi bi-plus"></i> {{ __('Add Another Item') }}
                                         </button>
                                     </td>
                                 </tr>
@@ -70,7 +70,7 @@
                     
                     <div class="row justify-content-end">
                         <div class="col-md-5 text-end">
-                            <h5 class="fw-bold text-dark">Total: <span id="grandTotal">0.00</span></h5>
+                            <h5 class="fw-bold text-dark">{{ __('Total:') }} <span id="grandTotal">0.00</span></h5>
                         </div>
                     </div>
                     
@@ -79,8 +79,8 @@
             
             <div class="card border-0 shadow-sm" style="border-radius: 16px;">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3">Notes</h6>
-                    <textarea name="notes" class="form-control" rows="3" placeholder="Any additional notes about this purchase..."></textarea>
+                    <h6 class="fw-bold mb-3">{{ __('Notes') }}</h6>
+                    <textarea name="notes" class="form-control" rows="3" placeholder="{{ __('Any additional notes about this purchase...') }}"></textarea>
                 </div>
             </div>
         </div>
@@ -89,12 +89,12 @@
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm sticky-top" style="top: 20px; border-radius: 16px;">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-4">Purchase Info</h6>
+                    <h6 class="fw-bold mb-4">{{ __('Purchase Info') }}</h6>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-medium text-dark">Supplier <span class="text-danger">*</span></label>
+                        <label class="form-label fw-medium text-dark">{{ __('Supplier') }} <span class="text-danger">*</span></label>
                         <select name="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror" required>
-                            <option value="">Select Supplier...</option>
+                            <option value="">{{ __('Select Supplier...') }}</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                             @endforeach
@@ -105,7 +105,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-medium text-dark">Reference No <span class="text-danger">*</span></label>
+                        <label class="form-label fw-medium text-dark">{{ __('Reference No') }} <span class="text-danger">*</span></label>
                         <input type="text" name="reference_no" class="form-control @error('reference_no') is-invalid @enderror" value="{{ old('reference_no', $reference_no) }}" readonly required>
                         @error('reference_no')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -113,7 +113,7 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-medium text-dark">Date <span class="text-danger">*</span></label>
+                        <label class="form-label fw-medium text-dark">{{ __('Date') }} <span class="text-danger">*</span></label>
                         <input type="date" name="purchase_date" class="form-control @error('purchase_date') is-invalid @enderror" value="{{ date('Y-m-d') }}" required>
                         @error('purchase_date')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -121,7 +121,7 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label class="form-label fw-medium text-dark">Status <span class="text-danger">*</span></label>
+                        <label class="form-label fw-medium text-dark">{{ __('Status') }} <span class="text-danger">*</span></label>
                         <select name="status" class="form-select" required>
                             <option value="completed">Completed (Adds to Stock)</option>
                             <option value="pending">Pending (Ordered)</option>
@@ -129,7 +129,7 @@
                     </div>
                     
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm" style="border-radius: 8px;">
-                        Save Purchase
+                        {{ __('Save Purchase') }}
                     </button>
                 </div>
             </div>

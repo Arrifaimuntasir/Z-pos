@@ -65,7 +65,7 @@
 
 <!-- KPI Cards -->
 <div class="row g-3 mb-5">
-    <div class="col-md-3">
+    <div class="col-6 col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Total Sales') }}</span>
@@ -73,11 +73,10 @@
                     <i class="bi bi-cash-stack"></i>
                 </div>
             </div>
-            <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalSales) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3>
-        </div>
+            <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalSales) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3><small class="text-muted" style="font-size:0.72rem; visibility:hidden;">Placeholder</small></div>
     </div>
-    
-    <div class="col-md-3">
+
+    <div class="col-6 col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Gross Profit') }}</span>
@@ -86,10 +85,25 @@
                 </div>
             </div>
             <h3 class="fw-bold mb-0 text-dark">{{ number_format($grossProfit) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3>
+            <small class="text-muted" style="font-size:0.72rem;">{{ __('Revenue minus cost of goods') }}</small>
         </div>
     </div>
 
-    <div class="col-md-3">
+    @if($isAdmin)
+    <div class="col-6 col-md-3">
+        <div class="dash-card dash-card-white">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="small text-muted fw-semibold">{{ __('Purchases') }}</span>
+                <div class="dash-icon-box bg-warning bg-opacity-10 text-warning">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+            </div>
+            <h3 class="fw-bold mb-0 text-warning">{{ number_format($totalPurchases) }} <span style="font-size: 0.8rem;" class="fw-normal">TSh</span></h3>
+            <small class="text-muted" style="font-size:0.72rem;">{{ __('Stock bought from suppliers') }}</small>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Expenses') }}</span>
@@ -98,10 +112,11 @@
                 </div>
             </div>
             <h3 class="fw-bold mb-0 text-danger">{{ number_format($totalExpense) }} <span style="font-size: 0.8rem;" class="fw-normal">TSh</span></h3>
+            <small class="text-muted" style="font-size:0.72rem;">{{ __('Rent, utilities, salaries etc.') }}</small>
         </div>
     </div>
-    
-    <div class="col-md-3">
+
+    <div class="col-6 col-md-3">
         <div class="dash-card {{ $netProfit >= 0 ? 'bg-success text-white' : 'bg-danger text-white' }} border-0 shadow-sm">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small fw-semibold opacity-75">{{ $netProfit >= 0 ? __('Net Profit') : __('Net Loss') }}</span>
@@ -110,10 +125,13 @@
                 </div>
             </div>
             <h3 class="fw-bold mb-0">{{ number_format($netProfit) }} <span style="font-size: 0.8rem;" class="fw-normal opacity-75">TSh</span></h3>
+            <small class="opacity-60" style="font-size:0.72rem;">{{ __('Gross Profit - Expenses') }}</small>
         </div>
     </div>
+    @endif
 </div>
 
+@if($isAdmin)
 <div class="row g-4 mb-4">
     <!-- Top Chart: Cash Flow -->
     <div class="col-12">
@@ -127,26 +145,33 @@
                     <div id="cashFlowChart" style="min-height: 300px;"></div>
                 </div>
                 <div class="col-md-3 border-start ps-4">
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <div class="d-flex align-items-center mb-1">
                             <div class="legend-dot bg-success"></div>
-                            <span class="small text-muted fw-semibold">{{ __('Total Income') }}</span>
+                            <span class="small text-muted fw-semibold">{{ __('Cash In') }}</span>
                         </div>
                         <h4 class="fw-bold text-dark mb-0">+ {{ number_format(array_sum($monthlyIncome)) }}</h4>
+                        <small class="text-muted" style="font-size:0.72rem;">{{ __('Sales revenue received') }}</small>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <div class="d-flex align-items-center mb-1">
                             <div class="legend-dot bg-warning"></div>
-                            <span class="small text-muted fw-semibold">{{ __('Total Expenses') }}</span>
+                            <span class="small text-muted fw-semibold">{{ __('Cash Out') }}</span>
                         </div>
                         <h4 class="fw-bold text-dark mb-0">- {{ number_format(array_sum($monthlyExpense)) }}</h4>
+                        <small class="text-muted" style="font-size:0.72rem;">
+                            {{ __('Purchases') }}: {{ number_format($totalPurchases) }} TSh<br>
+                            {{ __('Expenses') }}: {{ number_format($totalExpense) }} TSh
+                        </small>
                     </div>
                     <div>
                         <div class="d-flex align-items-center mb-1">
                             <div class="legend-dot bg-danger"></div>
                             <span class="small text-muted fw-semibold">{{ __('Net Cash Flow') }}</span>
                         </div>
-                        <h4 class="fw-bold text-dark mb-0">{{ number_format(array_sum($monthlyNetCash)) }}</h4>
+                        @php $netCash = array_sum($monthlyNetCash); @endphp
+                        <h4 class="fw-bold mb-0 {{ $netCash >= 0 ? 'text-success' : 'text-danger' }}">{{ number_format($netCash) }}</h4>
+                        <small class="text-muted" style="font-size:0.72rem;">{{ __('Cash In - Cash Out') }}</small>
                     </div>
                 </div>
             </div>
@@ -177,6 +202,7 @@
         </div>
     </div>
 </div>
+@endif
 
 <div class="row g-4 mb-4">
     <!-- Recent Sales Table -->
@@ -275,10 +301,10 @@
         // --- 2. Income & Expenses Bar Chart ---
         var barOptions = {
             series: [{
-                name: 'Total Income',
+                name: 'Cash In',
                 data: {!! json_encode($monthlyIncome) !!}
             }, {
-                name: 'Total Expenses',
+                name: 'Cash Out',
                 data: {!! json_encode($monthlyExpense) !!}
             }],
             chart: {
@@ -384,3 +410,4 @@
     });
 </script>
 @endsection
+

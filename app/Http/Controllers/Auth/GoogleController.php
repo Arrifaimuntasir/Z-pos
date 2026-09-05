@@ -89,6 +89,14 @@ class GoogleController extends Controller
             'shop_id' => $shop->id,
         ]);
 
+        $branch = \App\Models\Branch::create([
+            'shop_id' => $shop->id,
+            'name' => 'Main Branch',
+            'is_active' => true,
+        ]);
+
+        $newUser->update(['branch_id' => $branch->id]);
+
         Auth::login($newUser);
 
         // This will redirect to home, but the SubscriptionMiddleware will catch it 

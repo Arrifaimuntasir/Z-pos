@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Forgot Password - Z-pos Enterprise</title>
+    <title>{{ __('Forgot Password - Z-pos Enterprise') }}</title>
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -128,16 +128,16 @@
                     <div style="width: 55px; height: 55px; overflow: hidden; background: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; margin-right: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Logo" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                     </div>
-                    <h1 class="fw-bold mb-0">Z-pos Enterprise</h1>
+                    <h1 class="fw-bold mb-0">{{ __('Z-pos Enterprise') }}</h1>
                 </div>
-                <p class="fs-5 opacity-75 mb-0">Securely recover your account access.</p>
+                <p class="fs-5 opacity-75 mb-0">{{ __('Securely recover your account access.') }}</p>
             </div>
         </div>
 
         <!-- Form Side -->
         <div class="login-form-side position-relative">
             <a href="{{ route('login') }}" class="position-absolute top-0 start-0 m-4 text-decoration-none text-muted d-flex align-items-center gap-2 hover-primary" style="z-index: 10; transition: color 0.3s;">
-                <i class="bi bi-arrow-left"></i> Back to Login
+                <i class="bi bi-arrow-left"></i> {{ __('Back to Login') }}
             </a>
             <div class="login-form-container">
                 <div class="login-logo mb-4 d-flex justify-content-center align-items-center">
@@ -145,7 +145,7 @@
                         <img src="{{ asset('images/logo_pos.png') }}" alt="Z-pos Icon" style="width: 100%; height: 100%; object-fit: cover; transform: scale(2.2);">
                     </div>
                     <div class="ms-3 d-flex flex-column justify-content-center text-start">
-                        <span class="fw-bold fs-2 text-primary lh-1">Z-pos</span>
+                        <span class="fw-bold fs-2 text-primary lh-1">{{ __('Z-pos') }}</span>
                     </div>
                 </div>
 
@@ -173,7 +173,7 @@
                     </div>
 
                     <button type="submit" class="btn-login mt-2 mb-3 d-flex justify-content-center align-items-center gap-2">
-                        <i class="bi bi-envelope-paper"></i> Send Reset Link
+                        <i class="bi bi-envelope-paper"></i> {{ __('Send Reset Link') }}
                     </button>
                     
                 </form>

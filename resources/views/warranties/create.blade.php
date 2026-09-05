@@ -124,7 +124,7 @@
         </div>
         
         <div class="mb-4">
-            <button type="button" class="btn type-btn active px-4 rounded-pill" style="pointer-events: none;"><i class="bi bi-person me-1"></i> Individual</button>
+            <button type="button" class="btn type-btn active px-4 rounded-pill" style="pointer-events: none;"><i class="bi bi-person me-1"></i> {{ __('Individual') }}</button>
         </div>
         
         <div class="row g-3 mb-3">
@@ -143,45 +143,45 @@
                 <label class="form-label">{{ __('Region') }}</label>
                 <select name="region" class="form-select">
                     <option value="">{{ __('Select Region') }}</option>
-                    <option value="Arusha">Arusha</option>
-                    <option value="Dar es Salaam">Dar es Salaam</option>
-                    <option value="Dodoma">Dodoma</option>
-                    <option value="Geita">Geita</option>
-                    <option value="Iringa">Iringa</option>
-                    <option value="Kagera">Kagera</option>
-                    <option value="Katavi">Katavi</option>
-                    <option value="Kigoma">Kigoma</option>
-                    <option value="Kilimanjaro">Kilimanjaro</option>
-                    <option value="Lindi">Lindi</option>
-                    <option value="Manyara">Manyara</option>
-                    <option value="Mara">Mara</option>
-                    <option value="Mbeya">Mbeya</option>
-                    <option value="Morogoro">Morogoro</option>
-                    <option value="Mtwara">Mtwara</option>
-                    <option value="Mwanza">Mwanza</option>
-                    <option value="Njombe">Njombe</option>
-                    <option value="Pemba Kaskazini">Pemba Kaskazini</option>
-                    <option value="Pemba Kusini">Pemba Kusini</option>
-                    <option value="Pwani">Pwani</option>
-                    <option value="Rukwa">Rukwa</option>
-                    <option value="Ruvuma">Ruvuma</option>
-                    <option value="Shinyanga">Shinyanga</option>
-                    <option value="Simiyu">Simiyu</option>
-                    <option value="Singida">Singida</option>
-                    <option value="Songwe">Songwe</option>
-                    <option value="Tabora">Tabora</option>
-                    <option value="Tanga">Tanga</option>
-                    <option value="Unguja Kaskazini">Unguja Kaskazini</option>
-                    <option value="Unguja Kusini">Unguja Kusini</option>
-                    <option value="Unguja Mjini Magharibi">Unguja Mjini Magharibi</option>
+                    <option value="Arusha">{{ __('Arusha') }}</option>
+                    <option value="Dar es Salaam">{{ __('Dar es Salaam') }}</option>
+                    <option value="Dodoma">{{ __('Dodoma') }}</option>
+                    <option value="Geita">{{ __('Geita') }}</option>
+                    <option value="Iringa">{{ __('Iringa') }}</option>
+                    <option value="Kagera">{{ __('Kagera') }}</option>
+                    <option value="Katavi">{{ __('Katavi') }}</option>
+                    <option value="Kigoma">{{ __('Kigoma') }}</option>
+                    <option value="Kilimanjaro">{{ __('Kilimanjaro') }}</option>
+                    <option value="Lindi">{{ __('Lindi') }}</option>
+                    <option value="Manyara">{{ __('Manyara') }}</option>
+                    <option value="Mara">{{ __('Mara') }}</option>
+                    <option value="Mbeya">{{ __('Mbeya') }}</option>
+                    <option value="Morogoro">{{ __('Morogoro') }}</option>
+                    <option value="Mtwara">{{ __('Mtwara') }}</option>
+                    <option value="Mwanza">{{ __('Mwanza') }}</option>
+                    <option value="Njombe">{{ __('Njombe') }}</option>
+                    <option value="Pemba Kaskazini">{{ __('Pemba Kaskazini') }}</option>
+                    <option value="Pemba Kusini">{{ __('Pemba Kusini') }}</option>
+                    <option value="Pwani">{{ __('Pwani') }}</option>
+                    <option value="Rukwa">{{ __('Rukwa') }}</option>
+                    <option value="Ruvuma">{{ __('Ruvuma') }}</option>
+                    <option value="Shinyanga">{{ __('Shinyanga') }}</option>
+                    <option value="Simiyu">{{ __('Simiyu') }}</option>
+                    <option value="Singida">{{ __('Singida') }}</option>
+                    <option value="Songwe">{{ __('Songwe') }}</option>
+                    <option value="Tabora">{{ __('Tabora') }}</option>
+                    <option value="Tanga">{{ __('Tanga') }}</option>
+                    <option value="Unguja Kaskazini">{{ __('Unguja Kaskazini') }}</option>
+                    <option value="Unguja Kusini">{{ __('Unguja Kusini') }}</option>
+                    <option value="Unguja Mjini Magharibi">{{ __('Unguja Mjini Magharibi') }}</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label">{{ __('Gender') }} *</label>
                 <select name="gender" class="form-select">
-                    <option value="">Select gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="">{{ __('Select gender') }}</option>
+                    <option value="Male">{{ __('Male') }}</option>
+                    <option value="Female">{{ __('Female') }}</option>
                 </select>
             </div>
         </div>
@@ -199,7 +199,7 @@
                 <i class="bi bi-box-seam"></i> {{ __('Products') }} *
             </div>
             <button type="button" class="btn btn-add-product px-3 py-1" onclick="addProductRow()">
-                <i class="bi bi-plus"></i> Add Product
+                <i class="bi bi-plus"></i> {{ __('Add Product') }}
             </button>
         </div>
         
@@ -245,18 +245,18 @@
             <div class="col-md-6">
                 <label class="form-label"><i class="bi bi-calendar3"></i> {{ __('Warranty Period') }} *</label>
                 <select name="duration" id="durationSelect" class="form-select" required onchange="calculateExpiry()">
-                    <option value="7 Days">7 Days</option>
-                    <option value="14 Days">14 Days</option>
-                    <option value="1 month">1 month</option>
-                    <option value="3 months">3 months</option>
-                    <option value="6 months">6 months</option>
-                    <option value="12 months">12 months</option>
+                    <option value="7 Days">{{ __('7 Days') }}</option>
+                    <option value="14 Days">{{ __('14 Days') }}</option>
+                    <option value="1 month">{{ __('1 month') }}</option>
+                    <option value="3 months">{{ __('3 months') }}</option>
+                    <option value="6 months">{{ __('6 months') }}</option>
+                    <option value="12 months">{{ __('12 months') }}</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label"><i class="bi bi-calendar-event"></i> {{ __('Expiry Date') }}</label>
                 <input type="date" name="end_date" id="endDateInput" class="form-control bg-light" value="{{ date('Y-m-d', strtotime('+7 days')) }}" required readonly>
-                <div class="small text-muted mt-1">Expiry date is set automatically</div>
+                <div class="small text-muted mt-1">{{ __('Expiry date is set automatically') }}</div>
             </div>
         </div>
 
@@ -362,7 +362,7 @@
 
         <div class="text-end mt-4 pt-3 border-top">
             <button type="submit" class="btn btn-primary fw-bold px-5 py-2" style="border-radius: 8px;">
-                Save Warrant
+                {{ __('Save Warrant') }}
             </button>
         </div>
     </div>
