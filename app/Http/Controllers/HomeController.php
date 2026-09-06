@@ -210,7 +210,7 @@ class HomeController extends Controller
                 $q->where('branch_id', $branchId);
             })->sum('total_amount');
         if ($totalPurchases > 0) {
-            $topExpensesRaw['Purchases'] = $totalPurchases;
+            $topExpensesRaw[__('Purchases')] = $totalPurchases;
         }
 
         // Sort combined array and get top 4
@@ -220,7 +220,7 @@ class HomeController extends Controller
         $topExpenseLabels = array_keys($topExpensesRaw);
         // Replace empty category with "Uncategorized"
         foreach($topExpenseLabels as $k => $v) {
-            if (empty($v)) $topExpenseLabels[$k] = 'Uncategorized';
+            if (empty($v)) $topExpenseLabels[$k] = __('Uncategorized');
         }
         $topExpenseData = array_values($topExpensesRaw);
 

@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Return Invoices')
 
@@ -27,14 +27,14 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted">
                     <tr>
-                        <th class="ps-4 border-0 fw-semibold py-3 rounded-start">{{ __('Date') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Return Ref') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Invoice Ref') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Customer') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Items') }}</th>
-                        <th class="border-0 fw-semibold text-end">{{ __('Refund Amount') }}</th>
-                        <th class="border-0 fw-semibold text-center">{{ __('Print PDF') }}</th>
-                        <th class="pe-4 border-0 fw-semibold text-center rounded-end">{{ __('View Sale') }}</th>
+                        <th class="ps-4 border-0 fw-semibold py-3 rounded-start" style="min-width: 120px;">{{ __('Date') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 150px;">{{ __('Return Ref') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 150px;">{{ __('Invoice Ref') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 150px;">{{ __('Customer') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 200px;">{{ __('Items') }}</th>
+                        <th class="border-0 fw-semibold text-end" style="min-width: 150px;">{{ __('Refund Amount') }}</th>
+                        <th class="border-0 fw-semibold text-center" style="min-width: 100px;">{{ __('Print PDF') }}</th>
+                        <th class="pe-4 border-0 fw-semibold text-center rounded-end" style="min-width: 100px;">{{ __('View Sale') }}</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -60,7 +60,7 @@
                             <span class="small fw-medium text-dark">
                                 @foreach($rtn->items as $item)
                                     <div>
-                                        {{ $item->saleItem && $item->saleItem->product ? $item->saleItem->product->name : 'Unknown' }} ({{ $item->quantity }})
+                                        {{ $item->saleItem && $item->saleItem->product ? $item->saleItem->product->name : 'Unknown' }} ({{ $item->quantity }} {{ $item->saleItem && $item->saleItem->product && $item->saleItem->product->unit ? $item->saleItem->product->unit->short_name : '' }})
                                         @if($item->condition === 'good')
                                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2" style="font-size: 0.65rem;">{{ __('Good') }}</span>
                                         @elseif($item->condition === 'defective')

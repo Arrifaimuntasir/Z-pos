@@ -37,7 +37,7 @@
                 id="deleteBtn">
                 <i class="bi bi-trash3-fill me-1"></i> <span>{{ __('Delete') }}</span>
             </button>
-            <button type="button" class="btn btn-sm btn-dark text-white px-4 shadow-sm rounded-pill fw-bold" id="toggleSelectBtn">
+            <button type="button" class="btn btn-sm shadow-sm rounded-pill px-3 fw-bold" style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da;" id="toggleSelectBtn">
                 <i class="bi bi-check2-square me-1"></i> {{ __('Select') }}
             </button>
         </div>
@@ -65,20 +65,20 @@
                 <thead class="bg-light text-muted">
                     <tr>
                         <th class="ps-3 border-0 fw-semibold py-3 selection-th d-none" style="width: 40px;"></th>
-                        <th class="ps-4 border-0 fw-semibold py-3">{{ __('Date') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Reference No.') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Product Name') }}</th>
-                        <th class="border-0 fw-semibold">{{ __('Customer') }}</th>
+                        <th class="ps-4 border-0 fw-semibold py-3" style="min-width: 120px;">{{ __('Date') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 150px;">{{ __('Reference No.') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 200px;">{{ __('Product Name') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 150px;">{{ __('Customer') }}</th>
                         @if($isAdmin)
-                        <th class="border-0 fw-semibold">{{ __('Seller') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 120px;">{{ __('Seller') }}</th>
                         @endif
-                        <th class="border-0 fw-semibold">{{ __('Status') }}</th>
-                        <th class="border-0 fw-semibold text-end">{{ __('Total Amount') }}</th>
-                        <th class="border-0 fw-semibold text-center">{{ __('Receipt') }}</th>
+                        <th class="border-0 fw-semibold" style="min-width: 120px;">{{ __('Status') }}</th>
+                        <th class="border-0 fw-semibold text-end" style="min-width: 150px;">{{ __('Total Amount') }}</th>
+                        <th class="border-0 fw-semibold text-center" style="min-width: 80px;">{{ __('Receipt') }}</th>
                         @if(auth()->user()->shop && auth()->user()->shop->business_type === 'Electronics / IT')
-                        <th class="border-0 fw-semibold text-center">{{ __('Warranty') }}</th>
+                        <th class="border-0 fw-semibold text-center" style="min-width: 80px;">{{ __('Warranty') }}</th>
                         @endif
-                        <th class="pe-4 border-0 fw-semibold text-center rounded-end">{{ __('Action') }}</th>
+                        <th class="pe-4 border-0 fw-semibold text-center rounded-end" style="min-width: 120px;">{{ __('Action') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -234,16 +234,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectMode) {
             // Enter select mode
             toggleSelectBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i> {{ __("Cancel") }}';
-            toggleSelectBtn.classList.remove('btn-dark');
-            toggleSelectBtn.classList.add('btn-secondary');
             selectAllBar.classList.remove('d-none');
             checkboxCells.forEach(c => c.classList.remove('d-none'));
             selectionThs.forEach(c => c.classList.remove('d-none'));
         } else {
             // Exit select mode
             toggleSelectBtn.innerHTML = '<i class="bi bi-check2-square me-1"></i> {{ __("Select") }}';
-            toggleSelectBtn.classList.remove('btn-secondary');
-            toggleSelectBtn.classList.add('btn-dark');
             selectAllBar.classList.add('d-none');
             checkboxCells.forEach(c => c.classList.add('d-none'));
             selectionThs.forEach(c => c.classList.add('d-none'));

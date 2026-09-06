@@ -131,11 +131,11 @@
                         <table class="table align-middle" id="cartTable">
                             <thead class="bg-light text-muted">
                                 <tr>
-                                    <th class="ps-3 border-0 rounded-start">{{ __('Product') }}</th>
-                                    <th class="border-0 text-center" style="width: 120px;">{{ __('Qty') }}</th>
-                                    <th class="border-0 text-end">{{ __('Price') }}</th>
-                                    <th class="border-0 text-end">{{ __('Total') }}</th>
-                                    <th class="border-0 rounded-end text-center" style="width: 50px;"></th>
+                                    <th class="ps-3 border-0 rounded-start" style="min-width: 250px;">{{ __('Product') }}</th>
+                                    <th class="border-0 text-center" style="min-width: 120px;">{{ __('Qty') }}</th>
+                                    <th class="border-0 text-end" style="min-width: 120px;">{{ __('Price') }}</th>
+                                    <th class="border-0 text-end" style="min-width: 120px;">{{ __('Total') }}</th>
+                                    <th class="border-0 rounded-end text-center" style="min-width: 50px;"></th>
                                 </tr>
                             </thead>
                             <tbody id="cartBody">

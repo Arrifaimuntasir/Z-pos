@@ -26,14 +26,14 @@ class NotificationController extends Controller
 
         $notifications = $query->latest()->paginate(20)->appends(['filter' => $filter]);
 
-        // Mark unread as read on this page
-        foreach ($notifications as $notification) {
-            if ($notification->unread()) {
-                $notification->markAsRead();
-            }
-        }
+        // Mark ALL unread as read in one query (more efficient)
+        $user->unreadNotifications()->update(['read_at' => now()]);
 
-        return view('notifications.index', compact('notifications', 'filter'));
+        return response()
+            ->view('notifications.index', compact('notifications', 'filter'))
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     public function destroy(Request $request)

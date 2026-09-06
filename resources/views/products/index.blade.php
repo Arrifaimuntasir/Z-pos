@@ -26,14 +26,14 @@
     <div class="card-header bg-white border-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <!-- Bulk Delete Controls -->
         <div class="d-flex align-items-center">
-            <button type="button" id="toggleSelectBtn" class="btn btn-outline-secondary btn-sm shadow-sm rounded-pill px-3">
-                <i class="bi bi-check2-square"></i> Select
+            <button type="button" id="toggleSelectBtn" class="btn btn-sm shadow-sm rounded-pill px-3 fw-bold" style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da;">
+                <i class="bi bi-check2-square"></i> {{ __('Select') }}
             </button>
             <form id="bulkDeleteForm" action="{{ route('products.bulk-destroy') }}" method="POST" class="d-inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" id="bulkDeleteBtn" class="btn btn-danger btn-sm shadow-sm rounded-pill px-3 ms-2 d-none" onclick="return confirm('Are you sure you want to delete selected products?');">
-                    <i class="bi bi-trash"></i> Delete Selected (<span id="selectedCount">0</span>)
+                <button type="submit" id="bulkDeleteBtn" class="btn btn-danger btn-sm shadow-sm rounded-pill px-3 ms-2 d-none" onclick="return confirm('{{ __('Are you sure you want to delete selected products?') }}');">
+                    <i class="bi bi-trash"></i> {{ __('Delete Selected') }} (<span id="selectedCount">0</span>)
                 </button>
             </form>
         </div>
@@ -50,18 +50,18 @@
                 <table class="table table-hover align-middle">
                     <thead class="text-muted table-light">
                         <tr>
-                            <th class="select-column d-none" style="width: 40px;">
+                            <th class="select-column d-none" style="width: 40px; min-width: 40px;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="selectAll">
                                 </div>
                             </th>
-                            <th>{{ __('Product') }}</th>
-                            <th>{{ __('Brand & Model') }}</th>
-                            <th>{{ __('SKU') }}</th>
-                            <th class="text-center">{{ __('Stock') }}</th>
-                            <th class="text-end">{{ __('Buying Price') }}</th>
-                            <th class="text-end">{{ __('Selling Price') }}</th>
-                            <th class="text-end">{{ __('Actions') }}</th>
+                            <th style="min-width: 200px;">{{ __('Product') }}</th>
+                            <th style="min-width: 150px;">{{ __('Brand & Model') }}</th>
+                            <th style="min-width: 120px;">{{ __('SKU') }}</th>
+                            <th class="text-center" style="min-width: 120px;">{{ __('Stock') }}</th>
+                            <th class="text-end" style="min-width: 120px;">{{ __('Buying Price') }}</th>
+                            <th class="text-end" style="min-width: 120px;">{{ __('Selling Price') }}</th>
+                            <th class="text-end" style="min-width: 100px;">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -159,10 +159,10 @@
         toggleSelectBtn.addEventListener('click', function() {
             selectMode = !selectMode;
             if (selectMode) {
-                toggleSelectBtn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel';
+                toggleSelectBtn.innerHTML = '<i class="bi bi-x-circle"></i> {{ __('Cancel') }}';
                 selectColumns.forEach(col => col.classList.remove('d-none'));
             } else {
-                toggleSelectBtn.innerHTML = '<i class="bi bi-check2-square"></i> Select';
+                toggleSelectBtn.innerHTML = '<i class="bi bi-check2-square"></i> {{ __('Select') }}';
                 selectColumns.forEach(col => col.classList.add('d-none'));
                 // Uncheck all
                 selectAll.checked = false;

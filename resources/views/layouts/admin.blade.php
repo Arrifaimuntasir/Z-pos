@@ -279,6 +279,7 @@
                 </li>
                 @endif
                 
+
                 @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Electronics / IT']))
                 <li class="{{ request()->is('warranties*') ? 'active' : '' }}">
                     <a href="{{ route('warranties.index') }}" style="color: #64748b;">
@@ -297,8 +298,8 @@
                 
                 @if(Auth::user()->hasRole('Administrator'))
                 <li class="{{ request()->is('staff*') ? 'active' : '' }}">
-                    <a href="{{ route('staff.index') }}" style="color: #64748b;">
-                        <i class="bi bi-people-fill me-3"></i> {{ __('Staff & Users') }}
+                    <a href="{{ route('staff.index') }}" class="d-flex align-items-center" style="color: #64748b; line-height: 1.3;">
+                        <i class="bi bi-people-fill me-3"></i> <span>{{ __('Staff & Users') }}</span>
                     </a>
                 </li>
                 @endif
@@ -747,6 +748,16 @@
     
 
     @stack('scripts')
+
+    {{-- Fix: Force reload when navigating back to refresh notification badge count --}}
+    <script>
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Page was loaded from bfcache (back button) - force a fresh reload
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 </html>
 

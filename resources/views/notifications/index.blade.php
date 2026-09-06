@@ -3,11 +3,14 @@
 @section('content')
 <div class="container-fluid py-4">
     <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold">{{ __('App Notifications') }}</h4>
-            <div class="btn-group">
-                <a href="{{ route('notifications.index', ['filter' => 'all']) }}" class="btn btn-sm {{ $filter === 'all' ? 'btn-primary' : 'btn-outline-primary' }}">{{ __('All') }}</a>
-                <a href="{{ route('notifications.index', ['filter' => 'today']) }}" class="btn btn-sm {{ $filter === 'today' ? 'btn-primary' : 'btn-outline-primary' }}">{{ __('Today') }}</a>
+        <div class="col-12">
+            <h4 class="mb-1 fw-bold"><i class="bi bi-bell-fill me-2"></i>{{ __('Sales Notifications') }}</h4>
+            <p class="text-muted small mb-3">{{ __('Track and manage your recent sales activity in real-time') }}</p>
+            <div class="btn-group w-100 mb-3" role="group">
+                <a href="{{ route('notifications.index', ['filter' => 'today']) }}" class="btn" style="{{ $filter === 'today' ? 'background-color: #64748b; color: white; border: 1px solid #64748b;' : 'background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;' }}">{{ __('Today') }}</a>
+                <a href="{{ route('notifications.index', ['filter' => 'month']) }}" class="btn" style="{{ $filter === 'month' ? 'background-color: #64748b; color: white; border: 1px solid #64748b;' : 'background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;' }}">{{ __('This Month') }}</a>
+                <a href="{{ route('notifications.index', ['filter' => 'year']) }}" class="btn" style="{{ $filter === 'year' ? 'background-color: #64748b; color: white; border: 1px solid #64748b;' : 'background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;' }}">{{ __('This Year') }}</a>
+                <a href="{{ route('notifications.index', ['filter' => 'all']) }}" class="btn" style="{{ $filter === 'all' ? 'background-color: #64748b; color: white; border: 1px solid #64748b;' : 'background-color: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;' }}">{{ __('All') }}</a>
             </div>
         </div>
     </div>
@@ -33,15 +36,15 @@
                     @method('DELETE')
                     
                     <div class="p-3 border-bottom bg-light d-flex justify-content-between align-items-center">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="selectAll">
-                            <label class="form-check-label" for="selectAll">
-                                {{ __('Select All') }}
-                            </label>
+                        <span class="text-muted small fw-medium">{{ __('Showing') }} {{ $notifications->count() }} {{ __('of') }} {{ $notifications->total() }}</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-sm text-white px-3 shadow-sm rounded-pill fw-bold" style="background-color: #64748b;" id="toggleSelectBtn">
+                                <i class="bi bi-check2-square me-1"></i> {{ __('Select') }}
+                            </button>
+                            <button type="submit" class="btn btn-sm btn-danger px-3 shadow-sm rounded-pill d-none" id="deleteSelectedBtn" onclick="return confirm('{{ __('Are you sure you want to delete selected notifications?') }}')">
+                                <i class="bi bi-trash"></i> {{ __('Delete') }}
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('{{ __('Are you sure you want to delete selected notifications?') }}')">
-                            <i class="bi bi-trash"></i> {{ __('Delete Selected') }}
-                        </button>
                     </div>
 
                     <div class="list-group list-group-flush">
@@ -67,8 +70,24 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1">
-                                        @if(isset($notification->data['message']))
-                                            {{ $notification->data['message'] }}
+                                        @php
+                                            $msg = $notification->data['message'] ?? '';
+                                            if (app()->getLocale() == 'en') {
+                                                $msg = str_replace(
+                                                    ['Mauzo mapya yamefanyika kwa thamani ya Tsh', 'Return mpya!', 'Nzima (zimerudishwa stock):', 'Mbovu (hazijarudishwa stock):'], 
+                                                    ['New sale recorded for TSh', 'New Return!', 'Good (Restocked):', 'Defective (Not restocked):'], 
+                                                    $msg
+                                                );
+                                            } else {
+                                                $msg = str_replace(
+                                                    ['New sale recorded for TSh', 'New Return!', 'Good (Restocked):', 'Defective (Not restocked):'], 
+                                                    ['Mauzo mapya yamefanyika kwa thamani ya Tsh', 'Return mpya!', 'Nzima (zimerudishwa stock):', 'Mbovu (hazijarudishwa stock):'], 
+                                                    $msg
+                                                );
+                                            }
+                                        @endphp
+                                        @if($msg)
+                                            {{ $msg }}
                                         @else
                                             {{ __('New Notification') }}
                                         @endif
@@ -106,9 +125,41 @@
 
 @push('scripts')
 <script>
-    document.getElementById('selectAll').addEventListener('change', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleSelectBtn = document.getElementById('toggleSelectBtn');
+        const deleteBtn = document.getElementById('deleteSelectedBtn');
         const checkboxes = document.querySelectorAll('.notif-check');
-        checkboxes.forEach(cb => cb.checked = this.checked);
+        const checkboxContainers = document.querySelectorAll('.form-check.mt-1.me-3');
+        let selectMode = false;
+
+        // Hide checkboxes initially
+        checkboxContainers.forEach(c => c.classList.add('d-none'));
+
+        toggleSelectBtn.addEventListener('click', function () {
+            selectMode = !selectMode;
+            if (selectMode) {
+                toggleSelectBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i> {{ __("Cancel") }}';
+                toggleSelectBtn.style.backgroundColor = '#94a3b8';
+                checkboxContainers.forEach(c => c.classList.remove('d-none'));
+            } else {
+                toggleSelectBtn.innerHTML = '<i class="bi bi-check2-square me-1"></i> {{ __("Select") }}';
+                toggleSelectBtn.style.backgroundColor = '#64748b';
+                checkboxContainers.forEach(c => c.classList.add('d-none'));
+                checkboxes.forEach(cb => cb.checked = false);
+                deleteBtn.classList.add('d-none');
+            }
+        });
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function () {
+                const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
+                if (checkedCount > 0) {
+                    deleteBtn.classList.remove('d-none');
+                } else {
+                    deleteBtn.classList.add('d-none');
+                }
+            });
+        });
     });
 </script>
 @endpush

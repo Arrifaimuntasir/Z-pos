@@ -30,7 +30,7 @@ class SaleReturnNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database', WebPushChannel::class];
+        return ['database'];
     }
 
     /**

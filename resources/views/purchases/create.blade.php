@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
@@ -25,11 +25,11 @@
                         <table class="table table-bordered align-middle" id="itemsTable">
                             <thead class="bg-light">
                                 <tr>
-                                    <th style="width: 40%">{{ __('Product') }}</th>
-                                    <th style="width: 20%">{{ __('Unit Cost') }}</th>
-                                    <th style="width: 15%">{{ __('Quantity') }}</th>
-                                    <th style="width: 20%">{{ __('Subtotal') }}</th>
-                                    <th style="width: 5%"></th>
+                                    <th style="min-width: 200px;">{{ __('Product') }}</th>
+                                    <th style="min-width: 120px;">{{ __('Unit Cost') }}</th>
+                                    <th style="min-width: 100px;">{{ __('Quantity') }}</th>
+                                    <th style="min-width: 150px;">{{ __('Subtotal') }}</th>
+                                    <th style="min-width: 50px;"></th>
                                 </tr>
                             </thead>
                             <tbody>

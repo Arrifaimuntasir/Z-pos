@@ -65,7 +65,7 @@
 
 <!-- KPI Cards -->
 <div class="row g-3 mb-5">
-    <div class="col-6 col-md-3">
+    <div class="col-12 col-sm-6 col-lg-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Total Sales') }}</span>
@@ -76,7 +76,7 @@
             <h3 class="fw-bold mb-0 text-dark">{{ number_format($totalSales) }} <span style="font-size: 0.8rem;" class="text-muted fw-normal">TSh</span></h3><small class="text-muted" style="font-size:0.72rem; visibility:hidden;">Placeholder</small></div>
     </div>
 
-    <div class="col-6 col-md-3">
+    <div class="col-12 col-sm-6 col-lg-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Gross Profit') }}</span>
@@ -90,7 +90,7 @@
     </div>
 
     @if($isAdmin)
-    <div class="col-6 col-md-3">
+    <div class="col-12 col-sm-6 col-lg-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Purchases') }}</span>
@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <div class="col-6 col-md-3">
+    <div class="col-12 col-sm-6 col-lg-3">
         <div class="dash-card dash-card-white">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small text-muted fw-semibold">{{ __('Expenses') }}</span>
@@ -116,7 +116,7 @@
         </div>
     </div>
 
-    <div class="col-6 col-md-3">
+    <div class="col-12 col-sm-6 col-lg-3">
         <div class="dash-card {{ $netProfit >= 0 ? 'bg-success text-white' : 'bg-danger text-white' }} border-0 shadow-sm">
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <span class="small fw-semibold opacity-75">{{ $netProfit >= 0 ? __('Net Profit') : __('Net Loss') }}</span>
@@ -249,12 +249,12 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const months = ['{{ __('Jan') }}', '{{ __('Feb') }}', '{{ __('Mar') }}', '{{ __('Apr') }}', '{{ __('May') }}', '{{ __('Jun') }}', '{{ __('Jul') }}', '{{ __('Aug') }}', '{{ __('Sep') }}', '{{ __('Oct') }}', '{{ __('Nov') }}', '{{ __('Dec') }}'];
         
         // --- 1. Cash Flow Line Chart ---
         var cashFlowOptions = {
             series: [{
-                name: 'Net Cash Flow',
+                name: '{{ __('Net Cash Flow') }}',
                 data: {!! json_encode($monthlyNetCash) !!}
             }],
             chart: {
@@ -301,10 +301,10 @@
         // --- 2. Income & Expenses Bar Chart ---
         var barOptions = {
             series: [{
-                name: 'Cash In',
+                name: '{{ __('Cash In') }}',
                 data: {!! json_encode($monthlyIncome) !!}
             }, {
-                name: 'Cash Out',
+                name: '{{ __('Cash Out') }}',
                 data: {!! json_encode($monthlyExpense) !!}
             }],
             chart: {
@@ -359,7 +359,7 @@
         
         var donutOptions = {
             series: topExpenseData.length > 0 ? topExpenseData : [1],
-            labels: topExpenseLabels.length > 0 ? topExpenseLabels : ['No Data'],
+            labels: topExpenseLabels.length > 0 ? topExpenseLabels : ['{{ __('No Data') }}'],
             chart: {
                 type: 'donut',
                 height: 320,
@@ -384,7 +384,7 @@
                             total: {
                                 show: true,
                                 showAlways: true,
-                                label: 'All Expenses',
+                                label: '{{ __('All Expenses') }}',
                                 fontSize: '14px',
                                 color: '#64748b',
                                 formatter: function (w) {
