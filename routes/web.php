@@ -269,6 +269,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/payments', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'index'])->name('payments.index');
         Route::post('/payments/{payment}/approve', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'approve'])->name('payments.approve');
         Route::post('/payments/{payment}/reject', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'reject'])->name('payments.reject');
+
+        // CMS Routes
+        Route::get('/cms', [App\Http\Controllers\SuperAdmin\CmsController::class, 'index'])->name('cms.index');
+        Route::get('/cms/{page}/edit', [App\Http\Controllers\SuperAdmin\CmsController::class, 'edit'])->name('cms.edit');
+        Route::post('/cms/{page}', [App\Http\Controllers\SuperAdmin\CmsController::class, 'update'])->name('cms.update');
+
+        // Testimonials Routes
+        Route::resource('testimonials', App\Http\Controllers\SuperAdmin\TestimonialController::class);
     });
 
 });

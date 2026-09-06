@@ -327,6 +327,11 @@
                         @endif
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('superadmin.cms.*') || request()->routeIs('superadmin.testimonials.*') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.cms.index') }}" style="color: #64748b;">
+                        <i class="bi bi-pencil-square me-3"></i> Content (CMS)
+                    </a>
+                </li>
             </ul>
             @endif
             </div>

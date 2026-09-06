@@ -7,10 +7,59 @@ use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $shops = \App\Models\Shop::with('users')->get();
-        return view('superadmin.shops.index', compact('shops'));
+        $filter = $request->get('filter', 'all');
+        $search = $request->get('search');
+        $now    = now();
+
+        $query = \App\Models\Shop::with(['users', 'payments' => function($q){
+            $q->latest()->limit(1);
+        }]);
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('tin_number', 'like', "%{$search}%")
+                  ->orWhereHas('users', function($q2) use ($search) {
+                      $q2->where('email', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        switch ($filter) {
+            case 'active':
+                $query->where('is_active', true)
+                      ->where(function($q) use ($now) {
+                          $q->whereNull('valid_until')->orWhere('valid_until', '>=', $now);
+                      });
+                break;
+            case 'suspended':
+                $query->where('is_active', false);
+                break;
+            case 'expired':
+                $query->where('valid_until', '<', $now);
+                break;
+            case 'pending':
+                // Shops that have a pending payment awaiting verification
+                $query->whereHas('payments', function($q){
+                    $q->where('status', 'pending');
+                });
+                break;
+        }
+
+        $shops = $query->latest()->get();
+
+        // Counts for badges
+        $counts = [
+            'all'       => \App\Models\Shop::count(),
+            'active'    => \App\Models\Shop::where('is_active', true)->where(function($q) use ($now){ $q->whereNull('valid_until')->orWhere('valid_until','>=',$now); })->count(),
+            'suspended' => \App\Models\Shop::where('is_active', false)->count(),
+            'expired'   => \App\Models\Shop::where('valid_until', '<', $now)->count(),
+            'pending'   => \App\Models\Shop::whereHas('payments', fn($q)=>$q->where('status','pending'))->count(),
+        ];
+
+        return view('superadmin.shops.index', compact('shops', 'filter', 'counts'));
     }
 
     public function edit(\App\Models\Shop $shop)
