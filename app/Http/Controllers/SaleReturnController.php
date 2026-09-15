@@ -60,6 +60,10 @@ class SaleReturnController extends Controller
             abort(403);
         }
 
+        if ($sale->payment_status === 'proforma') {
+            return redirect()->route('sales.show', $sale->id)->with('error', 'Cannot process returns for Proforma Invoices because they do not deduct stock.');
+        }
+
         $sale->load('items.product');
 
         // Check if there are any items left to return
@@ -82,6 +86,10 @@ class SaleReturnController extends Controller
     {
         if ($sale->shop_id !== auth()->user()->shop_id) {
             abort(403);
+        }
+
+        if ($sale->payment_status === 'proforma') {
+            return redirect()->route('sales.show', $sale->id)->with('error', 'Cannot process returns for Proforma Invoices because they do not deduct stock.');
         }
 
         $request->validate([
@@ -173,25 +181,45 @@ class SaleReturnController extends Controller
                         foreach ($ingredients as $ing) {
                             $totalIngQty = $ing->quantity * $qty;
                             if ($hasBranches && $branchId) {
+                            $bp = DB::table('branch_product')
+                                ->where('branch_id', $branchId)
+                                ->where('product_id', $ing->ingredient_id)
+                                ->first();
+                            if ($bp) {
                                 DB::table('branch_product')
-                                    ->updateOrInsert(
-                                        ['branch_id' => $branchId, 'product_id' => $ing->ingredient_id],
-                                        ['quantity' => DB::raw('quantity + ' . $totalIngQty)]
-                                    );
+                                    ->where('id', $bp->id)
+                                    ->increment('quantity', $totalIngQty);
                             } else {
-                                Product::where('id', $ing->ingredient_id)->increment('stock', $totalIngQty);
+                                DB::table('branch_product')->insert([
+                                    'branch_id' => $branchId,
+                                    'product_id' => $ing->ingredient_id,
+                                    'quantity' => $totalIngQty
+                                ]);
                             }
+                        } else {
+                            Product::where('id', $ing->ingredient_id)->increment('stock', $totalIngQty);
+                        }
+                    }
+                } else {
+                    if ($hasBranches && $branchId) {
+                        $bp = DB::table('branch_product')
+                            ->where('branch_id', $branchId)
+                            ->where('product_id', $saleItem->product_id)
+                            ->first();
+                        if ($bp) {
+                            DB::table('branch_product')
+                                ->where('id', $bp->id)
+                                ->increment('quantity', $qty);
+                        } else {
+                            DB::table('branch_product')->insert([
+                                'branch_id' => $branchId,
+                                'product_id' => $saleItem->product_id,
+                                'quantity' => $qty
+                            ]);
                         }
                     } else {
-                        if ($hasBranches && $branchId) {
-                            DB::table('branch_product')
-                                ->updateOrInsert(
-                                    ['branch_id' => $branchId, 'product_id' => $saleItem->product_id],
-                                    ['quantity' => DB::raw('quantity + ' . $qty)]
-                                );
-                        } else {
-                            $product->increment('stock', $qty);
-                        }
+                        $product->increment('stock', $qty);
+                    }
                     }
                     }
                 }
@@ -296,5 +324,97 @@ class SaleReturnController extends Controller
             ->sum(fn($i) => $i->saleItem ? $i->quantity * $i->saleItem->unit_cost : 0);
 
         return view('returns.defective', compact('query', 'search', 'totalDefective', 'totalLostValue'));
+    }
+
+    /**
+     * Update whether a defective returned item has been repaired.
+     */
+    public function updateRepairStatus(Request $request, SaleReturnItem $item)
+    {
+        if (!$item->saleReturn || $item->saleReturn->shop_id !== auth()->user()->shop_id) {
+            abort(403);
+        }
+
+        $request->validate([
+            'repair_status' => 'required|string|in:not_repaired,repaired',
+        ]);
+
+        $oldStatus = $item->repair_status;
+        $newStatus = $request->repair_status;
+
+        if ($oldStatus === $newStatus) {
+            return back()->with('success', 'Repair status updated.');
+        }
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // A defective item only re-enters sellable stock once it's repaired.
+            // Reversing the status (repaired -> not_repaired) pulls it back out again.
+            if ($item->condition === 'defective' && $item->product) {
+                $branchId = $item->saleReturn->branch_id;
+
+                if ($newStatus === 'repaired') {
+                    $this->adjustStock($branchId, $item->product, $item->quantity);
+                } elseif ($oldStatus === 'repaired') {
+                    $this->adjustStock($branchId, $item->product, -$item->quantity);
+                }
+            }
+
+            $item->update(['repair_status' => $newStatus]);
+
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', 'Repair status updated.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error updating repair status: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Add (positive delta) or remove (negative delta) stock for a product.
+     */
+    private function adjustStock($branchId, \App\Models\Product $product, $delta)
+    {
+        if ($delta == 0) {
+            return;
+        }
+
+        if ($branchId) {
+            $row = \Illuminate\Support\Facades\DB::table('branch_product')
+                ->where('branch_id', $branchId)
+                ->where('product_id', $product->id)
+                ->first();
+
+            if ($row) {
+                \Illuminate\Support\Facades\DB::table('branch_product')
+                    ->where('branch_id', $branchId)
+                    ->where('product_id', $product->id)
+                    ->update(['quantity' => max(0, $row->quantity + $delta)]);
+            } elseif ($delta > 0) {
+                \Illuminate\Support\Facades\DB::table('branch_product')->insert([
+                    'branch_id' => $branchId,
+                    'product_id' => $product->id,
+                    'quantity' => $delta,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        } else {
+            $product->update(['stock' => max(0, $product->stock + $delta)]);
+        }
+    }
+
+    /**
+     * Remove a defective item record from the tracking list.
+     */
+    public function destroyDefectiveItem(SaleReturnItem $item)
+    {
+        if (!$item->saleReturn || $item->saleReturn->shop_id !== auth()->user()->shop_id) {
+            abort(403);
+        }
+
+        $item->delete();
+
+        return back()->with('success', 'Defective item record deleted.');
     }
 }

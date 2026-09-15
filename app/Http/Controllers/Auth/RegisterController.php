@@ -70,6 +70,7 @@ class RegisterController extends Controller
             'phone' => ['required', 'string', 'max:20', 'unique:users', 'regex:/^\+[1-9]\d{7,14}$/'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'package' => ['nullable', 'string', 'in:starter,professional,enterprise'],
+            'billing_cycle' => ['nullable', 'string', 'in:monthly,yearly'],
             'business_type' => ['required', 'string', 'in:Retail / General,Electronics / IT,Pharmacy / Health,Supermarket / Grocery,Restaurant / Food,Hardware / Construction,Clothing / Boutique'],
         ], [
             'business_type.in' => __('Please select another business. Services / Consulting is coming soon.'),
@@ -87,6 +88,7 @@ class RegisterController extends Controller
             'name' => $data['shop_name'],
             'business_type' => $data['business_type'],
             'package' => $data['package'] ?? 'starter',
+            'billing_cycle' => $data['billing_cycle'] ?? 'monthly',
             'valid_until' => now()->addDays(7), // 7 days free trial
         ]);
 

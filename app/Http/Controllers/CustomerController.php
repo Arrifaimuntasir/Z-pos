@@ -11,7 +11,8 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
+        $customers = \App\Models\Customer::latest()->get();
+        return view('customers.index', compact('customers'));
     }
 
     /**
@@ -19,7 +20,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        //
+        return view('customers.create');
     }
 
     /**
@@ -27,7 +28,16 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string'
+        ]);
+
+        \App\Models\Customer::create($request->all());
+
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
 
     /**
@@ -41,24 +51,34 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(\App\Models\Customer $customer)
     {
-        //
+        return view('customers.edit', compact('customer'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, \App\Models\Customer $customer)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'address' => 'nullable|string'
+        ]);
+
+        $customer->update($request->all());
+
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(\App\Models\Customer $customer)
     {
-        //
+        $customer->delete();
+        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
 }

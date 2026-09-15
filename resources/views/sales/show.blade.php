@@ -11,11 +11,14 @@
     </div>
     <div>
         
-        @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']))
+        @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']) && $sale->payment_status !== 'proforma')
         <a href="{{ route('sales.returns.create', $sale->id) }}" class="btn btn-warning px-3 shadow-sm text-dark" style="border-radius: 8px;">
             <i class="bi bi-arrow-return-left me-1"></i> {{ __('Return/Refund') }}
         </a>
         @endif
+        <button onclick="shareReceipt(event)" class="btn btn-success px-3 shadow-sm" style="border-radius: 8px;">
+            <i class="bi bi-share me-1"></i> {{ __('Share') }}
+        </button>
         <a href="{{ route('sales.pdf', $sale->id) }}?v={{ time() }}" class="btn btn-danger px-3 shadow-sm" style="border-radius: 8px;">
             <i class="bi bi-file-earmark-pdf me-1"></i> {{ __('PDF') }}
         </a>
@@ -24,6 +27,43 @@
         </button>
     </div>
 </div>
+
+<script>
+async function shareReceipt(event) {
+    if (!navigator.share || !navigator.canShare) {
+        alert('Samahani, kifaa chako hakisupport kushare file moja kwa moja. Tafadhali download PDF kisha ushare.');
+        return;
+    }
+
+    const btn = event.currentTarget;
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Inandaa...';
+    btn.disabled = true;
+
+    try {
+        const pdfUrl = "{{ route('sales.pdf', $sale->id) }}";
+        const response = await fetch(pdfUrl);
+        const blob = await response.blob();
+        
+        const file = new File([blob], "Receipt-{{ $sale->reference_no }}.pdf", { type: 'application/pdf' });
+        
+        if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                title: 'Receipt {{ $sale->reference_no }}',
+                files: [file]
+            });
+        } else {
+            alert('Kifaa chako hakisupport kushare file hili.');
+        }
+    } catch (error) {
+        console.error('Error sharing:', error);
+        alert('Kuna tatizo limetokea. Tafadhali download PDF badala yake.');
+    } finally {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+    }
+}
+</script>
 
 <div class="row justify-content-center">
     <div class="col-12 col-xl-10">

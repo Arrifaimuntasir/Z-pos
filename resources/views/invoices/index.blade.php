@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Invoices')
 
@@ -19,7 +19,7 @@
     <div class="card-header bg-white border-bottom-0 pt-4 pb-0 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
         <h5 class="mb-0 text-dark fw-bold">{{ __('Recent Invoices') }}</h5>
         <form action="{{ route('invoices.index') }}" method="GET" class="custom-search-bar d-flex align-items-center bg-white shadow-sm rounded-pill border" style="width: 100%; max-width: 450px;">
-    <span class="ps-3 pe-2 text-primary"><i class="bi bi-search fs-5"></i></span>
+    <button type="submit" class="btn border-0 ps-3 pe-2 text-primary shadow-none bg-transparent" style="padding-top: 0; padding-bottom: 0;"><i class="bi bi-search fs-5"></i></button>
     <input type="text" name="search" class="form-control border-0 shadow-none bg-transparent" placeholder="{{ __('Search by Ref or Customer...') }}" value="{{ request('search') }}" style="font-size: 0.95rem; height: 42px;">
     <button type="submit" class="btn btn-primary rounded-pill me-1 px-4 fw-semibold shadow-sm" style="height: 36px; display: flex; align-items: center;">
         <span class="btn-search-text">{{ __('Search') }}</span>
@@ -133,3 +133,4 @@
     </div>
 </div>
 @endsection
+

@@ -160,7 +160,13 @@ class ProductController extends Controller
         $units = Unit::all();
         $branches = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->get();
         $allProducts = Product::where('id', '!=', $product->id)->get();
-        return view('products.edit', compact('product', 'categories', 'brands', 'units', 'branches', 'allProducts'));
+
+        // products.stock is a legacy column — real stock for branch-tracked shops lives in
+        // branch_product.quantity, keyed to whichever branch this product belongs to.
+        $productBranch = $product->branches->first();
+        $currentStock = $productBranch ? $productBranch->pivot->quantity : $product->stock;
+
+        return view('products.edit', compact('product', 'categories', 'brands', 'units', 'branches', 'allProducts', 'currentStock'));
     }
 
     public function update(Request $request, Product $product)

@@ -11,17 +11,18 @@ class WarrantyController extends Controller
 {
     public function index(Request $request)
     {
-        $shopId        = auth()->user()->shop_id;
-        $isAdmin       = auth()->user()->hasRole('Administrator');
-        $search        = $request->search;
-        $branchId      = $this->getActiveBranchId();
-        $hasBranchCol  = \Illuminate\Support\Facades\Schema::hasColumn('warranties', 'branch_id');
+        $shopId   = auth()->user()->shop_id;
+        $isAdmin  = auth()->user()->hasRole('Administrator');
+        $search   = $request->search;
+        $branchId = $this->getActiveBranchId();
 
         $query = Warranty::where('shop_id', $shopId)
-            ->when($isAdmin && $branchId && $hasBranchCol, function ($q) use ($branchId) {
+            ->when($isAdmin && $branchId, function ($q) use ($branchId) {
+                // Admin filtered to a specific branch — show only warranties of that branch
                 $q->where('branch_id', $branchId);
             })
             ->when(!$isAdmin, function ($q) {
+                // Cashier sees only warranties they created
                 $q->where('created_by', auth()->id());
             })
             ->when($search, function ($q) use ($search) {
@@ -37,7 +38,7 @@ class WarrantyController extends Controller
 
         // Metrics (scoped same as list)
         $metricsBase = Warranty::where('shop_id', $shopId)
-            ->when($isAdmin && $branchId && $hasBranchCol, function ($q) use ($branchId) {
+            ->when($isAdmin && $branchId, function ($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
             ->when(!$isAdmin, function ($q) {

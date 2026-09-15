@@ -24,10 +24,11 @@
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Inventory Management') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Professional Invoicing') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Custom Warranties') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Digital Business Card') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=starter" class="btn btn-outline-primary w-100 py-2 fw-bold" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=starter" class="btn btn-outline-primary w-100 py-2 fw-bold mt-auto" style="border-radius: 50px;">{{ __('Get Started') }}</a>
                     </div>
                 </div>
 
@@ -45,10 +46,11 @@
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Inventory Management') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Professional Invoicing') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ __('Custom Warranties') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ __('Digital Business Card') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=professional" class="btn btn-success text-white w-100 py-2 fw-bold shadow" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=professional" class="btn btn-success text-white w-100 py-2 fw-bold shadow mt-auto" style="border-radius: 50px;">{{ __('Get Started') }}</a>
                     </div>
                 </div>
 
@@ -65,10 +67,11 @@
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Inventory Management') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Professional Invoicing') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
-                            <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Custom Warranties') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Digital Business Card') }}</li>
+                            <li><i class="bi bi-check-circle-fill text-primary"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=enterprise" class="btn btn-outline-primary w-100 py-2 fw-bold" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=enterprise" class="btn btn-outline-primary w-100 py-2 fw-bold mt-auto" style="border-radius: 50px;">{{ __('Get Started') }}</a>
                     </div>
                 </div>
             </div>

@@ -26,6 +26,9 @@ class GoogleController extends Controller
         if ($request->has('package')) {
             $request->session()->put('google_package', $request->input('package'));
         }
+        if ($request->has('billing_cycle')) {
+            $request->session()->put('google_billing_cycle', $request->input('billing_cycle'));
+        }
 
         return Socialite::driver('google')->redirect();
     }
@@ -60,6 +63,7 @@ class GoogleController extends Controller
         // Check if they provided a shop_name before going to Google
         $shopName = $request->session()->pull('google_shop_name');
         $package = $request->session()->pull('google_package', 'starter');
+        $billingCycle = $request->session()->pull('google_billing_cycle', 'monthly');
 
         if (!$shopName) {
             // If somehow they bypassed the shop name, fallback to a default
@@ -76,6 +80,7 @@ class GoogleController extends Controller
         $shop = Shop::create([
             'name' => $shopName,
             'package' => $package,
+            'billing_cycle' => $billingCycle,
             'valid_until' => now()->addDays(7), // 7 days free trial
         ]);
 

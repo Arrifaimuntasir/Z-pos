@@ -11,7 +11,7 @@ $tabs = [
     'active'    => ['label' => __('Active'),          'count' => $counts['active'],    'color' => 'success',   'text_color' => 'text-success'],
     'pending'   => ['label' => __('Pending Verify'),  'count' => $counts['pending'],   'color' => 'warning',   'text_color' => 'text-dark'],
     'expired'   => ['label' => __('Expired'),         'count' => $counts['expired'],   'color' => 'danger',    'text_color' => 'text-danger'],
-    'suspended' => ['label' => __('Suspended'),       'count' => $counts['suspended'], 'color' => 'secondary', 'text_color' => 'text-secondary'],
+    'suspended' => ['label' => __('Suspended'),       'count' => $counts['suspended'], 'color' => 'dark',      'text_color' => 'text-dark'],
 ];
 @endphp
 
@@ -70,12 +70,12 @@ $tabs = [
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4 border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Shop Info') }}</th>
-                            <th class="border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Package') }}</th>
-                            <th class="border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Contact Details') }}</th>
-                            <th class="border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Dates') }}</th>
-                            <th class="border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Status') }}</th>
-                            <th class="text-end pe-4 border-bottom-0 text-secondary" style="font-size: 0.85rem;">{{ __('Actions') }}</th>
+                            <th class="ps-4 border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Shop Info') }}</th>
+                            <th class="border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Package') }}</th>
+                            <th class="border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Contact Details') }}</th>
+                            <th class="border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Dates') }}</th>
+                            <th class="border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Status') }}</th>
+                            <th class="text-end pe-4 border-bottom-0 text-dark fw-bold" style="font-size: 0.85rem;">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="border-top-0">

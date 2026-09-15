@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Brands')
 
@@ -15,7 +15,7 @@
         <span><i class="bi bi-tags me-2"></i> {{ __('All Brands') }}</span>
         <div class="search-box">
             <form action="{{ route('brands.index') }}" method="GET" class="custom-search-bar d-flex align-items-center bg-white shadow-sm rounded-pill border" style="width: 100%; max-width: 450px;">
-    <span class="ps-3 pe-2 text-primary"><i class="bi bi-search fs-5"></i></span>
+    <button type="submit" class="btn border-0 ps-3 pe-2 text-primary shadow-none bg-transparent" style="padding-top: 0; padding-bottom: 0;"><i class="bi bi-search fs-5"></i></button>
     <input type="text" name="search" class="form-control border-0 shadow-none bg-transparent" placeholder="{{ __('Search brands...') }}" value="{{ request('search') }}" style="font-size: 0.95rem; height: 42px;">
     <button type="submit" class="btn btn-primary rounded-pill me-1 px-4 fw-semibold shadow-sm" style="height: 36px; display: flex; align-items: center;">
         <span class="btn-search-text">{{ __('Search') }}</span>
@@ -72,3 +72,4 @@
     </div>
 </div>
 @endsection
+

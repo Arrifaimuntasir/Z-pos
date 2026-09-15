@@ -85,6 +85,7 @@
         #content {
             margin-left: 250px !important;
             transition: margin-left 0.3s ease;
+            overflow-x: auto !important;
         }
         #content.active {
             margin-left: 0 !important;
@@ -292,6 +293,16 @@
                 <li class="{{ request()->routeIs('shop.business-card') ? 'active' : '' }}">
                     <a href="{{ route('shop.business-card') }}" style="color: #64748b;">
                         <i class="bi bi-person-badge-fill me-3"></i> {{ __('Business Card') }}
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('plans.index') ? 'active' : '' }}">
+                    <a href="{{ route('plans.index') }}" style="color: #64748b;">
+                        <i class="bi bi-gem text-primary me-3"></i> {{ __('Upgrade Plan') }}
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs('reviews.index') ? 'active' : '' }}">
+                    <a href="{{ route('reviews.index') }}" style="color: #64748b;">
+                        <i class="bi bi-star-fill text-warning me-3"></i> {{ __('Rate Us') }}
                     </a>
                 </li>
                 @endif

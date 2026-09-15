@@ -180,6 +180,9 @@
 <body>
 
     <div class="print-btn-container d-flex gap-2">
+        <button onclick="shareWarranty(event)" class="btn btn-sm btn-success shadow-sm px-3" style="border-radius: 6px;">
+            <i class="bi bi-share"></i> {{ __('Share') }}
+        </button>
         <a href="{{ route('warranties.pdf', $warranty->id) }}?v={{ time() }}" class="btn btn-sm btn-danger shadow-sm px-3" style="border-radius: 6px;">
             <i class="bi bi-file-earmark-pdf"></i> {{ __('PDF') }}
         </a>
@@ -190,6 +193,43 @@
             {{ __('Close') }}
         </button>
     </div>
+
+    <script>
+    async function shareWarranty(event) {
+        if (!navigator.share || !navigator.canShare) {
+            alert('Samahani, kifaa chako hakisupport kushare file moja kwa moja. Tafadhali download PDF kisha ushare.');
+            return;
+        }
+
+        const btn = event.currentTarget;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Inandaa...';
+        btn.disabled = true;
+
+        try {
+            const pdfUrl = "{{ route('warranties.pdf', $warranty->id) }}";
+            const response = await fetch(pdfUrl);
+            const blob = await response.blob();
+            
+            const file = new File([blob], "Warranty-{{ $warranty->warranty_number }}.pdf", { type: 'application/pdf' });
+            
+            if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: 'Warranty {{ $warranty->warranty_number }}',
+                    files: [file]
+                });
+            } else {
+                alert('Kifaa chako hakisupport kushare file hili.');
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+            alert('Kuna tatizo limetokea. Tafadhali download PDF badala yake.');
+        } finally {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+        }
+    }
+    </script>
 
     <div class="certificate-wrapper theme-{{ $warranty->design_theme }}">
         @if($warranty->design_theme == 6)

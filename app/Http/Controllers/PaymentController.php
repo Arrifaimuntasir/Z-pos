@@ -6,14 +6,35 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    public function expired()
+    public function expired(Request $request)
     {
         $shop = auth()->user()->shop;
         $pendingPayment = \App\Models\Payment::where('shop_id', $shop->id)
             ->where('status', 'pending')
             ->first();
 
-        return view('payments.expired', compact('shop', 'pendingPayment'));
+        $validPackages = ['starter', 'professional', 'enterprise'];
+
+        $requestedPackage = $request->query('package');
+        if (!in_array($requestedPackage, $validPackages)) {
+            $requestedPackage = $shop->package ?? 'starter';
+        }
+
+        $requestedBilling = $request->query('billing');
+        if (!in_array($requestedBilling, ['monthly', 'yearly'])) {
+            $requestedBilling = $shop->billing_cycle === 'yearly' ? 'yearly' : 'monthly';
+        }
+
+        // Only treat this as a voluntary upgrade (not an expired/blocked account) when the shop is still in good standing.
+        $isUpgradeRequest = $request->has('package')
+            && $shop->is_active
+            && (!$shop->valid_until || $shop->valid_until >= now());
+
+        $requestedAmount = $requestedBilling === 'yearly'
+            ? \App\Models\CmsSetting::yearlyPriceValue($requestedPackage)
+            : \App\Models\CmsSetting::monthlyPriceValue($requestedPackage);
+
+        return view('payments.expired', compact('shop', 'pendingPayment', 'requestedPackage', 'requestedBilling', 'requestedAmount', 'isUpgradeRequest'));
     }
 
     public function suspended()
@@ -37,9 +58,20 @@ class PaymentController extends Controller
         if ($request->hasFile('receipt')) {
             $path = $request->file('receipt')->store('receipts', 'public');
 
+            $validPackages = ['starter', 'professional', 'enterprise'];
+            $requestedPackage = in_array($request->input('package'), $validPackages) ? $request->input('package') : ($shop->package ?? 'starter');
+            $requestedBilling = $request->input('billing');
+            if (!in_array($requestedBilling, ['monthly', 'yearly'])) {
+                $requestedBilling = $shop->billing_cycle === 'yearly' ? 'yearly' : 'monthly';
+            }
+            $amount = $requestedBilling === 'yearly'
+                ? \App\Models\CmsSetting::yearlyPriceValue($requestedPackage)
+                : \App\Models\CmsSetting::monthlyPriceValue($requestedPackage);
+
             \App\Models\Payment::create([
                 'shop_id' => $shop->id,
                 'receipt_path' => 'storage/' . $path,
+                'amount' => $amount,
                 'status' => 'pending',
             ]);
             

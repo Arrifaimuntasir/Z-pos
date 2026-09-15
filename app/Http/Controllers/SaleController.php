@@ -73,10 +73,21 @@ class SaleController extends Controller
             $products = \App\Models\Product::whereHas('branches', function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })->get();
+
+            $stockMap = \Illuminate\Support\Facades\DB::table('branch_product')
+                ->where('branch_id', $branchId)
+                ->pluck('quantity', 'product_id');
+
+            foreach ($products as $product) {
+                $product->current_stock = $stockMap[$product->id] ?? 0;
+            }
         } else {
             $products = \App\Models\Product::all();
+            foreach ($products as $product) {
+                $product->current_stock = $product->stock;
+            }
         }
-        
+
         $customers = \App\Models\Customer::all();
         $reference_no = 'SL-' . date('Ymd') . '-' . strtoupper(\Illuminate\Support\Str::random(4));
         return view('sales.create', compact('products', 'customers', 'reference_no'));
@@ -208,6 +219,12 @@ class SaleController extends Controller
                     }
                 }
                 
+                $imei = $item['imei'] ?? null;
+                if (is_array($imei)) {
+                    $imei = implode(', ', array_filter(array_map('trim', $imei)));
+                    $imei = $imei !== '' ? $imei : null;
+                }
+
                 \App\Models\SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['product_id'],
@@ -215,7 +232,7 @@ class SaleController extends Controller
                     'unit_cost' => $product->cost_price,
                     'unit_price' => $item['price'],
                     'subtotal' => $subtotal,
-                    'imei_serial_number' => $item['imei'] ?? null,
+                    'imei_serial_number' => $imei,
                 ]);
             }
 
@@ -276,22 +293,42 @@ class SaleController extends Controller
                         foreach ($ingredients as $ing) {
                             $totalIngQty = $ing->quantity * $item->quantity;
                             if ($hasBranches && $branchId) {
-                                \Illuminate\Support\Facades\DB::table('branch_product')
-                                    ->updateOrInsert(
-                                        ['branch_id' => $branchId, 'product_id' => $ing->ingredient_id],
-                                        ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $totalIngQty)]
-                                    );
+                                $bp = \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->where('branch_id', $branchId)
+                                    ->where('product_id', $ing->ingredient_id)
+                                    ->first();
+                                if ($bp) {
+                                    \Illuminate\Support\Facades\DB::table('branch_product')
+                                        ->where('id', $bp->id)
+                                        ->increment('quantity', $totalIngQty);
+                                } else {
+                                    \Illuminate\Support\Facades\DB::table('branch_product')->insert([
+                                        'branch_id' => $branchId,
+                                        'product_id' => $ing->ingredient_id,
+                                        'quantity' => $totalIngQty
+                                    ]);
+                                }
                             } else {
                                 \App\Models\Product::where('id', $ing->ingredient_id)->increment('stock', $totalIngQty);
                             }
                         }
                     } else {
                         if ($hasBranches && $branchId) {
-                            \Illuminate\Support\Facades\DB::table('branch_product')
-                                ->updateOrInsert(
-                                    ['branch_id' => $branchId, 'product_id' => $item->product_id],
-                                    ['quantity' => \Illuminate\Support\Facades\DB::raw('quantity + ' . $item->quantity)]
-                                );
+                            $bp = \Illuminate\Support\Facades\DB::table('branch_product')
+                                ->where('branch_id', $branchId)
+                                ->where('product_id', $item->product_id)
+                                ->first();
+                            if ($bp) {
+                                \Illuminate\Support\Facades\DB::table('branch_product')
+                                    ->where('id', $bp->id)
+                                    ->increment('quantity', $item->quantity);
+                            } else {
+                                \Illuminate\Support\Facades\DB::table('branch_product')->insert([
+                                    'branch_id' => $branchId,
+                                    'product_id' => $item->product_id,
+                                    'quantity' => $item->quantity
+                                ]);
+                            }
                         } else {
                             $product->increment('stock', $item->quantity);
                         }

@@ -68,7 +68,7 @@
 <body class="antialiased">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-landing" style="padding-top: 0.2rem; padding-bottom: 0.2rem;">
+    <nav class="navbar navbar-expand-xl navbar-light fixed-top navbar-landing" style="padding-top: 0.25rem; padding-bottom: 0.25rem;">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
                 <div style="width: 40px; height: 40px; overflow: hidden; display: flex; justify-content: center; align-items: center;">
@@ -82,12 +82,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav mx-auto" style="font-size: 0.88rem;">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" href="{{ url('/') }}">{{ __('Home') }}</a>
+                        <a class="nav-link px-2" style="white-space: nowrap;" href="{{ url('/') }}">{{ __('Home') }}</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->is('features') ? 'active' : '' }}" href="{{ url('/features') }}" id="megaMenu" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle px-2 {{ request()->is('features') ? 'active' : '' }}" style="white-space: nowrap;" href="{{ url('/features') }}" id="megaMenu" role="button" data-bs-toggle="dropdown">
                             {{ __('Features') }}
                         </a>
                         <div class="dropdown-menu shadow border-0 p-4 mt-0 mega-menu-dropdown" aria-labelledby="megaMenu">
@@ -131,37 +131,47 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('pricing') ? 'active' : '' }}" href="{{ url('/pricing') }}">{{ __('Pricing') }}</a>
+                        <a class="nav-link px-2 {{ request()->is('pricing') ? 'active' : '' }}" style="white-space: nowrap;" href="{{ url('/pricing') }}">{{ __('Pricing') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('testimonials') ? 'active' : '' }}" href="{{ url('/testimonials') }}">{{ __('Testimonials') }}</a>
+                        <a class="nav-link px-2 {{ request()->is('testimonials') ? 'active' : '' }}" style="white-space: nowrap;" href="{{ url('/testimonials') }}">{{ __('Testimonials') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('about') ? 'active' : '' }}" href="{{ url('/about') }}">{{ __('About Us') }}</a>
+                        <a class="nav-link px-2 {{ request()->is('about') ? 'active' : '' }}" style="white-space: nowrap;" href="{{ url('/about') }}">{{ __('About Us') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('contact') ? 'active' : '' }}" href="{{ url('/contact') }}">{{ __('Contact') }}</a>
+                        <a class="nav-link px-2 {{ request()->is('contact') ? 'active' : '' }}" style="white-space: nowrap;" href="{{ url('/contact') }}">{{ __('Contact') }}</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item me-3">
-                        @if(App::getLocale() == 'en')
-                            <a href="{{ route('lang.switch', 'sw') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
-                                <img src="https://flagcdn.com/w20/tz.png" alt="Tanzania" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('Swahili') }}
-                            </a>
-                        @else
-                            <a href="{{ route('lang.switch', 'en') }}" class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none mt-1" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.9rem; color: #334155;">
-                                <img src="https://flagcdn.com/w20/gb.png" alt="UK" class="me-2" style="width: 20px; border-radius: 2px;"> {{ __('English') }}
-                            </a>
-                        @endif
+                <ul class="navbar-nav align-items-center gap-1" style="font-size: 0.88rem;">
+                    <li class="nav-item dropdown">
+                        <a class="btn btn-light bg-white rounded-pill px-3 py-1 shadow-sm d-flex align-items-center text-decoration-none dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="border: 1px solid #e2e8f0; font-weight: 600; font-size: 0.85rem; color: #334155; white-space: nowrap;">
+                            @if(App::getLocale() == 'en')
+                                <img src="https://flagcdn.com/w20/gb.png" alt="English" class="me-1" style="width: 18px; border-radius: 2px;"> EN
+                            @else
+                                <img src="https://flagcdn.com/w20/tz.png" alt="Swahili" class="me-1" style="width: 18px; border-radius: 2px;"> SW
+                            @endif
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="languageDropdown" style="min-width: 145px; border-radius: 0.75rem; font-size: 0.88rem;">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 {{ App::getLocale() == 'en' ? 'fw-bold text-primary' : '' }}" href="{{ route('lang.switch', 'en') }}">
+                                    <img src="https://flagcdn.com/w20/gb.png" alt="English" class="me-2" style="width: 18px; border-radius: 2px;"> English
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 {{ App::getLocale() == 'sw' ? 'fw-bold text-primary' : '' }}" href="{{ route('lang.switch', 'sw') }}">
+                                    <img src="https://flagcdn.com/w20/tz.png" alt="Swahili" class="me-2" style="width: 18px; border-radius: 2px;"> Swahili
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     @if (Route::has('login'))
                         <li class="nav-item">
-                            <a href="{{ route('login') }}" class="nav-link fw-bold text-dark me-3">{{ __('Sign in') }}</a>
+                            <a href="{{ route('login') }}" class="nav-link fw-semibold text-dark" style="white-space: nowrap;">{{ __('Sign in') }}</a>
                         </li>
                     @endif
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-4 py-2" style="border-radius: 8px;">{{ __('Try free for 7 days') }}</a>
+                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-3 py-2" style="border-radius: 8px; white-space: nowrap; font-size: 0.85rem;">{{ __('Try free for 7 days') }}</a>
                     </li>
                 </ul>
             </div>

@@ -52,16 +52,19 @@ class HomeController extends Controller
 
         $isAdmin = auth()->user()->hasRole('Administrator') || auth()->user()->hasRole('Super Admin');
 
+        // Pro-forma sales are draft quotes — not real revenue/profit until converted (markAsPaid).
         $salesQuery = \App\Models\Sale::query()
+            ->where('payment_status', '!=', 'proforma')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
             ->when(!$isAdmin, function($q) {
                 $q->where('user_id', auth()->id());
             });
-            
+
         $profitQuery = \App\Models\SaleItem::query()
             ->join('sales', 'sale_items.sale_id', '=', 'sales.id')
+            ->where('sales.payment_status', '!=', 'proforma')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('sales.branch_id', $branchId);
             })
@@ -97,27 +100,49 @@ class HomeController extends Controller
                 });
             });
 
+        // Defective returns not yet repaired are a real loss (cost paid, nothing sellable) —
+        // not just "no profit" like a good-condition return.
+        $defectiveLossQuery = \App\Models\SaleReturnItem::query()
+            ->join('sale_returns', 'sale_return_items.sale_return_id', '=', 'sale_returns.id')
+            ->join('sale_items', 'sale_return_items.sale_item_id', '=', 'sale_items.id')
+            ->where('sale_returns.shop_id', auth()->user()->shop_id)
+            ->where('sale_return_items.condition', 'defective')
+            ->where('sale_return_items.repair_status', 'not_repaired')
+            ->when($branchId, function($q) use ($branchId) {
+                $q->where('sale_returns.branch_id', $branchId);
+            })
+            ->when(!$isAdmin, function($q) {
+                $q->whereHas('saleReturn.sale', function($sq) {
+                    $sq->where('user_id', auth()->id());
+                });
+            });
+
         if ($startDate && $endDate) {
             $salesQuery->whereBetween('sale_date', [$startDate, $endDate]);
             $profitQuery->whereBetween('sales.sale_date', [$startDate, $endDate]);
             $expenseQuery->whereBetween('expense_date', [$startDate, $endDate]);
             $returnsQuery->whereBetween('return_date', [$startDate, $endDate]);
             $returnProfitQuery->whereBetween('sale_returns.return_date', [$startDate, $endDate]);
+            $defectiveLossQuery->whereBetween('sale_returns.return_date', [$startDate, $endDate]);
         }
 
         // Revenue is total value of sales. Income is total amount paid.
         $totalSales = $salesQuery->sum('total_amount') - $returnsQuery->sum('total_refund');
-        
+
         // Calculate Gross Profit from Sale Items
         $grossProfitGross = $profitQuery
             ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_items.quantity) as profit')
             ->value('profit') ?? 0;
-            
+
         $returnProfit = $returnProfitQuery
             ->selectRaw('SUM((sale_items.unit_price - sale_items.unit_cost) * sale_return_items.quantity) as profit')
             ->value('profit') ?? 0;
-            
-        $grossProfit = $grossProfitGross - $returnProfit;
+
+        $defectiveLoss = $defectiveLossQuery
+            ->selectRaw('SUM(sale_items.unit_cost * sale_return_items.quantity) as loss')
+            ->value('loss') ?? 0;
+
+        $grossProfit = $grossProfitGross - $returnProfit - $defectiveLoss;
 
         // Total Expense is just the general expenses now
         $totalExpense = $expenseQuery->sum('amount');
@@ -143,6 +168,7 @@ class HomeController extends Controller
 
         // Fetch income (paid amount of sales) grouped by month
         $incomeByMonth = \App\Models\Sale::whereYear('sale_date', $currentYear)
+            ->where('payment_status', '!=', 'proforma')
             ->when($branchId, function($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
@@ -225,7 +251,7 @@ class HomeController extends Controller
         $topExpenseData = array_values($topExpensesRaw);
 
         return view('home', compact(
-            'totalSales', 'totalPurchases', 'grossProfit', 'netProfit', 'totalExpense', 'recentSales',
+            'totalSales', 'totalPurchases', 'grossProfit', 'netProfit', 'totalExpense', 'defectiveLoss', 'recentSales',
             'monthlyIncome', 'monthlyExpense', 'monthlyNetCash', 'topExpenseLabels', 'topExpenseData', 'filter', 'isAdmin'
         ));
     }

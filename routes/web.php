@@ -217,6 +217,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/shop/business-card', [App\Http\Controllers\BusinessCardController::class, 'index'])->name('shop.business-card');
     Route::post('/shop/business-card/save', [App\Http\Controllers\BusinessCardController::class, 'save'])->name('shop.business-card.save');
 
+    // Subscription Plans
+    Route::get('/plans', [App\Http\Controllers\PlansController::class, 'index'])->name('plans.index');
+    
+    // Rate Us / Reviews
+    Route::get('/reviews', [App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews', [App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+
     // Push Notifications
     Route::post('/push-subscriptions', [App\Http\Controllers\PushSubscriptionController::class, 'store']);
     Route::delete('/push-subscriptions', [App\Http\Controllers\PushSubscriptionController::class, 'destroy']);
@@ -229,6 +236,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/products/bulk-delete', [ProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
     Route::resource('products', ProductController::class);
     Route::resource('purchases', App\Http\Controllers\PurchaseController::class);
+    Route::resource('defective-stock', App\Http\Controllers\DefectiveStockController::class);
+    Route::post('/defective-stock/{id}/repair', [App\Http\Controllers\DefectiveStockController::class, 'repair'])->name('defective-stock.repair');
     
     // Expenses & Reports
     Route::resource('expenses', App\Http\Controllers\ExpenseController::class);
