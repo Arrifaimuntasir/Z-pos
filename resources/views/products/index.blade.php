@@ -6,15 +6,6 @@
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0">{{ __('Products') }}</h4>
-        @if(isset($activeBranch) && $activeBranch)
-            <span class="badge bg-primary rounded-pill mt-1 px-3 py-1">
-                <i class="bi bi-shop me-1"></i> {{ $activeBranch->name }}
-            </span>
-        @else
-            <span class="badge bg-secondary rounded-pill mt-1 px-3 py-1">
-                <i class="bi bi-grid me-1"></i> {{ __('All Branches') }}
-            </span>
-        @endif
     </div>
     <a href="{{ route('products.create') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Product') }}

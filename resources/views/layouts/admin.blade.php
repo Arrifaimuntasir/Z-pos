@@ -213,63 +213,112 @@
                     </a>
                 </li>
                 
-                <li class="{{ request()->is('sales*') ? 'active' : '' }}">
-                    <a href="#salesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-cart-check-fill me-3"></i> {{ __('Sales') }}
-                    </a>
-                    <ul class="collapse list-unstyled" id="salesSubmenu" data-bs-parent="#sidebarMenu">
-                        <li><a href="{{ route('sales.create') }}" style="color: #64748b;">{{ __('New Sale') }}</a></li>
-                        <li><a href="{{ route('sales.index') }}" style="color: #64748b;">{{ __('Sales History') }}</a></li>
-                        @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']))
-                        <li><a href="{{ route('returns.index') }}" style="color: #64748b;">{{ __('Return Invoices') }}</a></li>
-                        <li>
-                            <a href="{{ route('returns.defective') }}" style="color: #64748b;" class="{{ request()->is('returns/defective*') ? 'fw-semibold text-danger' : '' }}">
-                                {{ __('Defective Items') }}
-                            </a>
-                        </li>
-                        @endif
-                        <li><a href="{{ route('invoices.index') }}" style="color: #64748b;">{{ __('Invoices') }}</a></li>
-                    </ul>
+                <li>
+                    <div class="custom-dropdown-parent {{ request()->is('sales*') || request()->is('returns*') || request()->is('invoices*') ? 'active-dropdown' : '' }}">
+                        <a href="#salesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-cart-check-fill me-3"></i> {{ __('Sales') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="salesSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('sales.create') }}">{{ __('New Sale') }}</a></li>
+                            <li><a href="{{ route('sales.index') }}">{{ __('Sales History') }}</a></li>
+                            @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']))
+                            <li><a href="{{ route('returns.index') }}">{{ __('Return Invoices') }}</a></li>
+                            <li>
+                                <a href="{{ route('returns.defective') }}" class="{{ request()->is('returns/defective*') ? 'fw-semibold text-danger' : '' }}">
+                                    {{ __('Defective Items') }}
+                                </a>
+                            </li>
+                            @endif
+                            <li><a href="{{ route('invoices.index') }}">{{ __('Invoices') }}</a></li>
+                        </ul>
+                    </div>
                 </li>
                 
 
                 @if(Auth::user()->hasRole('Administrator'))
                 <li>
-                    <a href="#itemsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-box-seam-fill me-3"></i> {{ __('Items') }}
-                    </a>
-                    <ul class="collapse list-unstyled" id="itemsSubmenu" data-bs-parent="#sidebarMenu">
-                        <li><a href="{{ route('products.index') }}" style="color: #64748b;">{{ __('Products') }}</a></li>
-                        <li><a href="{{ route('categories.index') }}" style="color: #64748b;">{{ __('Categories') }}</a></li>
-                        <li><a href="{{ route('brands.index') }}" style="color: #64748b;">{{ __('Brands') }}</a></li>
-                        <li><a href="{{ route('units.index') }}" style="color: #64748b;">{{ __('Units') }}</a></li>
-                    </ul>
+                    <style>
+                        .custom-dropdown-parent.active-dropdown {
+                            background-color: #eff6ff;
+                            border-radius: 8px;
+                        }
+                        .custom-dropdown-parent.active-dropdown > a,
+                        .custom-dropdown-parent.active-dropdown > a i {
+                            color: #3b82f6 !important;
+                            font-weight: 600;
+                        }
+                        .custom-submenu {
+                            padding-left: 20px;
+                            padding-top: 5px;
+                            padding-bottom: 5px;
+                        }
+                        .custom-submenu li a {
+                            color: #64748b !important;
+                            font-size: 0.9rem;
+                            padding: 8px 15px 8px 35px !important;
+                            position: relative;
+                            display: block;
+                            text-decoration: none;
+                            line-height: 1.4;
+                        }
+                        .custom-submenu li a::before {
+                            content: "•";
+                            color: #cbd5e1;
+                            font-size: 1.5rem;
+                            position: absolute;
+                            left: 15px;
+                            top: 16px;
+                            line-height: 0;
+                        }
+                        .custom-submenu li a:hover {
+                            color: #3b82f6 !important;
+                        }
+                        .custom-submenu li a:hover::before {
+                            color: #3b82f6;
+                        }
+                    </style>
+                    <div class="custom-dropdown-parent {{ request()->is('products*') || request()->is('categories*') || request()->is('brands*') || request()->is('units*') || request()->is('customers*') ? 'active-dropdown' : '' }}">
+                        <a href="#itemsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-boxes me-3"></i> {{ __('Items') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="itemsSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('products.index') }}">{{ __('Products') }}</a></li>
+                            <li><a href="{{ route('categories.index') }}">{{ __('Categories') }}</a></li>
+                            <li><a href="{{ route('brands.index') }}">{{ __('Brands') }}</a></li>
+                            <li><a href="{{ route('units.index') }}">{{ __('Units') }}</a></li>
+                            <li><a href="{{ route('customers.index') }}">{{ __('Customers') }}</a></li>
+                        </ul>
+                    </div>
                 </li>
                 @if(Auth::user()->hasRole('Administrator'))
                 <li>
-                    <a href="#purchasesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-bag-plus-fill me-3"></i> {{ __('Purchases') }}
-                    </a>
-                    <ul class="collapse list-unstyled" id="purchasesSubmenu" data-bs-parent="#sidebarMenu">
-                        <li><a href="{{ route('purchases.create') }}" style="color: #64748b;">{{ __('Add Purchase') }}</a></li>
-                        <li><a href="{{ route('purchases.index') }}" style="color: #64748b;">{{ __('Purchase History') }}</a></li>
-                        <li><a href="{{ route('suppliers.index') }}" style="color: #64748b;">{{ __('Suppliers') }}</a></li>
-                    </ul>
+                    <div class="custom-dropdown-parent {{ request()->is('purchases*') || request()->is('suppliers*') ? 'active-dropdown' : '' }}">
+                        <a href="#purchasesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-bag-plus-fill me-3"></i> {{ __('Purchases') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="purchasesSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('purchases.create') }}">{{ __('Add Purchase') }}</a></li>
+                            <li><a href="{{ route('purchases.index') }}">{{ __('Purchase History') }}</a></li>
+                            <li><a href="{{ route('suppliers.index') }}">{{ __('Suppliers') }}</a></li>
+                        </ul>
+                    </div>
                 </li>
                 @endif
                 <li>
                     <a href="{{ route('expenses.index') }}" style="color: #64748b;"><i class="bi bi-graph-down-arrow me-3"></i> {{ __('Expenses') }}</a>
                 </li>
                 <li>
-                    <a href="#reportsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b;">
-                        <i class="bi bi-pie-chart-fill me-3"></i> {{ __('Reports') }}
-                    </a>
-                    <ul class="collapse list-unstyled" id="reportsSubmenu" data-bs-parent="#sidebarMenu">
-                        <li><a href="{{ route('reports.index') }}" style="color: #64748b;">{{ __('Overview') }}</a></li>
-                        <li><a href="{{ route('reports.profit_loss') }}" style="color: #64748b;">{{ __('Profit and Loss') }}</a></li>
-                        <li><a href="{{ route('reports.sales') }}" style="color: #64748b;">{{ __('Sales') }}</a></li>
-                        <li><a href="{{ route('reports.expenses') }}" style="color: #64748b;">{{ __('Expenses') }}</a></li>
-                    </ul>
+                    <div class="custom-dropdown-parent {{ request()->is('reports*') ? 'active-dropdown' : '' }}">
+                        <a href="#reportsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-pie-chart-fill me-3"></i> {{ __('Reports') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="reportsSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('reports.index') }}">{{ __('Overview') }}</a></li>
+                            <li><a href="{{ route('reports.profit_loss') }}">{{ __('Profit and Loss') }}</a></li>
+                            <li><a href="{{ route('reports.sales') }}">{{ __('Sales') }}</a></li>
+                            <li><a href="{{ route('reports.expenses') }}">{{ __('Expenses') }}</a></li>
+                        </ul>
+                    </div>
                 </li>
                 @endif
                 @if(Auth::user()->shop && in_array(Auth::user()->shop->package, ['professional', 'enterprise']) && Auth::user()->hasRole('Administrator'))
@@ -295,6 +344,17 @@
                         <i class="bi bi-person-badge-fill me-3"></i> {{ __('Business Card') }}
                     </a>
                 </li>
+                @endif
+                
+                @if(Auth::user()->hasRole('Administrator'))
+                <li class="{{ request()->is('staff*') ? 'active' : '' }}">
+                    <a href="{{ route('staff.index') }}" class="d-flex align-items-center" style="color: #64748b; line-height: 1.3;">
+                        <i class="bi bi-people-fill me-3"></i> <span>{{ __('Staff & Users') }}</span>
+                    </a>
+                </li>
+                @endif
+
+                @if(Auth::user()->shop)
                 <li class="{{ request()->routeIs('plans.index') ? 'active' : '' }}">
                     <a href="{{ route('plans.index') }}" style="color: #64748b;">
                         <i class="bi bi-gem text-primary me-3"></i> {{ __('Upgrade Plan') }}
@@ -303,14 +363,6 @@
                 <li class="{{ request()->routeIs('reviews.index') ? 'active' : '' }}">
                     <a href="{{ route('reviews.index') }}" style="color: #64748b;">
                         <i class="bi bi-star-fill text-warning me-3"></i> {{ __('Rate Us') }}
-                    </a>
-                </li>
-                @endif
-                
-                @if(Auth::user()->hasRole('Administrator'))
-                <li class="{{ request()->is('staff*') ? 'active' : '' }}">
-                    <a href="{{ route('staff.index') }}" class="d-flex align-items-center" style="color: #64748b; line-height: 1.3;">
-                        <i class="bi bi-people-fill me-3"></i> <span>{{ __('Staff & Users') }}</span>
                     </a>
                 </li>
                 @endif
