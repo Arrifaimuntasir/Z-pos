@@ -190,6 +190,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sales/{sale}/returns', [App\Http\Controllers\SaleReturnController::class, 'store'])->name('sales.returns.store');
     Route::get('/returns', [App\Http\Controllers\SaleReturnController::class, 'index'])->name('returns.index');
     Route::get('/returns/defective', [App\Http\Controllers\SaleReturnController::class, 'defectiveItems'])->name('returns.defective');
+    Route::put('/returns/defective/{item}/repair', [App\Http\Controllers\SaleReturnController::class, 'updateRepairStatus'])->name('returns.defective.repair-status');
+    Route::delete('/returns/defective/{item}', [App\Http\Controllers\SaleReturnController::class, 'destroyDefectiveItem'])->name('returns.defective.destroy');
     Route::get('/returns/{return}/pdf', [App\Http\Controllers\SaleReturnController::class, 'downloadPdf'])->name('returns.pdf');
     Route::post('/sales/bulk-destroy', [App\Http\Controllers\SaleController::class, 'bulkDestroy'])->name('sales.bulk-destroy');
     Route::resource('sales', App\Http\Controllers\SaleController::class);

@@ -216,7 +216,7 @@
                     <select name="products[0][name]" class="form-select product-select" required style="width: 100%;" onchange="updatePrice(this)">
                         <option value="">{{ __('Select or Search Product') }}</option>
                         @foreach($products as $product)
-                            <option value="{{ $product->name }}" data-price="{{ $product->price }}">{{ $product->name }}</option>
+                            <option value="{{ $product->name }}" data-price="{{ $product->selling_price ? $product->selling_price + 0 : '' }}">{{ $product->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -391,7 +391,7 @@
         // Create options from PHP products array
         let optionsHtml = '<option value="">{{ __('Select or Search Product') }}</option>';
         @foreach($products as $product)
-            optionsHtml += `<option value="{{ addslashes($product->name) }}" data-price="{{ $product->price }}">{{ addslashes($product->name) }}</option>`;
+            optionsHtml += `<option value="{{ addslashes($product->name) }}" data-price="{{ $product->selling_price ? $product->selling_price + 0 : '' }}">{{ addslashes($product->name) }}</option>`;
         @endforeach
 
         const html = `

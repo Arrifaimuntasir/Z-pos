@@ -113,7 +113,7 @@
                 @php
                     $shopCategory = Auth::user()->shop->business_type;
                     $showExpiry = in_array($shopCategory, ['Pharmacy / Health', 'Supermarket / Grocery', 'Restaurant / Food']);
-                    $showImei = in_array($shopCategory, ['Electronics / IT']);
+                    $showImei = in_array($shopCategory, ['Electronics / IT', 'Hardware / Construction']);
                     $isMandatoryStock = in_array($shopCategory, ['Electronics / IT', 'Pharmacy / Health']);
                 @endphp
                 
@@ -133,11 +133,11 @@
                         <div class="form-check form-switch mt-1">
                             <input class="form-check-input" type="checkbox" role="switch" id="track_stock" name="track_stock" value="1" {{ old('track_stock', true) ? 'checked' : '' }} onchange="toggleRecipeSection()">
                             <label class="form-check-label ms-2" for="track_stock">
-                                <span class="fw-semibold">Track Stock (Advanced Stock Mode)</span><br>
+                                <span class="fw-semibold">{{ __('Track Stock (Advanced Stock Mode)') }}</span><br>
                                 @if(auth()->check() && auth()->user()->shop && auth()->user()->shop->business_type == 'Restaurant / Food')
-                                    <small class="text-muted">Turn off for Simple Mode (e.g. cooked meals with no stock tracking). If ON, you can also add a recipe below.</small>
+                                    <small class="text-muted">{{ __('Turn off for Simple Mode (e.g. cooked meals with no stock tracking). If ON, you can also add a recipe below.') }}</small>
                                 @else
-                                    <small class="text-muted">Turn off if you do not want to track stock for this product.</small>
+                                    <small class="text-muted">{{ __('Turn off if you do not want to track stock for this product.') }}</small>
                                 @endif
                             </label>
                         </div>
@@ -148,8 +148,8 @@
                 <div class="col-md-12" id="recipe_section" style="display: {{ old('track_stock', true) ? 'block' : 'none' }};">
                     <div class="card bg-light border-0">
                         <div class="card-body">
-                            <h6 class="fw-bold mb-3">Recipe / Ingredients (Optional)</h6>
-                            <p class="text-muted small mb-3">If this product is made from other products (like Mchele, Nyama), add them here. When you sell this product, the stock of these ingredients will be deducted automatically.</p>
+                            <h6 class="fw-bold mb-3">{{ __('Recipe / Ingredients (Optional)') }}</h6>
+                            <p class="text-muted small mb-3">{{ __('If this product is made from other products (like Mchele, Nyama), add them here. When you sell this product, the stock of these ingredients will be deducted automatically.') }}</p>
                             
                             <div id="ingredients_container">
                                 <!-- Ingredients will be appended here -->
@@ -186,8 +186,8 @@
                     <div class="form-check form-switch mt-3">
                         <input class="form-check-input" type="checkbox" role="switch" id="requires_imei" name="requires_imei" value="1" {{ old('requires_imei') ? 'checked' : '' }}>
                         <label class="form-check-label ms-2" for="requires_imei">
-                            <span class="fw-semibold">Requires IMEI / Serial Number</span><br>
-                            <small class="text-muted">For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.</small>
+                            <span class="fw-semibold">{{ __('Requires IMEI / Serial Number') }}</span><br>
+                            <small class="text-muted">{{ __('For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.') }}</small>
                         </label>
                     </div>
                 </div>

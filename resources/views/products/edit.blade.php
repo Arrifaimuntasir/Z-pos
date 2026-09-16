@@ -92,7 +92,7 @@
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-muted small text-uppercase">{{ __('Stock Quantity') }} (Optional)</label>
-                    <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror" value="{{ old('stock', $product->stock) }}" min="0" id="stock_input">
+                    <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror" value="{{ old('stock', $product->stock ? $product->stock + 0 : '') }}" min="0" id="stock_input">
                     @error('stock')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
@@ -100,7 +100,7 @@
                     <label class="form-label fw-semibold text-muted small text-uppercase">Buying Price (Bei uliyonunulia) (Optional)</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted">TSh</span>
-                        <input type="number" step="0.01" name="cost_price" class="form-control border-start-0 @error('cost_price') is-invalid @enderror" value="{{ old('cost_price', $product->cost_price) }}" min="0">
+                        <input type="number" step="0.01" name="cost_price" class="form-control border-start-0 @error('cost_price') is-invalid @enderror" value="{{ old('cost_price', $product->cost_price ? $product->cost_price + 0 : '') }}" min="0">
                     </div>
                     @error('cost_price')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
@@ -109,7 +109,7 @@
                     <label class="form-label fw-semibold text-muted small text-uppercase">Selling Price (Bei ya kuuza) <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted">TSh</span>
-                        <input type="number" step="0.01" name="selling_price" class="form-control border-start-0 @error('selling_price') is-invalid @enderror" value="{{ old('selling_price', $product->selling_price) }}" min="0" required>
+                        <input type="number" step="0.01" name="selling_price" class="form-control border-start-0 @error('selling_price') is-invalid @enderror" value="{{ old('selling_price', $product->selling_price ? $product->selling_price + 0 : '') }}" min="0" required>
                     </div>
                     @error('selling_price')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                 </div>
@@ -117,7 +117,7 @@
                 @php
                     $shopCategory = Auth::user()->shop->business_type;
                     $showExpiry = in_array($shopCategory, ['Pharmacy / Health', 'Supermarket / Grocery', 'Restaurant / Food']);
-                    $showImei = in_array($shopCategory, ['Electronics / IT']);
+                    $showImei = in_array($shopCategory, ['Electronics / IT', 'Hardware / Construction']);
                     $isMandatoryStock = in_array($shopCategory, ['Electronics / IT', 'Pharmacy / Health']);
                 @endphp
                 
@@ -137,11 +137,11 @@
                         <div class="form-check form-switch mt-1">
                             <input class="form-check-input" type="checkbox" role="switch" id="track_stock" name="track_stock" value="1" {{ old('track_stock', $product->track_stock) ? 'checked' : '' }} onchange="toggleRecipeSection()">
                             <label class="form-check-label ms-2" for="track_stock">
-                                <span class="fw-semibold">Track Stock (Advanced Stock Mode)</span><br>
+                                <span class="fw-semibold">{{ __('Track Stock (Advanced Stock Mode)') }}</span><br>
                                 @if(auth()->check() && auth()->user()->shop && auth()->user()->shop->business_type == 'Restaurant / Food')
-                                    <small class="text-muted">Turn off for Simple Mode (e.g. cooked meals with no stock tracking). If ON, you can also add a recipe below.</small>
+                                    <small class="text-muted">{{ __('Turn off for Simple Mode (e.g. cooked meals with no stock tracking). If ON, you can also add a recipe below.') }}</small>
                                 @else
-                                    <small class="text-muted">Turn off if you do not want to track stock for this product.</small>
+                                    <small class="text-muted">{{ __('Turn off if you do not want to track stock for this product.') }}</small>
                                 @endif
                             </label>
                         </div>
@@ -152,8 +152,8 @@
                 <div class="col-md-12" id="recipe_section" style="display: {{ old('track_stock', $product->track_stock) ? 'block' : 'none' }};">
                     <div class="card bg-light border-0">
                         <div class="card-body">
-                            <h6 class="fw-bold mb-3">Recipe / Ingredients (Optional)</h6>
-                            <p class="text-muted small mb-3">If this product is made from other products (like Mchele, Nyama), add them here. When you sell this product, the stock of these ingredients will be deducted automatically.</p>
+                            <h6 class="fw-bold mb-3">{{ __('Recipe / Ingredients (Optional)') }}</h6>
+                            <p class="text-muted small mb-3">{{ __('If this product is made from other products (like Mchele, Nyama), add them here. When you sell this product, the stock of these ingredients will be deducted automatically.') }}</p>
                             
                             <div id="ingredients_container">
                                 @foreach($product->ingredients as $index => $ing)
@@ -209,8 +209,8 @@
                     <div class="form-check form-switch mt-3">
                         <input class="form-check-input" type="checkbox" role="switch" id="requires_imei" name="requires_imei" value="1" {{ old('requires_imei', $product->requires_imei) ? 'checked' : '' }}>
                         <label class="form-check-label ms-2" for="requires_imei">
-                            <span class="fw-semibold">Requires IMEI / Serial Number</span><br>
-                            <small class="text-muted">For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.</small>
+                            <span class="fw-semibold">{{ __('Requires IMEI / Serial Number') }}</span><br>
+                            <small class="text-muted">{{ __('For Electronics/Mobile shops. Cashier will be asked to scan IMEI during sale.') }}</small>
                         </label>
                     </div>
                 </div>

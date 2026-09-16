@@ -114,19 +114,23 @@
         </div>
         
         <div class="row g-3 mb-3">
-            <div class="col-md-6">
-                <label class="form-label">{{ __('Product Name') }} *</label>
-                <select name="product_name" class="form-select product-select" required style="width: 100%;">
-                    <option value="">{{ __('Select or Search Product') }}</option>
-                    @foreach($products as $product)
-                        <option value="{{ $product->name }}" {{ old('product_name', $warranty->product_name) == $product->name ? 'selected' : '' }}>{{ $product->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">{{ __('IMEI / Serial No.') }}</label>
-                <input type="text" name="serial_number" class="form-control" value="{{ old('serial_number', $warranty->serial_number) }}">
-            </div>
+              <div class="col-md-5">
+                  <label class="form-label">{{ __('Product Name') }} *</label>
+                  <select name="product_name" class="form-select product-select" required style="width: 100%;" onchange="updatePrice(this)">
+                      <option value="">{{ __('Select or Search Product') }}</option>
+                      @foreach($products as $product)
+                          <option value="{{ $product->name }}" data-price="{{ $product->selling_price ? $product->selling_price + 0 : '' }}" {{ old('product_name', $warranty->product_name) == $product->name ? 'selected' : '' }}>{{ $product->name }}</option>
+                      @endforeach
+                  </select>
+              </div>
+              <div class="col-md-3">
+                  <label class="form-label">{{ __('Price (TSh)') }}</label>
+                  <input type="number" name="price" class="form-control price-input" value="{{ old('price', $warranty->price ? $warranty->price + 0 : '') }}" placeholder="0">
+              </div>
+              <div class="col-md-4">
+                  <label class="form-label">{{ __('IMEI / Serial No.') }}</label>
+                  <input type="text" name="serial_number" class="form-control" value="{{ old('serial_number', $warranty->serial_number) }}">
+              </div>
         </div>
 
         <hr class="border-light my-4">
@@ -262,5 +266,13 @@
             allowClear: true
         });
     });
+
+    function updatePrice(selectElement) {
+        let selectedOption = $(selectElement).find(':selected');
+        let price = selectedOption.data('price');
+        if (price !== undefined && price !== "") {
+            $(selectElement).closest('.row').find('.price-input').val(price);
+        }
+    }
 </script>
 @endsection

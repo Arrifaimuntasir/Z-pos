@@ -8,6 +8,7 @@ use App\Traits\HasTenant;
 class SaleItem extends Model
 {
     use HasTenant;
+    
     protected $fillable = [
         'sale_id',
         'product_id',

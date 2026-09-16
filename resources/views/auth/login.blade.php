@@ -194,7 +194,7 @@
                     <div class="alert alert-warning border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center" role="alert">
                         <i class="bi bi-exclamation-triangle-fill fs-5 me-2 text-warning"></i>
                         <div>
-                            {{ session('error') ?? __('Kipindi cha usalama kimeisha (Session Expired). Tafadhali jaribu tena.') }}
+                            {{ session('error') ?? __('Session Expired. Please try again.') }}
                         </div>
                     </div>
                 @endif

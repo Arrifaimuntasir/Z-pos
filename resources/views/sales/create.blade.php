@@ -68,7 +68,7 @@
                     @php
                         $shopCategory = Auth::user()->shop->business_type;
                         $showExpiry = in_array($shopCategory, ['Pharmacy / Health', 'Supermarket / Grocery', 'Restaurant / Food']);
-                        $showImei = in_array($shopCategory, ['Electronics / IT']);
+                        $showImei = in_array($shopCategory, ['Electronics / IT', 'Hardware / Construction']);
                         $isRestaurant = $shopCategory === 'Restaurant / Food';
                     @endphp
 

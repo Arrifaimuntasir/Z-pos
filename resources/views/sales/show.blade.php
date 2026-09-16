@@ -11,10 +11,10 @@
     </div>
     <div>
         
-        @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']) && $sale->payment_status !== 'proforma')
-        <a href="{{ route('sales.returns.create', $sale->id) }}" class="btn btn-warning px-3 shadow-sm text-dark" style="border-radius: 8px;">
-            <i class="bi bi-arrow-return-left me-1"></i> {{ __('Return/Refund') }}
-        </a>
+        @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Services / Consulting']) && $sale->payment_status !== 'proforma')
+            <a href="{{ route('sales.returns.create', $sale->id) }}" class="btn btn-warning shadow-sm">
+                <i class="bi bi-arrow-return-left me-2"></i> {{ __('Return Items') }}
+            </a>
         @endif
         <button onclick="shareReceipt(event)" class="btn btn-success px-3 shadow-sm" style="border-radius: 8px;">
             <i class="bi bi-share me-1"></i> {{ __('Share') }}

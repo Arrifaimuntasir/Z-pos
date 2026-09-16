@@ -291,39 +291,49 @@ class SaleReturnController extends Controller
 
     public function defectiveItems(Request $request)
     {
-        $search   = $request->query('search');
-        $branchId = $this->getActiveBranchId();
-        $shopId   = auth()->user()->shop_id;
+        try {
+            $search   = $request->query('search');
+            $branchId = $this->getActiveBranchId();
+            $shopId   = auth()->user()->shop_id;
 
-        $query = SaleReturnItem::with(['product', 'saleReturn', 'saleItem'])
-            ->whereHas('saleReturn', function ($q) use ($shopId, $branchId) {
-                $q->where('shop_id', $shopId);
-                if ($branchId) {
-                    $q->where('branch_id', $branchId);
-                }
-            })
-            ->where('condition', 'defective')
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($q1) use ($search) {
-                    $q1->whereHas('product', function ($p) use ($search) {
-                        $p->where('name', 'like', "%{$search}%");
-                    })->orWhereHas('saleReturn', function ($r) use ($search) {
-                        $r->where('reference_no', 'like', "%{$search}%");
+            $query = SaleReturnItem::with(['product', 'saleReturn', 'saleItem'])
+                ->whereHas('saleReturn', function ($q) use ($shopId, $branchId) {
+                    $q->where('shop_id', $shopId);
+                    if ($branchId) {
+                        $q->where('branch_id', $branchId);
+                    }
+                })
+                ->where('condition', 'defective')
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($q1) use ($search) {
+                        $q1->whereHas('product', function ($p) use ($search) {
+                            $p->where('name', 'like', "%{$search}%");
+                        })->orWhereHas('saleReturn', function ($r) use ($search) {
+                            $r->where('reference_no', 'like', "%{$search}%");
+                        });
                     });
-                });
-            })
-            ->latest()
-            ->paginate(20)
-            ->appends(['search' => $search]);
+                })
+                ->latest()
+                ->paginate(20)
+                ->appends(['search' => $search]);
 
-        $totalDefective  = SaleReturnItem::whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
-            ->where('condition', 'defective')->sum('quantity');
-        $totalLostValue  = SaleReturnItem::with('saleItem')
-            ->whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
-            ->where('condition', 'defective')->get()
-            ->sum(fn($i) => $i->saleItem ? $i->quantity * $i->saleItem->unit_cost : 0);
+            $totalDefective  = SaleReturnItem::whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
+                ->where('condition', 'defective')->sum('quantity');
+                
+            $totalLostValue  = SaleReturnItem::with('saleItem')
+                ->whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
+                ->where('condition', 'defective')->get()
+                ->sum(fn($i) => $i->saleItem ? $i->quantity * $i->saleItem->unit_cost : 0);
 
-        return view('returns.defective', compact('query', 'search', 'totalDefective', 'totalLostValue'));
+            return view('returns.defective', compact('query', 'search', 'totalDefective', 'totalLostValue'))->render();
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'ERROR',
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
+        }
     }
 
     /**
@@ -418,3 +428,5 @@ class SaleReturnController extends Controller
         return back()->with('success', 'Defective item record deleted.');
     }
 }
+
+

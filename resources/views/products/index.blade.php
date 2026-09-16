@@ -68,7 +68,7 @@
                             <td>
                                 <div class="search-toolbar">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white bg-primary me-3 shadow-sm" style="width: 28px; height: 28px; font-size: 0.85rem;">
-                                        {{ $loop->iteration }}
+                                        {{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}
                                     </div>
                                     <div>
                                         <h6 class="mb-0 fw-bold">{{ $product->name }}</h6>

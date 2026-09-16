@@ -221,7 +221,7 @@
                         <ul class="collapse list-unstyled custom-submenu" id="salesSubmenu" data-bs-parent="#sidebarMenu">
                             <li><a href="{{ route('sales.create') }}">{{ __('New Sale') }}</a></li>
                             <li><a href="{{ route('sales.index') }}">{{ __('Sales History') }}</a></li>
-                            @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']))
+                            @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Services / Consulting']))
                             <li><a href="{{ route('returns.index') }}">{{ __('Return Invoices') }}</a></li>
                             <li>
                                 <a href="{{ route('returns.defective') }}" class="{{ request()->is('returns/defective*') ? 'fw-semibold text-danger' : '' }}">
@@ -330,7 +330,7 @@
                 @endif
                 
 
-                @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Electronics / IT']))
+                @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Electronics / IT', 'Hardware / Construction', 'Retail / General']))
                 <li class="{{ request()->is('warranties*') ? 'active' : '' }}">
                     <a href="{{ route('warranties.index') }}" style="color: #64748b;">
                         <i class="bi bi-shield-check me-3"></i> {{ __('Warranties') }}
@@ -381,7 +381,7 @@
                 </li>
                 <li class="{{ request()->routeIs('superadmin.payments.*') ? 'active' : '' }}">
                     <a href="{{ route('superadmin.payments.index') }}" style="color: #64748b;">
-                        <i class="bi bi-credit-card-fill me-3"></i> Manage Payments
+                        <i class="bi bi-credit-card-fill me-3"></i> {{ __('Manage Payments') }}
                         @php
                             $pendingCount = \App\Models\Payment::where('status', 'pending')->count();
                         @endphp
@@ -392,7 +392,7 @@
                 </li>
                 <li class="{{ request()->routeIs('superadmin.cms.*') || request()->routeIs('superadmin.testimonials.*') ? 'active' : '' }}">
                     <a href="{{ route('superadmin.cms.index') }}" style="color: #64748b;">
-                        <i class="bi bi-pencil-square me-3"></i> Content (CMS)
+                        <i class="bi bi-pencil-square me-3"></i> {{ __('Content (CMS)') }}
                     </a>
                 </li>
             </ul>
@@ -824,6 +824,90 @@
                 // Page was loaded from bfcache (back button) - force a fresh reload
                 window.location.reload();
             }
+        });
+
+        // Auto-search functionality using AJAX
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInputs = document.querySelectorAll('input[name="search"]');
+            searchInputs.forEach(input => {
+                let timer;
+                const form = input.closest('form');
+                
+                // Auto-focus and place cursor at end if there's an active search
+                if (input.value) {
+                    input.focus();
+                    const val = input.value;
+                    input.value = '';
+                    input.value = val;
+                }
+
+                input.addEventListener('input', function(e) {
+                    clearTimeout(timer);
+                    
+                    // Don't auto-submit if user just typed a space, let them finish the word
+                    if (this.value.endsWith(' ')) {
+                        return;
+                    }
+
+                    timer = setTimeout(() => {
+                        const url = new URL(form.action);
+                        const params = new URLSearchParams(new FormData(form));
+                        url.search = params.toString();
+
+                        // Add a loading indicator to the search icon if possible
+                        const btn = form.querySelector('button[type="submit"] i');
+                        const originalClass = btn ? btn.className : '';
+                        if (btn) btn.className = 'bi bi-arrow-repeat spinner-border spinner-border-sm border-0';
+
+                        fetch(url, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            
+                            // Find the main content area (usually card-body containing table)
+                            const currentTableArea = document.querySelector('.table-responsive');
+                            const newTableArea = doc.querySelector('.table-responsive');
+                            
+                            if (currentTableArea && newTableArea) {
+                                currentTableArea.innerHTML = newTableArea.innerHTML;
+                                
+                                // Also update pagination if it exists
+                                const currentPagination = document.querySelector('.pagination')?.closest('div');
+                                const newPagination = doc.querySelector('.pagination')?.closest('div');
+                                
+                                if (currentPagination && newPagination) {
+                                    currentPagination.innerHTML = newPagination.innerHTML;
+                                } else if (currentPagination && !newPagination) {
+                                    currentPagination.innerHTML = '';
+                                }
+                                
+                                // Update URL without reloading
+                                window.history.pushState({}, '', url);
+                            } else {
+                                // Fallback to normal submit if structure is different
+                                form.submit();
+                            }
+                            
+                            if (btn) btn.className = originalClass;
+                        })
+                        .catch(() => {
+                            // Fallback on error
+                            form.submit();
+                        });
+                    }, 600); // 600ms debounce
+                });
+                
+                // Handle normal form submit (e.g. hitting Enter)
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    input.dispatchEvent(new Event('input'));
+                });
+            });
         });
     </script>
 </body>
