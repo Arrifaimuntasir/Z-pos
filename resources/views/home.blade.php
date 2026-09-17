@@ -373,7 +373,7 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <div class="kpi-icon" style="background:rgba(255,255,255,0.2); color:#fff; width:52px; height:52px; font-size:22px;">
-                            <i class="bi {{ $isProfit ? 'bi-trending-up' : 'bi-trending-down' }}"></i>
+                            <i class="bi {{ $isProfit ? 'bi-graph-up-arrow' : 'bi-graph-down-arrow' }}"></i>
                         </div>
                     </div>
                     <div class="col">
