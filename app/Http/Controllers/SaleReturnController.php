@@ -318,11 +318,15 @@ class SaleReturnController extends Controller
                 ->appends(['search' => $search]);
 
             $totalDefective  = SaleReturnItem::whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
-                ->where('condition', 'defective')->sum('quantity');
+                ->where('condition', 'defective')
+                ->where('repair_status', 'not_repaired')
+                ->sum('quantity');
                 
             $totalLostValue  = SaleReturnItem::with('saleItem')
                 ->whereHas('saleReturn', fn($q) => $q->where('shop_id', $shopId))
-                ->where('condition', 'defective')->get()
+                ->where('condition', 'defective')
+                ->where('repair_status', 'not_repaired')
+                ->get()
                 ->sum(fn($i) => $i->saleItem ? $i->quantity * $i->saleItem->unit_cost : 0);
 
             return view('returns.defective', compact('query', 'search', 'totalDefective', 'totalLostValue'))->render();
