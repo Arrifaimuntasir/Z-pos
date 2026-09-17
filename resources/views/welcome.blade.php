@@ -483,7 +483,7 @@ section.py-5.text-white p {
                     <div class="testimonial-card position-relative h-100">
                         <i class="bi bi-quote quote-icon"></i>
                         <div class="mb-2" style="color:#f59e0b;font-size:.85rem;letter-spacing:2px;">
-                            @for($i=1;$i<=5;$i++){{ $i <= $t->rating ? 'â˜…' : 'â˜†' }}@endfor
+                            @for($i=1;$i<=5;$i++)<i class="bi {{ $i <= $t->rating ? 'bi-star-fill' : 'bi-star' }}" style="font-size:.8rem;"></i>@endfor
                         </div>
                         <p>&ldquo;{{ $t->quote }}&rdquo;</p>
                         <div class="client-info d-flex align-items-center gap-3 mt-3">
@@ -510,7 +510,7 @@ section.py-5.text-white p {
                     <div class="testimonial-card position-relative h-100">
                         <i class="bi bi-quote quote-icon"></i>
                         <div class="mb-2" style="color:#f59e0b;font-size:.85rem;letter-spacing:2px;">
-                            @for($i=1;$i<=5;$i++){{ $i <= $t->rating ? 'â˜…' : 'â˜†' }}@endfor
+                            @for($i=1;$i<=5;$i++)<i class="bi {{ $i <= $t->rating ? 'bi-star-fill' : 'bi-star' }}" style="font-size:.8rem;"></i>@endfor
                         </div>
                         <p>&ldquo;{{ $t->quote }}&rdquo;</p>
                         <div class="client-info d-flex align-items-center gap-3 mt-3">
@@ -963,3 +963,4 @@ section.py-5.text-white p {
         });
     </script>
 @endsection
+
