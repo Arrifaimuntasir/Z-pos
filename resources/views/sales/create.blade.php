@@ -89,7 +89,7 @@
                                                 data-id="{{ $p->id }}"
                                                 data-name="{{ $p->name }}"
                                                 data-price="{{ $p->selling_price }}"
-                                                data-stock="{{ $p->track_stock ? $p->stock : 999999 }}"
+                                                data-stock="{{ $p->track_stock ? $p->current_stock : 999999 }}"
                                                 data-requires-imei="false"
                                                 data-expiry=""
                                                 data-is-expired="false">
@@ -110,11 +110,11 @@
                                         <option value="{{ $product->id }}" 
                                                 data-name="{{ $product->name }}" 
                                                 data-price="{{ $product->selling_price }}"
-                                                data-stock="{{ $product->track_stock ? $product->stock : 999999 }}"
+                                                data-stock="{{ $product->track_stock ? $product->current_stock : 999999 }}"
                                                 data-requires-imei="{{ ($showImei && $product->requires_imei) ? 'true' : 'false' }}"
                                                 data-expiry="{{ ($showExpiry && $product->expiry_date) ? \Carbon\Carbon::parse($product->expiry_date)->format('M d, Y') : '' }}"
                                                 data-is-expired="{{ ($showExpiry && $product->expiry_date && \Carbon\Carbon::parse($product->expiry_date)->isPast()) ? 'true' : 'false' }}">
-                                            {{ $product->name }} (Stock: {{ $product->track_stock ? $product->stock : 'N/A' }}) - {{ number_format($product->selling_price) }} TSh
+                                            {{ $product->name }} (Stock: {{ $product->track_stock ? $product->current_stock : 'N/A' }}) - {{ number_format($product->selling_price) }} TSh
                                         </option>
                                     @endforeach
                                 </select>
