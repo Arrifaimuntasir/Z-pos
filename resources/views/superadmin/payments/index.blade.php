@@ -29,7 +29,7 @@
                     <tr>
                         <th class="border-0 rounded-top-start ps-4 py-3">{{ __('Date') }}</th>
                         <th class="border-0 py-3">{{ __('Shop') }}</th>
-                        <th class="border-0 py-3">{{ __('Package') }}</th>
+                        <th class="border-0 py-3">{{ __('Package & Duration') }}</th>
                         <th class="border-0 py-3">{{ __('Amount') }}</th>
                         <th class="border-0 py-3">{{ __('Receipt') }}</th>
                         <th class="border-0 py-3">{{ __('Status') }}</th>
@@ -47,7 +47,7 @@
                                 $billing = $payment->billing_cycle ?? ($payment->shop ? $payment->shop->billing_cycle : 'monthly') ?? 'monthly';
                             @endphp
                             <span class="badge bg-primary bg-opacity-10 text-primary text-uppercase fw-semibold">{{ $pkg }}</span>
-                            <span class="badge ms-1 {{ $billing === 'yearly' ? 'bg-success' : 'bg-secondary' }} bg-opacity-15 {{ $billing === 'yearly' ? 'text-success' : 'text-secondary' }}">
+                            <span class="badge ms-1 {{ $billing === 'yearly' ? 'bg-success text-white' : 'bg-info text-dark' }}">
                                 <i class="bi bi-{{ $billing === 'yearly' ? 'calendar-check' : 'calendar' }} me-1"></i>{{ $billing === 'yearly' ? __('Yearly') : __('Monthly') }}
                             </span>
                         </td>
@@ -110,7 +110,7 @@
                                         </h5>
                                         <div class="d-flex gap-2 align-items-center">
                                             <span class="badge bg-primary bg-opacity-10 text-primary text-uppercase">{{ $pkg }}</span>
-                                            <span class="badge {{ $billing === 'yearly' ? 'bg-success' : 'bg-secondary' }} bg-opacity-15 {{ $billing === 'yearly' ? 'text-success' : 'text-secondary' }}">
+                                            <span class="badge {{ $billing === 'yearly' ? 'bg-success text-white' : 'bg-info text-dark' }}">
                                                 {{ $billing === 'yearly' ? __('Yearly') : __('Monthly') }}
                                             </span>
                                             <span class="fw-bold text-dark small">TZS {{ number_format($payment->amount ?? 0) }}</span>
