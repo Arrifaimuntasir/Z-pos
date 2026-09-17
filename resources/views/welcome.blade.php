@@ -100,14 +100,12 @@ section.py-5.border-bottom.bg-white h6 {
 }
 section.py-5.border-bottom.bg-white .col-4,
 section.py-5.border-bottom.bg-white .col-md-2 {
-    opacity: 0.45;
+    opacity: 0.85;
     transition: opacity .2s;
-    filter: grayscale(100%);
 }
 section.py-5.border-bottom.bg-white .col-4:hover,
 section.py-5.border-bottom.bg-white .col-md-2:hover {
-    opacity: 0.85;
-    filter: grayscale(0%);
+    opacity: 1;
 }
 
 /* ===== FEATURES ===== */
