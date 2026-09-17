@@ -10,7 +10,7 @@ class Payment extends Model
 {
     use HasFactory, HasTenant;
 
-    protected $fillable = ['shop_id', 'amount', 'receipt_path', 'status'];
+    protected $fillable = ['shop_id', 'amount', 'package', 'billing_cycle', 'receipt_path', 'status'];
 
     public function shop()
     {

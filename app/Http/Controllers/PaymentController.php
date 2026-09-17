@@ -72,6 +72,8 @@ class PaymentController extends Controller
                 'shop_id' => $shop->id,
                 'receipt_path' => 'storage/' . $path,
                 'amount' => $amount,
+                'package' => $requestedPackage,
+                'billing_cycle' => $requestedBilling,
                 'status' => 'pending',
             ]);
             

@@ -287,6 +287,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/payments', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'index'])->name('payments.index');
         Route::post('/payments/{payment}/approve', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'approve'])->name('payments.approve');
         Route::post('/payments/{payment}/reject', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'reject'])->name('payments.reject');
+        Route::delete('/payments/{payment}', [App\Http\Controllers\SuperAdmin\PaymentController::class, 'destroy'])->name('superadmin.payments.destroy');
 
         // CMS Routes
         Route::get('/cms', [App\Http\Controllers\SuperAdmin\CmsController::class, 'index'])->name('cms.index');
