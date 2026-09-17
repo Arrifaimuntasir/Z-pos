@@ -64,14 +64,14 @@
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-1 flex-wrap">
                                 @if($payment->status === 'pending')
-                                    <form action="{{ route('payments.approve', $payment) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('superadmin.payments.approve', $payment) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success"
                                             onclick="return confirm('Approve this payment?\n\nShop: {{ $payment->shop->name }}\nPackage: {{ strtoupper($pkg) }} ({{ ucfirst($billing) }})\nAmount: TZS {{ number_format($payment->amount) }}\n\nSubscription will be extended by {{ $billing === \'yearly\' ? \'1 Year\' : \'1 Month\' }}.');">
                                             <i class="bi bi-check-lg"></i> {{ __('Approve') }}
                                         </button>
                                     </form>
-                                    <form action="{{ route('payments.reject', $payment) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('superadmin.payments.reject', $payment) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-warning text-white"
                                             onclick="return confirm('Reject this payment from {{ $payment->shop->name }}?');">
