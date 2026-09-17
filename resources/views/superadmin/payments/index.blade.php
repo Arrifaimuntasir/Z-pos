@@ -74,7 +74,7 @@
                                     <form action="{{ route('superadmin.payments.approve', $payment) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success"
-                                            onclick="return confirm('Approve this payment?\n\nShop: {{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}\nPackage: {{ strtoupper($pkg) }} ({{ ucfirst($billing) }})\nAmount: TZS {{ number_format($payment->amount ?? 0) }}\n\nSubscription will be extended by {{ $billing === \'yearly\' ? \'1 Year\' : \'1 Month\' }}.');">
+                                            onclick="return confirm('Approve this payment?\n\nShop: {{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}\nPackage: {{ strtoupper($pkg) }} ({{ ucfirst($billing) }})\nAmount: TZS {{ number_format($payment->amount ?? 0) }}\n\nSubscription will be extended by {{ $billing === 'yearly' ? '1 Year' : '1 Month' }}.');">
                                             <i class="bi bi-check-lg"></i> {{ __('Approve') }}
                                         </button>
                                     </form>
