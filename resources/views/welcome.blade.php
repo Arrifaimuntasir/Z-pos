@@ -526,17 +526,44 @@ section.py-5.text-white p {
             <div class="text-center mb-5" data-aos="fade-up">
                 <h2 class="fw-bold text-primary display-5">{{ __('Simple, Transparent Pricing') }}</h2>
                 <p class="text-muted fs-5 mt-3">{{ __('No hidden fees. Scale as you grow.') }}</p>
+
+                {{-- Monthly / Yearly Toggle --}}
+                <div class="d-inline-flex align-items-center gap-3 mt-4 bg-white px-4 py-2 rounded-pill shadow-sm border" style="border-color:#e2e8f0!important;">
+                    <span id="lbl-monthly" class="fw-700 text-dark" style="font-size:.88rem;font-weight:700;">{{ __('Monthly') }}</span>
+                    <div class="form-check form-switch mb-0" style="padding:0;">
+                        <input class="form-check-input m-0" type="checkbox" id="billingToggle"
+                               style="width:48px;height:26px;cursor:pointer;background-color:#10b981;border-color:#10b981;">
+                    </div>
+                    <span id="lbl-yearly" class="fw-700" style="font-size:.88rem;font-weight:700;color:#94a3b8;">
+                        {{ __('Yearly') }}
+                        <span class="badge ms-1 rounded-pill" style="background:#d1fae5;color:#059669;font-size:.65rem;padding:3px 8px;">
+                            {{ __('Save 2 months') }}
+                        </span>
+                    </span>
+                </div>
             </div>
-            
+
             <div class="row g-4 justify-content-center">
-                <!-- Basic -->
+
+                {{-- ===== STARTER ===== --}}
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <div class="pricing-card h-100">
-                        <h4 class="fw-bold text-primary mb-3">{{ __('Starter') }}</h4>
-                        <p class="text-muted">{{ __('Perfect for single retail shops.') }}</p>
-                        <div class="price mt-4">{{ __('TZS 15K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 20K') }}</small></div>
-                        <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                    <div class="pc-card h-100">
+                        <div class="pc-plan">{{ __('Starter') }}</div>
+                        <div class="pc-desc">{{ __('Perfect for single retail shops.') }}</div>
+                        <div class="pc-price-wrap">
+                            <div class="pc-price">
+                                <span class="pc-currency">TSh</span>
+                                <span class="pc-amount" data-monthly="15,000" data-yearly="150,000">15,000</span>
+                                <span class="pc-period">/<span class="pc-per">{{ __('mo') }}</span></span>
+                            </div>
+                            <div class="pc-old">
+                                <span class="monthly-old">{{ __('Was TSh 20,000/mo') }}</span>
+                                <span class="yearly-old d-none">{{ __('Was TSh 200,000/yr') }}</span>
+                            </div>
+                        </div>
+                        <hr class="pc-divider">
+                        <ul class="pc-features">
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('1 Branch') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('2 Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -545,19 +572,30 @@ section.py-5.text-white p {
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=starter" class="btn btn-outline-primary w-100 py-2 fw-bold" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=starter" class="pc-btn pc-btn-outline">{{ __('Get Started') }}</a>
                     </div>
                 </div>
-                
-                <!-- Pro -->
+
+                {{-- ===== PROFESSIONAL ===== --}}
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <div class="pricing-card popular h-100">
-                        <div class="badge-popular">{{ __('MOST POPULAR') }}</div>
-                        <h4 class="fw-bold text-success mb-3">{{ __('Professional') }}</h4>
-                        <p class="text-muted">{{ __('For growing multi-branch businesses.') }}</p>
-                        <div class="price mt-4">{{ __('TZS 45K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 50K') }}</small></div>
-                        <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                    <div class="pc-card pc-popular h-100">
+                        <div class="pc-badge">⭐ {{ __('MOST POPULAR') }}</div>
+                        <div class="pc-plan" style="color:#10b981;">{{ __('Professional') }}</div>
+                        <div class="pc-desc">{{ __('For growing multi-branch businesses.') }}</div>
+                        <div class="pc-price-wrap">
+                            <div class="pc-price">
+                                <span class="pc-currency">TSh</span>
+                                <span class="pc-amount" data-monthly="45,000" data-yearly="450,000">45,000</span>
+                                <span class="pc-period">/<span class="pc-per">{{ __('mo') }}</span></span>
+                            </div>
+                            <div class="pc-old">
+                                <span class="monthly-old">{{ __('Was TSh 50,000/mo') }}</span>
+                                <span class="yearly-old d-none">{{ __('Was TSh 600,000/yr') }}</span>
+                            </div>
+                        </div>
+                        <hr class="pc-divider">
+                        <ul class="pc-features">
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Up to 5 Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -566,18 +604,29 @@ section.py-5.text-white p {
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=professional" class="btn btn-success text-white w-100 py-2 fw-bold shadow" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=professional" class="pc-btn pc-btn-filled">{{ __('Get Started') }}</a>
                     </div>
                 </div>
-                
-                <!-- Enterprise -->
+
+                {{-- ===== ENTERPRISE ===== --}}
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                    <div class="pricing-card h-100">
-                        <h4 class="fw-bold text-primary mb-3">{{ __('Enterprise') }}</h4>
-                        <p class="text-muted">{{ __('Custom solutions for large chains.') }}</p>
-                        <div class="price mt-4">{{ __('TZS 110K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 130K') }}</small></div>
-                        <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                    <div class="pc-card h-100">
+                        <div class="pc-plan">{{ __('Enterprise') }}</div>
+                        <div class="pc-desc">{{ __('Custom solutions for large chains.') }}</div>
+                        <div class="pc-price-wrap">
+                            <div class="pc-price">
+                                <span class="pc-currency">TSh</span>
+                                <span class="pc-amount" data-monthly="110,000" data-yearly="1,100,000">110,000</span>
+                                <span class="pc-period">/<span class="pc-per">{{ __('mo') }}</span></span>
+                            </div>
+                            <div class="pc-old">
+                                <span class="monthly-old">{{ __('Was TSh 130,000/mo') }}</span>
+                                <span class="yearly-old d-none">{{ __('Was TSh 1,560,000/yr') }}</span>
+                            </div>
+                        </div>
+                        <hr class="pc-divider">
+                        <ul class="pc-features">
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -586,12 +635,149 @@ section.py-5.text-white p {
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Custom Warranties') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Advanced Analytics') }}</li>
                         </ul>
-                        <a href="{{ route('register') }}?package=enterprise" class="btn btn-outline-primary w-100 py-2 fw-bold" style="border-radius: 50px;">{{ __('Get Started') }}</a>
+                        <a href="{{ route('register') }}?package=enterprise" class="pc-btn pc-btn-outline">{{ __('Get Started') }}</a>
                     </div>
                 </div>
-            </div>
+
+            </div>{{-- /.row --}}
         </div>
     </section>
+
+    {{-- ===== PRICING STYLES + TOGGLE SCRIPT ===== --}}
+    <style>
+    /* Pricing Cards */
+    .pc-card {
+        background: #fff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        transition: all .25s;
+        position: relative;
+    }
+    .pc-card:not(.pc-popular):hover {
+        border-color: rgba(16,185,129,.4);
+        box-shadow: 0 14px 40px rgba(16,185,129,.09);
+        transform: translateY(-4px);
+    }
+    .pc-popular {
+        border: 2px solid #10b981 !important;
+        box-shadow: 0 14px 40px rgba(16,185,129,.15);
+        background: linear-gradient(180deg, rgba(16,185,129,.04) 0%, #fff 35%);
+    }
+    .pc-badge {
+        position: absolute;
+        top: -14px; left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #fff;
+        font-size: .67rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 5px 18px;
+        border-radius: 100px;
+        white-space: nowrap;
+    }
+    .pc-plan {
+        font-size: .72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #64748b;
+        margin-bottom: 4px;
+    }
+    .pc-desc { font-size: .84rem; color: #94a3b8; margin-bottom: 20px; }
+    .pc-price-wrap { margin-bottom: 4px; }
+    .pc-price {
+        display: flex;
+        align-items: baseline;
+        gap: 3px;
+        line-height: 1;
+    }
+    .pc-currency { font-size: .9rem; font-weight: 700; color: #0f172a; margin-top: 6px; }
+    .pc-amount   { font-size: 2.5rem; font-weight: 900; color: #0f172a; }
+    .pc-period   { font-size: .85rem; color: #94a3b8; font-weight: 500; }
+    .pc-old      { font-size: .72rem; color: #94a3b8; text-decoration: line-through; min-height: 18px; margin-top: 4px; }
+    .pc-divider  { border-color: #f1f5f9; margin: 18px 0; }
+    .pc-features { list-style: none; padding: 0; margin: 0 0 24px; flex: 1; }
+    .pc-features li {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: .83rem;
+        color: #374151;
+        padding: 6px 0;
+        border-bottom: 1px solid #f8fafc;
+    }
+    .pc-features li:last-child { border-bottom: none; }
+    .pc-features li i { color: #10b981; font-size: .9rem; flex-shrink: 0; }
+    .pc-btn {
+        display: block;
+        text-align: center;
+        padding: 12px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: .88rem;
+        text-decoration: none;
+        transition: all .2s;
+        margin-top: auto;
+    }
+    .pc-btn-outline {
+        border: 2px solid #0f172a;
+        color: #0f172a;
+        background: transparent;
+    }
+    .pc-btn-outline:hover { background: #0f172a; color: #fff; }
+    .pc-btn-filled {
+        background: #10b981;
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 14px rgba(16,185,129,.35);
+    }
+    .pc-btn-filled:hover { background: #059669; color: #fff; transform: translateY(-1px); }
+
+    /* Toggle switch green */
+    #billingToggle { background-color: #10b981 !important; border-color: #10b981 !important; }
+    #billingToggle:checked { background-color: #10b981 !important; }
+
+    @media (max-width: 768px) {
+        .pc-card { padding: 24px 20px; }
+        .pc-amount { font-size: 2rem; }
+        .pc-popular { transform: none !important; }
+    }
+    </style>
+
+    <script>
+    (function() {
+        const toggle   = document.getElementById('billingToggle');
+        const lblMo    = document.getElementById('lbl-monthly');
+        const lblYr    = document.getElementById('lbl-yearly');
+        const amounts  = document.querySelectorAll('.pc-amount');
+        const perSpans = document.querySelectorAll('.pc-per');
+        const moOlds   = document.querySelectorAll('.monthly-old');
+        const yrOlds   = document.querySelectorAll('.yearly-old');
+
+        function update() {
+            const isYearly = toggle.checked;
+            // amounts
+            amounts.forEach(el => {
+                el.textContent = isYearly ? el.dataset.yearly : el.dataset.monthly;
+            });
+            // period label
+            perSpans.forEach(el => el.textContent = isYearly ? '{{ __('yr') }}' : '{{ __('mo') }}');
+            // old prices
+            moOlds.forEach(el => el.classList.toggle('d-none', isYearly));
+            yrOlds.forEach(el => el.classList.toggle('d-none', !isYearly));
+            // labels style
+            lblMo.style.color = isYearly ? '#94a3b8' : '#0f172a';
+            lblYr.querySelector('span:not(.badge)') && (lblYr.style.color = isYearly ? '#0f172a' : '#94a3b8');
+            lblYr.style.color = isYearly ? '#0f172a' : '#94a3b8';
+        }
+        toggle && toggle.addEventListener('change', update);
+    })();
+    </script>
 
     <!-- FAQ Section -->
     <section class="py-5 bg-white">
