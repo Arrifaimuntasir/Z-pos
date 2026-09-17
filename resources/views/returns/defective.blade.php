@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', __('Defective Items'))
 
@@ -11,7 +11,7 @@
             <i class="bi bi-exclamation-triangle-fill text-danger me-2" style="font-size: 1.1rem;"></i>
             {{ __('Defective Items') }}
         </h4>
-        <span class="text-muted small">{{ __('Products returned as defective � not restocked') }}</span>
+        <span class="text-muted small">{{ __('Products returned as defective — not restocked') }}</span>
     </div>
 
 </div>
@@ -93,13 +93,30 @@
                         <td class="text-end text-muted">{{ $item->saleItem ? number_format($item->saleItem->unit_price) . ' TSh' : '-' }}</td>
                         <td class="text-end fw-bold text-danger">{{ number_format($item->refund_amount) }} TSh</td>
                         <td class="pe-4 text-center">
-                            @if($item->saleReturn && $item->saleReturn->sale_id)
-                            <a href="{{ route('sales.show', $item->saleReturn->sale_id) }}" class="btn btn-sm btn-light text-primary shadow-sm" style="border-radius: 6px;" title="{{ __('View Invoice') }}">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            @else
-                            <span class="text-muted">-</span>
-                            @endif
+                            <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+                                @if($item->repair_status === 'repaired')
+                                    <form action="{{ route('returns.defective.repair-status', $item->id) }}" method="POST" class="d-inline">
+                                        @csrf @method('PUT')
+                                        <input type="hidden" name="repair_status" value="not_repaired">
+                                        <button type="submit" class="btn btn-sm btn-success shadow-sm" style="border-radius: 6px; font-size: 0.75rem;" onclick="return confirm('Mark as Not Repaired? Stock will be removed.')" title="Mark as Not Repaired">
+                                            <i class="bi bi-check-circle-fill me-1"></i>{{ __('Repaired') }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('returns.defective.repair-status', $item->id) }}" method="POST" class="d-inline">
+                                        @csrf @method('PUT')
+                                        <input type="hidden" name="repair_status" value="repaired">
+                                        <button type="submit" class="btn btn-sm btn-outline-warning shadow-sm" style="border-radius: 6px; font-size: 0.75rem;" title="Mark as Repaired">
+                                            <i class="bi bi-tools me-1"></i>{{ __('Not Repaired') }}
+                                        </button>
+                                    </form>
+                                @endif
+                                @if($item->saleReturn && $item->saleReturn->sale_id)
+                                <a href="{{ route('sales.show', $item->saleReturn->sale_id) }}" class="btn btn-sm btn-light text-primary shadow-sm" style="border-radius: 6px;" title="{{ __('View Invoice') }}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -120,4 +137,3 @@
     </div>
 </div>
 @endsection
-
