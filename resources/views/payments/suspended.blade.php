@@ -166,15 +166,18 @@
 
             @php
                 $amountToPay = '0';
-                if ($shop->package === 'starter') $amountToPay = '15,000/=';
-                elseif ($shop->package === 'professional') $amountToPay = '45,000/=';
-                elseif ($shop->package === 'enterprise') $amountToPay = '110,000/=';
+                $isYearly = $shop->billing_cycle === 'yearly';
+                $plan = $shop->package;
+                if ($plan) {
+                    $val = $isYearly ? \App\Models\CmsSetting::yearlyPriceValue($plan) : \App\Models\CmsSetting::monthlyPriceValue($plan);
+                    $amountToPay = number_format($val) . '/=';
+                }
             @endphp
             <div class="alert alert-info text-start shadow-sm mb-4 border-0" style="background-color: #f0fdf4; color: #166534; border-left: 4px solid #16a34a !important;">
                 <p class="mb-1 fw-bold"><i class="bi bi-info-circle me-1"></i> {{ __('Subscription Details') }}</p>
                 <div class="d-flex justify-content-between align-items-center mt-2">
                     <span class="small">{{ __('Selected Package:') }}</span>
-                    <span class="badge bg-success bg-opacity-25 text-success text-uppercase">{{ $shop->package }}</span>
+                    <span class="badge bg-success bg-opacity-25 text-success text-uppercase">{{ $shop->package }} ({{ $shop->billing_cycle }})</span>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-1">
                     <span class="small">{{ __('Amount to Pay:') }}</span>
