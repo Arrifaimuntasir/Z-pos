@@ -87,13 +87,13 @@
                                         @foreach($catProducts as $p)
                                             <button type="button" class="btn btn-outline-primary p-3 text-start product-btn position-relative" style="width: 140px; height: 100px; border-radius: 12px; transition: all 0.2s;"
                                                 data-id="{{ $p->id }}"
-                                                data-name="{{ $p->name }}"
+                                                data-name="{{ $p->name }} {{ $p->model ? '- '.$p->model : '' }}"
                                                 data-price="{{ $p->selling_price }}"
                                                 data-stock="{{ $p->track_stock ? $p->current_stock : 999999 }}"
                                                 data-requires-imei="false"
                                                 data-expiry=""
                                                 data-is-expired="false">
-                                                <div class="fw-bold text-truncate" style="font-size: 0.9rem;">{{ $p->name }}</div>
+                                                <div class="fw-bold text-truncate" style="font-size: 0.9rem;">{{ $p->name }} {{ $p->model ? '- '.$p->model : '' }}</div>
                                                 <div class="small fw-bold text-success position-absolute bottom-0 start-0 m-2">{{ number_format($p->selling_price) }}</div>
                                             </button>
                                         @endforeach
@@ -108,13 +108,13 @@
                                     <option value="">{{ __('-- Search & Select Product --') }}</option>
                                     @foreach($products as $product)
                                         <option value="{{ $product->id }}" 
-                                                data-name="{{ $product->name }}" 
+                                                data-name="{{ $product->name }} {{ $product->model ? '- '.$product->model : '' }}" 
                                                 data-price="{{ $product->selling_price }}"
                                                 data-stock="{{ $product->track_stock ? $product->current_stock : 999999 }}"
                                                 data-requires-imei="{{ ($showImei && $product->requires_imei) ? 'true' : 'false' }}"
                                                 data-expiry="{{ ($showExpiry && $product->expiry_date) ? \Carbon\Carbon::parse($product->expiry_date)->format('M d, Y') : '' }}"
                                                 data-is-expired="{{ ($showExpiry && $product->expiry_date && \Carbon\Carbon::parse($product->expiry_date)->isPast()) ? 'true' : 'false' }}">
-                                            {{ $product->name }} (Stock: {{ $product->track_stock ? $product->current_stock : 'N/A' }}) - {{ number_format($product->selling_price) }} TSh
+                                            {{ $product->name }} {{ $product->model ? '- '.$product->model : '' }} (Stock: {{ $product->track_stock ? $product->current_stock : 'N/A' }}) - {{ number_format($product->selling_price) }} TSh
                                         </option>
                                     @endforeach
                                 </select>
