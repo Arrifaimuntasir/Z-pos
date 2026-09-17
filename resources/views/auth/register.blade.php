@@ -173,25 +173,20 @@
                     @csrf
                     
                     {{-- ===== Billing Period Toggle ===== --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold text-muted small text-uppercase" style="letter-spacing:1px;">{{ __('Billing Period') }}</label>
-                        <div class="d-flex align-items-center gap-3 bg-light rounded-3 p-2" style="width:fit-content;">
-                            <button type="button" id="btn-monthly" onclick="setBilling('monthly')"
-                                class="btn btn-sm fw-bold px-3 py-1 rounded-pill bg-primary text-white border-0"
-                                style="font-size:.8rem;transition:all .2s;">
-                                {{ __('Monthly') }}
-                            </button>
-                            <button type="button" id="btn-yearly" onclick="setBilling('yearly')"
-                                class="btn btn-sm fw-bold px-3 py-1 rounded-pill text-muted border-0 bg-transparent"
-                                style="font-size:.8rem;transition:all .2s;">
-                                {{ __('Yearly') }}
-                                <span class="badge ms-1 rounded-pill" style="background:#d1fae5;color:#059669;font-size:.6rem;padding:2px 6px;">
-                                    {{ __('2 months free') }}
-                                </span>
-                            </button>
+                    <div class="d-inline-flex align-items-center gap-3 mb-3 bg-light rounded-pill px-3 py-2">
+                        <span id="lbl-mo" class="fw-semibold" style="font-size:.85rem;color:#0f172a;">{{ __('Kwa Mwezi') }}</span>
+                        <div class="form-check form-switch mb-0 p-0">
+                            <input class="form-check-input m-0" type="checkbox" id="billingToggleReg"
+                                   style="width:44px;height:24px;cursor:pointer;background-color:#10b981;border-color:#10b981;">
                         </div>
-                        <input type="hidden" name="billing_cycle" id="billingCycleInput" value="{{ old('billing_cycle', 'monthly') }}">
+                        <span id="lbl-yr" class="fw-semibold" style="font-size:.85rem;color:#94a3b8;">
+                            {{ __('Kwa Mwaka') }}
+                            <span class="ms-1 rounded-pill px-2 py-0" style="background:#d1fae5;color:#059669;font-size:.65rem;font-weight:700;">
+                                {{ __('Miezi 2 bure') }}
+                            </span>
+                        </span>
                     </div>
+                    <input type="hidden" name="billing_cycle" id="billingCycleInput" value="{{ old('billing_cycle', 'monthly') }}">
 
                     {{-- ===== Plan Selector ===== --}}
                     <div class="alert alert-primary bg-primary bg-opacity-10 border-0 d-flex align-items-center mb-4 dropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; position: relative;">
@@ -251,41 +246,41 @@
                                 item.classList.remove('bg-primary', 'text-white');
                                 item.classList.add('text-dark');
                             });
-
                             el.classList.remove('text-dark');
                             el.classList.add('bg-primary', 'text-white');
                         }
 
-                        function setBilling(type) {
-                            document.getElementById('billingCycleInput').value = type;
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const tog   = document.getElementById('billingToggleReg');
+                            const lblMo = document.getElementById('lbl-mo');
+                            const lblYr = document.getElementById('lbl-yr');
 
-                            const btnMo = document.getElementById('btn-monthly');
-                            const btnYr = document.getElementById('btn-yearly');
-                            const monthly = document.querySelectorAll('.billing-monthly');
-                            const yearly  = document.querySelectorAll('.billing-yearly');
+                            if (!tog) return;
 
-                            if (type === 'yearly') {
-                                btnYr.classList.add('bg-primary', 'text-white');
-                                btnYr.classList.remove('text-muted', 'bg-transparent');
-                                btnMo.classList.remove('bg-primary', 'text-white');
-                                btnMo.classList.add('text-muted', 'bg-transparent');
-                                monthly.forEach(el => el.classList.add('d-none'));
-                                yearly.forEach(el  => el.classList.remove('d-none'));
-                                // Reset plan display
-                                document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 150K/year)') }}';
-                                document.getElementById('packageInput').value = 'starter';
-                            } else {
-                                btnMo.classList.add('bg-primary', 'text-white');
-                                btnMo.classList.remove('text-muted', 'bg-transparent');
-                                btnYr.classList.remove('bg-primary', 'text-white');
-                                btnYr.classList.add('text-muted', 'bg-transparent');
-                                yearly.forEach(el  => el.classList.add('d-none'));
-                                monthly.forEach(el => el.classList.remove('d-none'));
-                                // Reset plan display
-                                document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 15K/month)') }}';
-                                document.getElementById('packageInput').value = 'starter';
-                            }
-                        }
+                            tog.addEventListener('change', function () {
+                                const isYearly = this.checked;
+                                document.getElementById('billingCycleInput').value = isYearly ? 'yearly' : 'monthly';
+
+                                const monthly = document.querySelectorAll('.billing-monthly');
+                                const yearly  = document.querySelectorAll('.billing-yearly');
+
+                                if (isYearly) {
+                                    monthly.forEach(el => el.classList.add('d-none'));
+                                    yearly.forEach(el  => el.classList.remove('d-none'));
+                                    lblMo.style.color = '#94a3b8';
+                                    lblYr.style.color = '#0f172a';
+                                    document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 150K/year)') }}';
+                                    document.getElementById('packageInput').value = 'starter';
+                                } else {
+                                    yearly.forEach(el  => el.classList.add('d-none'));
+                                    monthly.forEach(el => el.classList.remove('d-none'));
+                                    lblMo.style.color = '#0f172a';
+                                    lblYr.style.color = '#94a3b8';
+                                    document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 15K/month)') }}';
+                                    document.getElementById('packageInput').value = 'starter';
+                                }
+                            });
+                        });
                     </script>
 
 
