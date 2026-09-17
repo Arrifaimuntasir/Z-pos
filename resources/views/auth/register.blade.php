@@ -172,6 +172,28 @@
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
                     
+                    {{-- ===== Billing Period Toggle ===== --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-muted small text-uppercase" style="letter-spacing:1px;">{{ __('Billing Period') }}</label>
+                        <div class="d-flex align-items-center gap-3 bg-light rounded-3 p-2" style="width:fit-content;">
+                            <button type="button" id="btn-monthly" onclick="setBilling('monthly')"
+                                class="btn btn-sm fw-bold px-3 py-1 rounded-pill bg-primary text-white border-0"
+                                style="font-size:.8rem;transition:all .2s;">
+                                {{ __('Monthly') }}
+                            </button>
+                            <button type="button" id="btn-yearly" onclick="setBilling('yearly')"
+                                class="btn btn-sm fw-bold px-3 py-1 rounded-pill text-muted border-0 bg-transparent"
+                                style="font-size:.8rem;transition:all .2s;">
+                                {{ __('Yearly') }}
+                                <span class="badge ms-1 rounded-pill" style="background:#d1fae5;color:#059669;font-size:.6rem;padding:2px 6px;">
+                                    {{ __('2 months free') }}
+                                </span>
+                            </button>
+                        </div>
+                        <input type="hidden" name="billing_cycle" id="billingCycleInput" value="{{ old('billing_cycle', 'monthly') }}">
+                    </div>
+
+                    {{-- ===== Plan Selector ===== --}}
                     <div class="alert alert-primary bg-primary bg-opacity-10 border-0 d-flex align-items-center mb-4 dropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; position: relative;">
                         <i class="bi bi-box-seam text-primary fs-4 me-3"></i>
                         <div class="w-100">
@@ -188,14 +210,31 @@
                             </div>
                         </div>
                         <ul class="dropdown-menu shadow border-0 w-100 mt-1" style="border-radius: 10px; overflow: hidden; padding: 0.5rem 0;">
-                            <li><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'starter' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('starter', '{{ __('STARTER (TZS 15K/month)') }}', this)">
-                                {{ __('STARTER (TZS 15K/month)') }}
+                            {{-- Monthly options --}}
+                            <li class="billing-group billing-monthly">
+                                <div class="px-3 py-1" style="font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:#94a3b8;text-transform:uppercase;">{{ __('Monthly') }}</div>
+                            </li>
+                            <li class="billing-group billing-monthly"><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'starter' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('starter', '{{ __('STARTER (TZS 15K/month)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Starter') }}</span><span class="text-muted fw-normal">TSh 15,000/mo</span></span>
                             </a></li>
-                            <li><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'professional' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('professional', '{{ __('PROFESSIONAL (TZS 45K/month)') }}', this)">
-                                {{ __('PROFESSIONAL (TZS 45K/month)') }}
+                            <li class="billing-group billing-monthly"><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'professional' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('professional', '{{ __('PROFESSIONAL (TZS 45K/month)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Professional') }} ⭐</span><span class="text-muted fw-normal">TSh 45,000/mo</span></span>
                             </a></li>
-                            <li><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'enterprise' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('enterprise', '{{ __('ENTERPRISE (TZS 110K/month)') }}', this)">
-                                {{ __('ENTERPRISE (TZS 110K/month)') }}
+                            <li class="billing-group billing-monthly"><a class="dropdown-item py-2 px-3 fw-semibold {{ $currentPackage == 'enterprise' ? 'bg-primary text-white' : 'text-dark' }}" href="#" onclick="selectPlan('enterprise', '{{ __('ENTERPRISE (TZS 110K/month)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Enterprise') }}</span><span class="text-muted fw-normal">TSh 110,000/mo</span></span>
+                            </a></li>
+                            {{-- Yearly options --}}
+                            <li class="billing-group billing-yearly d-none">
+                                <div class="px-3 py-1 mt-1" style="font-size:.68rem;font-weight:700;letter-spacing:1.5px;color:#059669;text-transform:uppercase;">{{ __('Yearly') }} — {{ __('Save 2 months') }}</div>
+                            </li>
+                            <li class="billing-group billing-yearly d-none"><a class="dropdown-item py-2 px-3 fw-semibold text-dark" href="#" onclick="selectPlan('starter', '{{ __('STARTER (TZS 150K/year)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Starter') }}</span><span class="fw-normal" style="color:#059669;">TSh 150,000/yr</span></span>
+                            </a></li>
+                            <li class="billing-group billing-yearly d-none"><a class="dropdown-item py-2 px-3 fw-semibold text-dark" href="#" onclick="selectPlan('professional', '{{ __('PROFESSIONAL (TZS 450K/year)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Professional') }} ⭐</span><span class="fw-normal" style="color:#059669;">TSh 450,000/yr</span></span>
+                            </a></li>
+                            <li class="billing-group billing-yearly d-none"><a class="dropdown-item py-2 px-3 fw-semibold text-dark" href="#" onclick="selectPlan('enterprise', '{{ __('ENTERPRISE (TZS 1.1M/year)') }}', this)">
+                                <span class="d-flex justify-content-between"><span>{{ __('Enterprise') }}</span><span class="fw-normal" style="color:#059669;">TSh 1,100,000/yr</span></span>
                             </a></li>
                         </ul>
                         <input type="hidden" name="package" id="packageInput" value="{{ $currentPackage }}">
@@ -206,17 +245,49 @@
                             event.preventDefault();
                             document.getElementById('packageInput').value = val;
                             document.getElementById('selectedPlanText').innerText = text;
-                            
+
                             let items = el.closest('.dropdown-menu').querySelectorAll('.dropdown-item');
                             items.forEach(item => {
                                 item.classList.remove('bg-primary', 'text-white');
                                 item.classList.add('text-dark');
                             });
-                            
+
                             el.classList.remove('text-dark');
                             el.classList.add('bg-primary', 'text-white');
                         }
+
+                        function setBilling(type) {
+                            document.getElementById('billingCycleInput').value = type;
+
+                            const btnMo = document.getElementById('btn-monthly');
+                            const btnYr = document.getElementById('btn-yearly');
+                            const monthly = document.querySelectorAll('.billing-monthly');
+                            const yearly  = document.querySelectorAll('.billing-yearly');
+
+                            if (type === 'yearly') {
+                                btnYr.classList.add('bg-primary', 'text-white');
+                                btnYr.classList.remove('text-muted', 'bg-transparent');
+                                btnMo.classList.remove('bg-primary', 'text-white');
+                                btnMo.classList.add('text-muted', 'bg-transparent');
+                                monthly.forEach(el => el.classList.add('d-none'));
+                                yearly.forEach(el  => el.classList.remove('d-none'));
+                                // Reset plan display
+                                document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 150K/year)') }}';
+                                document.getElementById('packageInput').value = 'starter';
+                            } else {
+                                btnMo.classList.add('bg-primary', 'text-white');
+                                btnMo.classList.remove('text-muted', 'bg-transparent');
+                                btnYr.classList.remove('bg-primary', 'text-white');
+                                btnYr.classList.add('text-muted', 'bg-transparent');
+                                yearly.forEach(el  => el.classList.add('d-none'));
+                                monthly.forEach(el => el.classList.remove('d-none'));
+                                // Reset plan display
+                                document.getElementById('selectedPlanText').innerText = '{{ __('STARTER (TZS 15K/month)') }}';
+                                document.getElementById('packageInput').value = 'starter';
+                            }
+                        }
                     </script>
+
 
                     <div class="mb-4">
                         <label for="business_type" class="form-label fw-semibold text-muted small text-uppercase tracking-wider">{{ __('Business Category') }}</label>
