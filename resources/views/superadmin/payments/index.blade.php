@@ -14,6 +14,13 @@
     </div>
 @endif
 
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>{{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -32,12 +39,12 @@
                 <tbody class="border-top-0">
                     @forelse($payments as $payment)
                     <tr>
-                        <td class="ps-4 text-muted small">{{ $payment->created_at->format('M d, Y H:i') }}</td>
-                        <td class="fw-bold">{{ $payment->shop->name }}</td>
+                        <td class="ps-4 text-muted small">{{ $payment->created_at ? $payment->created_at->format('M d, Y H:i') : 'N/A' }}</td>
+                        <td class="fw-bold">{{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}</td>
                         <td>
                             @php
-                                $pkg = $payment->package ?? $payment->shop->package ?? 'starter';
-                                $billing = $payment->billing_cycle ?? $payment->shop->billing_cycle ?? 'monthly';
+                                $pkg = $payment->package ?? ($payment->shop ? $payment->shop->package : 'starter') ?? 'starter';
+                                $billing = $payment->billing_cycle ?? ($payment->shop ? $payment->shop->billing_cycle : 'monthly') ?? 'monthly';
                             @endphp
                             <span class="badge bg-primary bg-opacity-10 text-primary text-uppercase fw-semibold">{{ $pkg }}</span>
                             <span class="badge ms-1 {{ $billing === 'yearly' ? 'bg-success' : 'bg-secondary' }} bg-opacity-15 {{ $billing === 'yearly' ? 'text-success' : 'text-secondary' }}">
@@ -45,7 +52,7 @@
                             </span>
                         </td>
                         <td>
-                            <span class="fw-bold text-dark">TZS {{ number_format($payment->amount) }}</span>
+                            <span class="fw-bold text-dark">TZS {{ number_format($payment->amount ?? 0) }}</span>
                         </td>
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#receiptModal{{ $payment->id }}">
@@ -67,14 +74,14 @@
                                     <form action="{{ route('superadmin.payments.approve', $payment) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success"
-                                            onclick="return confirm('Approve this payment?\n\nShop: {{ $payment->shop->name }}\nPackage: {{ strtoupper($pkg) }} ({{ ucfirst($billing) }})\nAmount: TZS {{ number_format($payment->amount) }}\n\nSubscription will be extended by {{ $billing === \'yearly\' ? \'1 Year\' : \'1 Month\' }}.');">
+                                            onclick="return confirm('Approve this payment?\n\nShop: {{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}\nPackage: {{ strtoupper($pkg) }} ({{ ucfirst($billing) }})\nAmount: TZS {{ number_format($payment->amount ?? 0) }}\n\nSubscription will be extended by {{ $billing === \'yearly\' ? \'1 Year\' : \'1 Month\' }}.');">
                                             <i class="bi bi-check-lg"></i> {{ __('Approve') }}
                                         </button>
                                     </form>
                                     <form action="{{ route('superadmin.payments.reject', $payment) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-warning text-white"
-                                            onclick="return confirm('Reject this payment from {{ $payment->shop->name }}?');">
+                                            onclick="return confirm('Reject this payment from {{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}?');">
                                             <i class="bi bi-x-lg"></i> {{ __('Reject') }}
                                         </button>
                                     </form>
@@ -84,7 +91,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('DELETE this payment record permanently?\n\nShop: {{ $payment->shop->name }}\nThis cannot be undone.');">
+                                        onclick="return confirm('DELETE this payment record permanently?\n\nShop: {{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}\nThis cannot be undone.');">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -99,14 +106,14 @@
                                 <div class="modal-header">
                                     <div>
                                         <h5 class="modal-title mb-1" id="receiptModalLabel{{ $payment->id }}">
-                                            {{ __('Receipt from') }}: <strong class="text-primary">{{ $payment->shop->name }}</strong>
+                                            {{ __('Receipt from') }}: <strong class="text-primary">{{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}</strong>
                                         </h5>
                                         <div class="d-flex gap-2 align-items-center">
                                             <span class="badge bg-primary bg-opacity-10 text-primary text-uppercase">{{ $pkg }}</span>
                                             <span class="badge {{ $billing === 'yearly' ? 'bg-success' : 'bg-secondary' }} bg-opacity-15 {{ $billing === 'yearly' ? 'text-success' : 'text-secondary' }}">
                                                 {{ $billing === 'yearly' ? __('Yearly') : __('Monthly') }}
                                             </span>
-                                            <span class="fw-bold text-dark small">TZS {{ number_format($payment->amount) }}</span>
+                                            <span class="fw-bold text-dark small">TZS {{ number_format($payment->amount ?? 0) }}</span>
                                         </div>
                                     </div>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

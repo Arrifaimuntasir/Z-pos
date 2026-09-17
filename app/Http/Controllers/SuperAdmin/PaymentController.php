@@ -21,6 +21,10 @@ class PaymentController extends Controller
 
         $shop = $payment->shop;
 
+        if (!$shop) {
+            return back()->with('error', 'Cannot approve payment because the associated shop no longer exists.');
+        }
+
         // Determine billing cycle from payment record, fallback to shop setting
         $billingCycle = $payment->billing_cycle ?? $shop->billing_cycle ?? 'monthly';
 
