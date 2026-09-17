@@ -10,6 +10,15 @@ class CmsSetting extends Model
     protected $fillable = ['page', 'key', 'value', 'type', 'label', 'sort_order'];
 
     /**
+     * Default pricing values per plan.
+     */
+    private static array $defaultPrices = [
+        'starter'      => ['monthly' => 15000,  'yearly' => 150000],
+        'professional' => ['monthly' => 45000,  'yearly' => 450000],
+        'enterprise'   => ['monthly' => 110000, 'yearly' => 1100000],
+    ];
+
+    /**
      * Get a CMS value by page and key, with a fallback default.
      */
     public static function get(string $page, string $key, string $default = ''): string
@@ -19,6 +28,30 @@ class CmsSetting extends Model
             $setting = static::where('page', $page)->where('key', $key)->first();
             return $setting ? $setting->value : $default;
         });
+    }
+
+    /**
+     * Get monthly price for a given plan (integer, e.g. 15000).
+     */
+    public static function monthlyPriceValue(string $plan): int
+    {
+        $stored = static::get('pricing', "{$plan}_monthly_price", '');
+        if ($stored !== '' && is_numeric($stored)) {
+            return (int) $stored;
+        }
+        return static::$defaultPrices[$plan]['monthly'] ?? 0;
+    }
+
+    /**
+     * Get yearly price for a given plan (integer, e.g. 150000).
+     */
+    public static function yearlyPriceValue(string $plan): int
+    {
+        $stored = static::get('pricing', "{$plan}_yearly_price", '');
+        if ($stored !== '' && is_numeric($stored)) {
+            return (int) $stored;
+        }
+        return static::$defaultPrices[$plan]['yearly'] ?? 0;
     }
 
     /**
