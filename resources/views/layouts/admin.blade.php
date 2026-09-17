@@ -348,8 +348,8 @@
                 
                 @if(Auth::user()->hasRole('Administrator'))
                 <li class="{{ request()->is('staff*') ? 'active' : '' }}">
-                    <a href="{{ route('staff.index') }}" class="d-flex align-items-center" style="color: #64748b; line-height: 1.3;">
-                        <i class="bi bi-people-fill me-3"></i> <span>{{ __('Staff & Users') }}</span>
+                    <a href="{{ route('staff.index') }}" style="color: #64748b;">
+                        <i class="bi bi-people-fill me-3"></i> {{ __('Staff & Users') }}
                     </a>
                 </li>
                 @endif
