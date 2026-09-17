@@ -621,7 +621,7 @@ section.py-5.text-white p {
                 {{-- ===== PROFESSIONAL ===== --}}
                 <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="pc-card pc-popular h-100">
-                        <div class="pc-badge">â­ {{ __('MOST POPULAR') }}</div>
+                        <div class="pc-badge">{{ __('MOST POPULAR') }}</div>
                         <div class="pc-plan" style="color:#10b981;">{{ __('Professional') }}</div>
                         <div class="pc-desc">{{ __('For growing multi-branch businesses.') }}</div>
                         <div class="pc-price-wrap">
