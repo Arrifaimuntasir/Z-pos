@@ -184,13 +184,19 @@
 
             @php
                 $isNewRegistration = $shop->valid_until && $shop->valid_until->isSameDay(now()->subDay());
-                $packagePrice = $shop->package === 'enterprise' ? '110,000' : ($shop->package === 'professional' ? '45,000' : ($shop->package === 'starter' ? '15,000' : 'Custom'));
+                $isYearly = $shop->billing_cycle === 'yearly';
+                $plan = $shop->package;
+                $packagePrice = '0';
+                if ($plan) {
+                    $val = $isYearly ? \App\Models\CmsSetting::yearlyPriceValue($plan) : \App\Models\CmsSetting::monthlyPriceValue($plan);
+                    $packagePrice = number_format($val);
+                }
             @endphp
             
             @if($isNewRegistration)
                 <h4 class="fw-bold mb-2">{{ __('Complete Your Subscription') }}</h4>
                 <p class="text-muted small px-3">
-                    {{ __('You have selected the') }} <strong class="text-primary text-uppercase">{{ $shop->package }}</strong> {{ __('Plan. 
+                    {{ __('You have selected the') }} <strong class="text-primary text-uppercase">{{ $shop->package }} ({{ $shop->billing_cycle }})</strong> {{ __('Plan. 
                     Upload your payment receipt below to activate your account instantly.') }}
                 </p>
                 <div class="price-tag">
@@ -200,7 +206,7 @@
                 <h4 class="fw-bold mb-2">{{ __('Subscription Expired') }}</h4>
                 <p class="text-muted small px-3">
                     {{ __('Your shop subscription expired on') }} <strong>{{ $shop->valid_until ? $shop->valid_until->format('d M Y') : 'Unknown' }}</strong>{{ __('. 
-                    Please pay your subscription fee to continue.') }}
+                    Please pay your') }} <strong class="text-primary text-uppercase">{{ $shop->package }} ({{ $shop->billing_cycle }})</strong> {{ __('subscription fee to continue.') }}
                 </p>
                 <div class="price-tag">
                     {{ $packagePrice }}<span>{{ __('TZS') }}</span>
