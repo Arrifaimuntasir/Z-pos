@@ -13,6 +13,7 @@ class SaleReturnItem extends Model
         'quantity',
         'refund_amount',
         'condition',
+        'repair_status',
     ];
 
     public function saleReturn()
