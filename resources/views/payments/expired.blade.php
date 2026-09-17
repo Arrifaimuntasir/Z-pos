@@ -183,21 +183,16 @@
             </div>
 
             @php
-                $isNewRegistration = $shop->valid_until && $shop->valid_until->isSameDay(now()->subDay());
-                $isYearly = $shop->billing_cycle === 'yearly';
-                $plan = $shop->package;
-                $packagePrice = '0';
-                if ($plan) {
-                    $val = $isYearly ? \App\Models\CmsSetting::yearlyPriceValue($plan) : \App\Models\CmsSetting::monthlyPriceValue($plan);
-                    $packagePrice = number_format($val);
-                }
+                $isNewRegistration = isset($isUpgradeRequest) && $isUpgradeRequest;
+                $displayPackage = $requestedPackage ?? $shop->package ?? 'starter';
+                $displayBilling = $requestedBilling ?? $shop->billing_cycle ?? 'monthly';
+                $packagePrice = number_format($requestedAmount ?? 0);
             @endphp
             
             @if($isNewRegistration)
                 <h4 class="fw-bold mb-2">{{ __('Complete Your Subscription') }}</h4>
                 <p class="text-muted small px-3">
-                    {{ __('You have selected the') }} <strong class="text-primary text-uppercase">{{ $shop->package }} ({{ $shop->billing_cycle }})</strong> {{ __('Plan. 
-                    Upload your payment receipt below to activate your account instantly.') }}
+                    {{ __('You have selected the') }} <strong class="text-primary text-uppercase">{{ $displayPackage }} ({{ $displayBilling }})</strong> {{ __('Plan. Upload your payment receipt below to activate your account instantly.') }}
                 </p>
                 <div class="price-tag">
                     {{ $packagePrice }}<span>{{ __('TZS') }}</span>
@@ -205,8 +200,7 @@
             @else
                 <h4 class="fw-bold mb-2">{{ __('Subscription Expired') }}</h4>
                 <p class="text-muted small px-3">
-                    {{ __('Your shop subscription expired on') }} <strong>{{ $shop->valid_until ? $shop->valid_until->format('d M Y') : 'Unknown' }}</strong>{{ __('. 
-                    Please pay your') }} <strong class="text-primary text-uppercase">{{ $shop->package }} ({{ $shop->billing_cycle }})</strong> {{ __('subscription fee to continue.') }}
+                    {{ __('Your shop subscription expired on') }} <strong>{{ $shop->valid_until ? $shop->valid_until->format('d M Y') : 'Unknown' }}</strong>. {{ __('Please pay your') }} <strong class="text-primary text-uppercase">{{ $displayPackage }} ({{ $displayBilling }})</strong> {{ __('subscription fee to continue.') }}
                 </p>
                 <div class="price-tag">
                     {{ $packagePrice }}<span>{{ __('TZS') }}</span>
@@ -251,6 +245,8 @@
             @else
                 <form action="{{ route('payments.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="package" value="{{ $displayPackage }}">
+                    <input type="hidden" name="billing" value="{{ $displayBilling }}">
                     
                     <div class="custom-file-upload text-start">
                         <label class="form-label fw-bold text-dark mb-1"><i class="bi bi-cloud-arrow-up text-primary me-2"></i> {{ __('Upload Receipt') }}</label>
