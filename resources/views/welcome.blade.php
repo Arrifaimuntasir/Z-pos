@@ -518,28 +518,19 @@ section.py-5.text-white p {
 
             {{-- ===== Dynamic DB Testimonials (from Rate Us) ===== --}}
             @if(isset($dbTestimonials) && $dbTestimonials->count() > 0)
-            <div class="row g-4 mt-2">
-                @foreach($dbTestimonials as $t)
+            <div class="row g-4 mt-2" id="db-testimonials-visible">
+                @foreach($dbTestimonials->take(3) as $t)
                 <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="testimonial-card position-relative h-100">
                         <i class="bi bi-quote quote-icon"></i>
-                        {{-- Star rating --}}
                         <div class="mb-2" style="color:#f59e0b;font-size:.85rem;letter-spacing:2px;">
-                            @for($i=1;$i<=5;$i++)
-                                {{ $i <= $t->rating ? '★' : '☆' }}
-                            @endfor
+                            @for($i=1;$i<=5;$i++){{ $i <= $t->rating ? '★' : '☆' }}@endfor
                         </div>
                         <p>&ldquo;{{ $t->quote }}&rdquo;</p>
                         <div class="client-info d-flex align-items-center gap-3 mt-3">
-                            {{-- Avatar with initials --}}
                             <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white flex-shrink-0"
                                  style="width:44px;height:44px;font-size:.9rem;border:2px solid #10b981;
-                                        background:{{ match($t->avatar_color ?? 'primary') {
-                                            'success' => '#10b981',
-                                            'warning' => '#f59e0b',
-                                            'dark'    => '#0f172a',
-                                            default   => '#3b82f6'
-                                        } }};">
+                                        background:{{ match($t->avatar_color ?? 'primary') { 'success'=>'#10b981','warning'=>'#f59e0b','dark'=>'#0f172a',default=>'#3b82f6' } }};">
                                 {{ $t->avatar_initials ?? 'U' }}
                             </div>
                             <div>
@@ -551,6 +542,62 @@ section.py-5.text-white p {
                 </div>
                 @endforeach
             </div>
+
+            @if($dbTestimonials->count() > 3)
+            {{-- Hidden extra testimonials --}}
+            <div class="row g-4 mt-2 d-none" id="db-testimonials-more">
+                @foreach($dbTestimonials->skip(3) as $t)
+                <div class="col-md-4" data-aos="fade-up">
+                    <div class="testimonial-card position-relative h-100">
+                        <i class="bi bi-quote quote-icon"></i>
+                        <div class="mb-2" style="color:#f59e0b;font-size:.85rem;letter-spacing:2px;">
+                            @for($i=1;$i<=5;$i++){{ $i <= $t->rating ? '★' : '☆' }}@endfor
+                        </div>
+                        <p>&ldquo;{{ $t->quote }}&rdquo;</p>
+                        <div class="client-info d-flex align-items-center gap-3 mt-3">
+                            <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white flex-shrink-0"
+                                 style="width:44px;height:44px;font-size:.9rem;border:2px solid #10b981;
+                                        background:{{ match($t->avatar_color ?? 'primary') { 'success'=>'#10b981','warning'=>'#f59e0b','dark'=>'#0f172a',default=>'#3b82f6' } }};">
+                                {{ $t->avatar_initials ?? 'U' }}
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold" style="font-size:.9rem;">{{ $t->name }}</h5>
+                                <span class="text-muted" style="font-size:.75rem;">{{ $t->position }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- View More / Show Less Button --}}
+            <div class="text-center mt-5" id="view-more-wrap">
+                <button onclick="toggleMoreTestimonials()" id="view-more-btn"
+                    class="btn px-5 py-2 fw-bold rounded-pill"
+                    style="border:2px solid #0f172a;color:#0f172a;background:transparent;transition:all .2s;font-size:.88rem;">
+                    <i class="bi bi-chevron-down me-2" id="view-more-icon"></i>
+                    <span id="view-more-label">{{ __('Tazama Zaidi') }} ({{ $dbTestimonials->count() - 3 }})</span>
+                </button>
+            </div>
+            <script>
+            function toggleMoreTestimonials() {
+                const more  = document.getElementById('db-testimonials-more');
+                const icon  = document.getElementById('view-more-icon');
+                const label = document.getElementById('view-more-label');
+                const isHidden = more.classList.contains('d-none');
+                if (isHidden) {
+                    more.classList.remove('d-none');
+                    icon.classList.replace('bi-chevron-down','bi-chevron-up');
+                    label.textContent = '{{ __('Onyesha Pungufu') }}';
+                } else {
+                    more.classList.add('d-none');
+                    icon.classList.replace('bi-chevron-up','bi-chevron-down');
+                    label.textContent = '{{ __('Tazama Zaidi') }} ({{ $dbTestimonials->count() - 3 }})';
+                    document.getElementById('db-testimonials-visible').scrollIntoView({behavior:'smooth',block:'start'});
+                }
+            }
+            </script>
+            @endif
             @endif
 
         </div>

@@ -17,7 +17,6 @@ Route::get('/', function () {
     $dbTestimonials = Testimonial::active()
         ->orderBy('sort_order')
         ->orderByDesc('created_at')
-        ->take(6)
         ->get();
     return view('welcome', compact('dbTestimonials'));
 });
