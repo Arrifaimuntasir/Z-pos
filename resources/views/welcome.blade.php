@@ -515,6 +515,44 @@ section.py-5.text-white p {
                     </div>
                 </div>
             </div>
+
+            {{-- ===== Dynamic DB Testimonials (from Rate Us) ===== --}}
+            @if(isset($dbTestimonials) && $dbTestimonials->count() > 0)
+            <div class="row g-4 mt-2">
+                @foreach($dbTestimonials as $t)
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                    <div class="testimonial-card position-relative h-100">
+                        <i class="bi bi-quote quote-icon"></i>
+                        {{-- Star rating --}}
+                        <div class="mb-2" style="color:#f59e0b;font-size:.85rem;letter-spacing:2px;">
+                            @for($i=1;$i<=5;$i++)
+                                {{ $i <= $t->rating ? '★' : '☆' }}
+                            @endfor
+                        </div>
+                        <p>&ldquo;{{ $t->quote }}&rdquo;</p>
+                        <div class="client-info d-flex align-items-center gap-3 mt-3">
+                            {{-- Avatar with initials --}}
+                            <div class="d-flex align-items-center justify-content-center rounded-circle fw-bold text-white flex-shrink-0"
+                                 style="width:44px;height:44px;font-size:.9rem;border:2px solid #10b981;
+                                        background:{{ match($t->avatar_color ?? 'primary') {
+                                            'success' => '#10b981',
+                                            'warning' => '#f59e0b',
+                                            'dark'    => '#0f172a',
+                                            default   => '#3b82f6'
+                                        } }};">
+                                {{ $t->avatar_initials ?? 'U' }}
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold" style="font-size:.9rem;">{{ $t->name }}</h5>
+                                <span class="text-muted" style="font-size:.75rem;">{{ $t->position }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
         </div>
     </section>
 
