@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', __('Shop Settings'))
 @section('hide_back_btn', true)
@@ -99,6 +99,7 @@
                                             <option value="Hardware / Construction" {{ old('business_type', $shop->business_type) == 'Hardware / Construction' ? 'selected' : '' }}>{{ __('Hardware / Construction') }}</option>
                                             <option value="Clothing / Boutique" {{ old('business_type', $shop->business_type) == 'Clothing / Boutique' ? 'selected' : '' }}>{{ __('Clothing / Boutique') }}</option>
                                             <option value="Services / Consulting" {{ old('business_type', $shop->business_type) == 'Services / Consulting' ? 'selected' : '' }}>{{ __('Services / Consulting') }}</option>
+                                            <option value="Petroleum Station / Fuel" {{ old('business_type', $shop->business_type) == 'Petroleum Station / Fuel' ? 'selected' : '' }}>⛽ {{ __('Petroleum Station / Fuel') }}</option>
                                         </select>
                                     </div>
                                     @error('business_type') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
