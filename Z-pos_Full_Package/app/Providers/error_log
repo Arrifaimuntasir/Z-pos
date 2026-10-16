@@ -1,0 +1,4 @@
+[07-Aug-2026 17:51:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\ServiceProvider" not found in /home/loufaypy/z-pos.co.tz/app/Providers/AppServiceProvider.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Providers/AppServiceProvider.php on line 7

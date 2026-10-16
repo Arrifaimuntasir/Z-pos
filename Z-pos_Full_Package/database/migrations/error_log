@@ -1,0 +1,8 @@
+[07-Aug-2026 17:55:24 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Migrations\Migration" not found in /home/loufaypy/z-pos.co.tz/database/migrations/2026_07_12_154128_create_units_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/database/migrations/2026_07_12_154128_create_units_table.php on line 7
+[07-Aug-2026 17:55:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Migrations\Migration" not found in /home/loufaypy/z-pos.co.tz/database/migrations/0001_01_01_000000_create_branches_table.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/database/migrations/0001_01_01_000000_create_branches_table.php on line 7

@@ -1,0 +1,80 @@
+[07-Aug-2026 17:50:53 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Shop.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Shop.php on line 8
+[07-Aug-2026 17:50:53 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Expense.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Expense.php on line 9
+[07-Aug-2026 17:50:54 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Auth\User" not found in /home/loufaypy/z-pos.co.tz/app/Models/User.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/User.php on line 14
+[07-Aug-2026 17:50:55 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Unit.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Unit.php on line 11
+[07-Aug-2026 17:51:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/PurchaseItem.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/PurchaseItem.php on line 8
+[07-Aug-2026 17:51:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Product.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Product.php on line 10
+[07-Aug-2026 17:51:05 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Branch.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Branch.php on line 9
+[07-Aug-2026 17:51:07 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Purchase.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Purchase.php on line 8
+[07-Aug-2026 17:51:07 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Customer.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Customer.php on line 10
+[07-Aug-2026 17:51:12 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Auth\User" not found in /home/loufaypy/z-pos.co.tz/app/Models/User.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/User.php on line 14
+[07-Aug-2026 17:51:17 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Unit.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Unit.php on line 11
+[07-Aug-2026 17:51:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Category.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Category.php on line 10
+[07-Aug-2026 17:51:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Sale.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Sale.php on line 8
+[07-Aug-2026 17:51:47 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Payment.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Payment.php on line 8
+[07-Aug-2026 17:51:52 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Brand.php:11
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Brand.php on line 11
+[07-Aug-2026 17:52:29 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Purchase.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Purchase.php on line 8
+[07-Aug-2026 17:52:34 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Customer.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Customer.php on line 10
+[07-Aug-2026 17:52:39 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Shop.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Shop.php on line 8
+[07-Aug-2026 17:53:08 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/PurchaseItem.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/PurchaseItem.php on line 8
+[07-Aug-2026 17:53:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Eloquent\Model" not found in /home/loufaypy/z-pos.co.tz/app/Models/Product.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/app/Models/Product.php on line 10

@@ -1,0 +1,4 @@
+[07-Aug-2026 17:51:37 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Database\Seeder" not found in /home/loufaypy/z-pos.co.tz/database/seeders/DatabaseSeeder.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/loufaypy/z-pos.co.tz/database/seeders/DatabaseSeeder.php on line 9

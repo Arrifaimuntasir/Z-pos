@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Shop extends Model
+{
+    use HasFactory;
+    
+    protected $fillable = ['name', 'business_type', 'logo_path', 'package', 'billing_cycle', 'valid_until', 'is_active', 'phone', 'address', 'tin_number', 'receipt_message', 'receipt_paper_width'];
+
+    protected $casts = [
+        'valid_until' => 'date',
+        'is_active' => 'boolean',
+    ];
+    
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+}

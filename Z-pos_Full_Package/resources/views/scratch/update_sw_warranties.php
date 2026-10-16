@@ -1,0 +1,48 @@
+<?php
+$p='e:/Z-pos/lang/sw.json';
+$s=json_decode(file_get_contents($p),true);
+$n=[
+    'Warranties'=>'Udhamini (Warranties)',
+    'Manage customer warranties'=>'Simamia udhamini wa wateja',
+    'Generate Warranty'=>'Tengeneza Warranty',
+    'Warranty No'=>'Namba ya Warranty',
+    'Customer'=>'Mteja',
+    'Product'=>'Bidhaa',
+    'Duration'=>'Muda',
+    'Valid Until'=>'Mwisho wa Matumizi',
+    'Actions'=>'Vitendo',
+    'Expired'=>'Imeisha Muda',
+    'Print'=>'Print',
+    'Are you sure you want to delete this warranty?'=>'Una uhakika unataka kufuta warranty hii?',
+    'No warranties generated yet.'=>'Hakuna warranties zilizotengenezwa bado.',
+    'Generate your first warranty'=>'Tengeneza warranty yako ya kwanza',
+    'Create a new warranty certificate'=>'Tengeneza cheti kipya cha udhamini',
+    'General Information'=>'Taarifa za Jumla',
+    'Link to Sale (Optional)'=>'Unganisha na Mauzo (Sio lazima)',
+    'Select Sale'=>'Chagua Mauzo',
+    'Walk-in'=>'Mteja wa Kawaida',
+    'Customer Name'=>'Jina la Mteja',
+    'Customer full name'=>'Jina kamili la mteja',
+    'Product Details'=>'Taarifa za Bidhaa',
+    'Product Name'=>'Jina la Bidhaa',
+    'E.g. iPhone 14 Pro Max'=>'Mfano: iPhone 14 Pro Max',
+    'Serial Number (IMEI)'=>'Namba ya Siri (IMEI)',
+    'Enter S/N or IMEI'=>'Ingiza S/N au IMEI',
+    'Warranty Period'=>'Muda wa Udhamini',
+    'Duration Text'=>'Maelezo ya Muda',
+    'Start Date'=>'Tarehe ya Kuanza',
+    'End Date'=>'Tarehe ya Kuisha',
+    'Terms & Conditions'=>'Vigezo na Masharti',
+    'Enter warranty conditions here...'=>'Ingiza masharti ya udhamini hapa...',
+    'This warranty covers factory defects only. Physical damage, water damage, and unauthorized repairs will void the warranty. Please present this certificate for any claims.'=>'Udhamini huu unahusu matatizo ya kiwandani pekee. Kuharibika kwa makusudi, kuingia maji, au kutengenezwa na fundi asiyetambulika kutasitisha udhamini huu. Tafadhali onyesha cheti hiki unapohitaji huduma.',
+    'Choose Design Theme'=>'Chagua Muonekano',
+    'Generate & Save'=>'Tengeneza na Hifadhi',
+    'Tips for Warranties'=>'Ushauri kuhusu Warranties',
+    'Providing a warranty certificate builds trust with your customers. Follow these best practices:'=>'Kutoa cheti cha udhamini hujenga uaminifu kwa wateja wako. Fuata ushauri huu:',
+    'Always include the exact Serial Number or IMEI to prevent fraudulent claims.'=>'Kila mara andika Serial Number au IMEI sahihi ili kuzuia udanganyifu.',
+    'Specify exactly what is covered and what is NOT covered in the terms section.'=>'Ainisha waziwazi nini kipo ndani ya udhamini na kipi hakipo.',
+    'Select a design theme that matches your brand colors.'=>'Chagua muonekano unaoendana na rangi za duka lako.',
+    'Print the certificate on high-quality paper or save it as a PDF and send it to the customer via WhatsApp/Email.'=>'Print cheti kwenye karatasi nzuri au save kama PDF umtumie mteja WhatsApp/Email.'
+];
+file_put_contents($p,json_encode(array_merge($s,$n),JSON_PRETTY_PRINT));
+echo "sw.json updated for warranties.";

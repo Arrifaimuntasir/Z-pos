@@ -1,0 +1,53 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('sales', function (Blueprint $table) {
+            if (!Schema::hasColumn('sales', 'branch_id')) {
+                $table->foreignId('branch_id')->after('shop_id')->nullable()->constrained()->cascadeOnDelete();
+            }
+        });
+
+        Schema::table('expenses', function (Blueprint $table) {
+            if (!Schema::hasColumn('expenses', 'branch_id')) {
+                $table->foreignId('branch_id')->after('shop_id')->nullable()->constrained()->cascadeOnDelete();
+            }
+        });
+
+        Schema::table('purchases', function (Blueprint $table) {
+            if (!Schema::hasColumn('purchases', 'branch_id')) {
+                $table->foreignId('branch_id')->after('shop_id')->nullable()->constrained()->cascadeOnDelete();
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('sales', function (Blueprint $table) {
+            $table->dropForeign(['branch_id']);
+            $table->dropColumn('branch_id');
+        });
+
+        Schema::table('expenses', function (Blueprint $table) {
+            $table->dropForeign(['branch_id']);
+            $table->dropColumn('branch_id');
+        });
+
+        Schema::table('purchases', function (Blueprint $table) {
+            $table->dropForeign(['branch_id']);
+            $table->dropColumn('branch_id');
+        });
+    }
+};
