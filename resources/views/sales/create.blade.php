@@ -80,11 +80,10 @@
     $showExpiry = in_array($shopCategory, ['Pharmacy / Health','Supermarket / Grocery','Restaurant / Food']);
     $showImei = in_array($shopCategory, ['Electronics / IT','Hardware / Construction']);
     $isRestaurant = $shopCategory === 'Restaurant / Food';
-    $useNewPOS = !$isRestaurant; // New POS for all except Restaurant
     $groupedProducts = $products->groupBy(function($p){ return $p->category ? $p->category->name : 'Other'; });
 @endphp
 
-@if($useNewPOS)
+@if($isSupermarket)
 {{-- SUPERMARKET POS --}}
 <form action="{{ route('sales.store') }}" method="POST" id="posForm">
     @csrf
