@@ -148,7 +148,7 @@
       </div>
       <div class="d-flex align-items-center gap-2">
         <span class="spos-cart-count" id="cartCountBadge">0</span>
-        <select id="customerSelect" class="form-select form-select-sm" style="font-size:0.75rem;border-radius:8px;border-color:#e2e8f0;max-width:130px;" onchange="document.getElementById('hiddenCustomer').value=this.value">
+        <select id="customerSelect" class="spos-customer-sel" onchange="document.getElementById('hiddenCustomer').value=this.value">
           <option value="">Walk-in</option>
           @foreach($customers as $cu)<option value="{{ $cu->id }}">{{ $cu->name }}</option>@endforeach
         </select>
@@ -171,11 +171,11 @@
         <button type="button" class="spos-pay-btn" onclick="selectPayment('Bank',this)"><i class="bi bi-bank"></i>Bank</button>
         <button type="button" class="spos-pay-btn" onclick="selectPayment('Credit',this)"><i class="bi bi-person-lines-fill"></i>Credit</button>
       </div>
-      <div style="background:#f8fafc;border-radius:10px;padding:8px 12px;margin:6px 0;border:1px solid #e2e8f0;">
-        <div style="font-size:0.72rem;color:#94a3b8;font-weight:600;">{{ __('AMOUNT PAID (TSh)') }}</div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="number" id="paidAmountDisplay" class="form-control form-control-sm border-0 bg-transparent fw-bold" style="font-size:1.1rem;color:#1e293b;padding:0;" value="0" min="0" oninput="document.getElementById('hiddenPaid').value=this.value;calcChange()">
-          <span style="font-size:0.72rem;color:#94a3b8;">Change: <strong id="changeAmt" style="color:#16a34a;">0</strong></span>
+      <div class="spos-paid-wrap">
+        <div class="spos-paid-label">{{ __('AMOUNT PAID (TSh)') }}</div>
+        <div class="spos-paid-row">
+          <input type="number" id="paidAmountDisplay" class="spos-paid-input" value="0" min="0" oninput="document.getElementById('hiddenPaid').value=this.value;calcChange()">
+          <span class="spos-change">Change: <strong id="changeAmt" style="color:#22c55e;">0</strong></span>
         </div>
       </div>
       <div class="spos-numpad">
@@ -196,7 +196,7 @@
         <button type="button" class="spos-hold-btn" onclick="holdSale()" title="F3"><i class="bi bi-pause-circle me-1"></i>{{ __('Hold') }}</button>
         <button type="button" class="spos-complete-btn" id="completeBtn" onclick="completeSale()" disabled title="F2"><i class="bi bi-check2-circle me-1"></i>{{ __('Complete Sale') }}</button>
       </div>
-      <a href="{{ route('sales.index') }}" class="btn btn-sm btn-light w-100 mt-2" style="font-size:0.75rem;"><i class="bi bi-clock-history me-1"></i>{{ __('Sales History') }}</a>
+      <a href="{{ route('sales.index') }}" style="display:block;text-align:center;font-size:0.72rem;color:#334155;margin-top:10px;text-decoration:none;padding:4px;" onmouseover="this.style.color='#64748b'" onmouseout="this.style.color='#334155'"><i class="bi bi-clock-history me-1"></i>{{ __('Sales History') }}</a>
     </div>
   </div>
 </div>
