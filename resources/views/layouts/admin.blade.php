@@ -206,6 +206,7 @@
 
             <div class="sidebar-scroll-area">
             @if(!Auth::check() || !Auth::user()->hasRole('Super Admin') || Auth::user()->shop_id)
+            @php $isPetroleum = Auth::check() && Auth::user()->shop && Auth::user()->shop->business_type === 'Petroleum Station / Fuel'; @endphp
             <ul class="list-unstyled components" style="background-color: #ffffff;" id="sidebarMenu">
                 <li class="{{ request()->is('/') || request()->is('home') ? 'active' : '' }}">
                     <a href="{{ url('/home') }}">
@@ -213,6 +214,7 @@
                     </a>
                 </li>
                 
+                @if(!$isPetroleum)
                 <li>
                     <div class="custom-dropdown-parent {{ request()->is('sales*') || request()->is('returns*') || request()->is('invoices*') ? 'active-dropdown' : '' }}">
                         <a href="#salesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
@@ -240,6 +242,7 @@
                         </ul>
                     </div>
                 </li>
+                @endif
                 
 
                 @if(Auth::user()->hasRole('Administrator'))
@@ -284,6 +287,7 @@
                             color: #3b82f6;
                         }
                     </style>
+                    @if(!$isPetroleum)
                     <div class="custom-dropdown-parent {{ request()->is('products*') || request()->is('categories*') || request()->is('brands*') || request()->is('units*') || request()->is('customers*') ? 'active-dropdown' : '' }}">
                         <a href="#itemsSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
                             <i class="bi bi-boxes me-3"></i> {{ __('Items') }}
@@ -296,8 +300,9 @@
                             <li><a href="{{ route('customers.index') }}">{{ __('Customers') }}</a></li>
                         </ul>
                     </div>
+                    @endif
                 </li>
-                @if(Auth::user()->hasRole('Administrator'))
+                @if(Auth::user()->hasRole('Administrator') && !$isPetroleum)
                 <li>
                     <div class="custom-dropdown-parent {{ request()->is('purchases*') || request()->is('suppliers*') ? 'active-dropdown' : '' }}">
                         <a href="#purchasesSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
@@ -321,19 +326,23 @@
                         </a>
                         <ul class="collapse list-unstyled custom-submenu" id="reportsSubmenu" data-bs-parent="#sidebarMenu">
                             <li><a href="{{ route('reports.index') }}">{{ __('Overview') }}</a></li>
+                            @if(!$isPetroleum)
                             <li><a href="{{ route('reports.profit_loss') }}">{{ __('Profit and Loss') }}</a></li>
                             <li><a href="{{ route('reports.sales') }}">{{ __('Sales') }}</a></li>
-                            <li><a href="{{ route('reports.expenses') }}">{{ __('Expenses') }}</a></li>
                             <li><a href="{{ route('reports.stock_movement') }}">{{ __('Stock Movement') }}</a></li>
+                            @endif
+                            <li><a href="{{ route('reports.expenses') }}">{{ __('Expenses') }}</a></li>
                         </ul>
                     </div>
                 </li>
                 @else
+                @if(!$isPetroleum)
                 <li class="{{ request()->is('products*') ? 'active' : '' }}">
                     <a href="{{ route('products.index') }}" style="color: #64748b;">
                         <i class="bi bi-boxes me-3"></i> {{ __('Items') }}
                     </a>
                 </li>
+                @endif
                 @endif
                 @if(Auth::user()->shop && in_array(Auth::user()->shop->package, ['professional', 'enterprise']) && Auth::user()->hasRole('Administrator'))
                 <li class="{{ request()->is('branches*') ? 'active' : '' }}">
@@ -352,7 +361,9 @@
                 </li>
                 @endif
 
-                @if(Auth::user()->shop && Auth::user()->shop->business_type === 'Petroleum Station / Fuel')
+                @if($isPetroleum)
+                {{-- ===== PETROLEUM STATION MENU ===== --}}
+                <li class="px-3 mb-1 mt-2" style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94a3b8;text-transform:uppercase;">⛽ {{ __('Fuel Operations') }}</li>
                 <li class="{{ request()->is('petroleum/sales*') ? 'active' : '' }}">
                     <a href="{{ route('petroleum.sales.index') }}" style="color: #64748b;">
                         <i class="bi bi-fuel-pump me-3"></i> {{ __('Fuel Sales') }}
@@ -363,17 +374,28 @@
                         <i class="bi bi-calendar2-check me-3"></i> {{ __('Station Day') }}
                     </a>
                 </li>
+                <li class="{{ request()->is('invoices*') ? 'active' : '' }}">
+                    <a href="{{ route('invoices.index') }}" style="color: #64748b;">
+                        <i class="bi bi-receipt me-3"></i> {{ __('Invoices') }}
+                    </a>
+                </li>
+                <li class="{{ request()->is('customers*') ? 'active' : '' }}">
+                    <a href="{{ route('customers.index') }}" style="color: #64748b;">
+                        <i class="bi bi-people-fill me-3"></i> {{ __('Customers') }}
+                    </a>
+                </li>
                 @if(Auth::user()->hasRole('Administrator'))
+                <li class="px-3 mb-1 mt-3" style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94a3b8;text-transform:uppercase;">🛢️ {{ __('Station Setup') }}</li>
                 <li>
-                    <div class="custom-dropdown-parent {{ request()->is('petroleum*') && !request()->is('petroleum/sales*') && !request()->is('petroleum/day*') ? 'active-dropdown' : '' }}">
-                        <a href="#petroleumSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                    <div class="custom-dropdown-parent {{ request()->is('petroleum/deliveries*') || request()->is('petroleum/tanks*') || request()->is('petroleum/pumps*') || request()->is('petroleum/nozzles*') ? 'active-dropdown' : '' }}">
+                        <a href="#petroleumSetupSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
                             <i class="bi bi-gear-wide-connected me-3"></i> {{ __('Station Setup') }}
                         </a>
-                        <ul class="collapse list-unstyled custom-submenu" id="petroleumSubmenu" data-bs-parent="#sidebarMenu">
-                            <li><a href="{{ route('petroleum.deliveries.index') }}">{{ __('Deliveries') }}</a></li>
-                            <li><a href="{{ route('petroleum.tanks.index') }}">{{ __('Tanks') }}</a></li>
-                            <li><a href="{{ route('petroleum.pumps.index') }}">{{ __('Pumps') }}</a></li>
-                            <li><a href="{{ route('petroleum.nozzles.index') }}">{{ __('Nozzles') }}</a></li>
+                        <ul class="collapse list-unstyled custom-submenu" id="petroleumSetupSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('petroleum.deliveries.index') }}">🚛 {{ __('Deliveries') }}</a></li>
+                            <li><a href="{{ route('petroleum.tanks.index') }}">🛢️ {{ __('Tanks') }}</a></li>
+                            <li><a href="{{ route('petroleum.pumps.index') }}">⚙️ {{ __('Pumps') }}</a></li>
+                            <li><a href="{{ route('petroleum.nozzles.index') }}">🔧 {{ __('Nozzles') }}</a></li>
                         </ul>
                     </div>
                 </li>
