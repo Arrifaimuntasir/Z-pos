@@ -66,8 +66,37 @@ class CategoryController extends Controller
         if ($category->products()->count() > 0) {
             return redirect()->route('categories.index')->with('error', 'Cannot delete category because it has products.');
         }
-        
+
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+    }
+
+    /**
+     * Remove multiple selected categories at once, skipping any that still have products.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No categories selected.');
+        }
+
+        $categories = Category::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->withCount('products')
+            ->get();
+
+        $deletable = $categories->where('products_count', 0);
+        $skipped = $categories->where('products_count', '>', 0);
+
+        Category::whereIn('id', $deletable->pluck('id'))->delete();
+
+        if ($skipped->isNotEmpty() && $deletable->isNotEmpty()) {
+            return redirect()->route('categories.index')->with('success', $deletable->count() . ' categories deleted. ' . $skipped->count() . ' skipped because they still have products.');
+        } elseif ($skipped->isNotEmpty()) {
+            return redirect()->route('categories.index')->with('error', 'None deleted — all selected categories still have products.');
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Selected categories deleted successfully.');
     }
 }

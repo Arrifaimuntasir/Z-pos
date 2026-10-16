@@ -98,6 +98,7 @@
                                             <option value="Restaurant / Food" {{ old('business_type', $shop->business_type) == 'Restaurant / Food' ? 'selected' : '' }}>{{ __('Restaurant / Cafe / Food') }}</option>
                                             <option value="Hardware / Construction" {{ old('business_type', $shop->business_type) == 'Hardware / Construction' ? 'selected' : '' }}>{{ __('Hardware / Construction') }}</option>
                                             <option value="Clothing / Boutique" {{ old('business_type', $shop->business_type) == 'Clothing / Boutique' ? 'selected' : '' }}>{{ __('Clothing / Boutique') }}</option>
+                                            <option value="Petroleum Station / Fuel" {{ old('business_type', $shop->business_type) == 'Petroleum Station / Fuel' ? 'selected' : '' }}>{{ __('Petroleum Station / Fuel') }}</option>
                                             <option value="Services / Consulting" {{ old('business_type', $shop->business_type) == 'Services / Consulting' ? 'selected' : '' }}>{{ __('Services / Consulting') }}</option>
                                         </select>
                                     </div>
@@ -112,6 +113,19 @@
                                         <textarea name="receipt_message" class="form-control bg-white border-0" rows="3" placeholder="{{ __('e.g. Thank you for your business! Karibu tena.') }}">{{ old('receipt_message', $shop->receipt_message) }}</textarea>
                                     </div>
                                     @error('receipt_message') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
+                                </div>
+
+                                <!-- Thermal Receipt Paper Width -->
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold text-dark">{{ __('Thermal Receipt Paper') }}</label>
+                                    <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                        <span class="input-group-text bg-white border-0 text-muted"><i class="bi bi-printer"></i></span>
+                                        <select name="receipt_paper_width" class="form-control bg-white border-0" style="cursor: pointer;">
+                                            <option value="80" {{ (int) old('receipt_paper_width', $shop->receipt_paper_width ?? 80) === 80 ? 'selected' : '' }}>{{ __('80mm (large roll)') }}</option>
+                                            <option value="58" {{ (int) old('receipt_paper_width', $shop->receipt_paper_width ?? 80) === 58 ? 'selected' : '' }}>{{ __('58mm (small / Bluetooth printer)') }}</option>
+                                        </select>
+                                    </div>
+                                    @error('receipt_paper_width') <small class="text-danger mt-1 d-block">{{ $message }}</small> @enderror
                                 </div>
                                 
                                 <div class="col-12 mt-5">

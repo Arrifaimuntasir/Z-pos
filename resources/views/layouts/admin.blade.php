@@ -221,10 +221,17 @@
                         <ul class="collapse list-unstyled custom-submenu" id="salesSubmenu" data-bs-parent="#sidebarMenu">
                             <li><a href="{{ route('sales.create') }}">{{ __('New Sale') }}</a></li>
                             <li><a href="{{ route('sales.index') }}">{{ __('Sales History') }}</a></li>
-                            @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Services / Consulting']))
+                            @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Services / Consulting', 'Clothing / Boutique', 'Supermarket / Grocery']))
                             <li><a href="{{ route('returns.index') }}">{{ __('Return Invoices') }}</a></li>
                             <li>
                                 <a href="{{ route('returns.defective') }}" class="{{ request()->is('returns/defective*') ? 'fw-semibold text-danger' : '' }}">
+                                    {{ __('Defective Items') }}
+                                </a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->shop && Auth::user()->shop->business_type === 'Supermarket / Grocery' && Auth::user()->hasRole('Administrator'))
+                            <li>
+                                <a href="{{ route('defective-stock.index') }}" class="{{ request()->is('defective-stock*') ? 'fw-semibold text-danger' : '' }}">
                                     {{ __('Defective Items') }}
                                 </a>
                             </li>
@@ -317,8 +324,15 @@
                             <li><a href="{{ route('reports.profit_loss') }}">{{ __('Profit and Loss') }}</a></li>
                             <li><a href="{{ route('reports.sales') }}">{{ __('Sales') }}</a></li>
                             <li><a href="{{ route('reports.expenses') }}">{{ __('Expenses') }}</a></li>
+                            <li><a href="{{ route('reports.stock_movement') }}">{{ __('Stock Movement') }}</a></li>
                         </ul>
                     </div>
+                </li>
+                @else
+                <li class="{{ request()->is('products*') ? 'active' : '' }}">
+                    <a href="{{ route('products.index') }}" style="color: #64748b;">
+                        <i class="bi bi-boxes me-3"></i> {{ __('Items') }}
+                    </a>
                 </li>
                 @endif
                 @if(Auth::user()->shop && in_array(Auth::user()->shop->package, ['professional', 'enterprise']) && Auth::user()->hasRole('Administrator'))
@@ -337,7 +351,35 @@
                     </a>
                 </li>
                 @endif
-                
+
+                @if(Auth::user()->shop && Auth::user()->shop->business_type === 'Petroleum Station / Fuel')
+                <li class="{{ request()->is('petroleum/sales*') ? 'active' : '' }}">
+                    <a href="{{ route('petroleum.sales.index') }}" style="color: #64748b;">
+                        <i class="bi bi-fuel-pump me-3"></i> {{ __('Fuel Sales') }}
+                    </a>
+                </li>
+                <li class="{{ request()->is('petroleum/day*') ? 'active' : '' }}">
+                    <a href="{{ route('petroleum.day.index') }}" style="color: #64748b;">
+                        <i class="bi bi-calendar2-check me-3"></i> {{ __('Station Day') }}
+                    </a>
+                </li>
+                @if(Auth::user()->hasRole('Administrator'))
+                <li>
+                    <div class="custom-dropdown-parent {{ request()->is('petroleum*') && !request()->is('petroleum/sales*') && !request()->is('petroleum/day*') ? 'active-dropdown' : '' }}">
+                        <a href="#petroleumSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-gear-wide-connected me-3"></i> {{ __('Station Setup') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="petroleumSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('petroleum.deliveries.index') }}">{{ __('Deliveries') }}</a></li>
+                            <li><a href="{{ route('petroleum.tanks.index') }}">{{ __('Tanks') }}</a></li>
+                            <li><a href="{{ route('petroleum.pumps.index') }}">{{ __('Pumps') }}</a></li>
+                            <li><a href="{{ route('petroleum.nozzles.index') }}">{{ __('Nozzles') }}</a></li>
+                        </ul>
+                    </div>
+                </li>
+                @endif
+                @endif
+
                 @if(Auth::user()->shop)
                 <li class="{{ request()->routeIs('shop.business-card') ? 'active' : '' }}">
                     <a href="{{ route('shop.business-card') }}" style="color: #64748b;">
@@ -499,6 +541,11 @@
                                 </ul>
                             </div>
                             @endif
+                        @elseif(Auth::user()->branch)
+                            <span class="btn btn-light bg-white border d-flex align-items-center rounded-pill px-2 px-sm-3 shadow-sm" style="font-weight: 600; font-size: 0.85rem; color: #334155; cursor: default;">
+                                <i class="bi bi-shop me-1 me-sm-2 text-primary"></i>
+                                <span class="text-truncate d-inline-block" style="max-width: 120px;">{{ Auth::user()->branch->name }}</span>
+                            </span>
                         @endif
 
                         <!-- Language Switcher -->
@@ -843,15 +890,24 @@
 
                 input.addEventListener('input', function(e) {
                     clearTimeout(timer);
-                    
+
+                    // Pressing the search button / Enter always searches, even if the text ends with a
+                    // space (phone keyboards add one after a suggested word).
+                    const forced = this.dataset.forceSearch === '1';
+                    delete this.dataset.forceSearch;
+                    if (forced) {
+                        this.value = this.value.trim();
+                    }
+
                     // Don't auto-submit if user just typed a space, let them finish the word
-                    if (this.value.endsWith(' ')) {
+                    if (!forced && this.value.endsWith(' ')) {
                         return;
                     }
 
                     timer = setTimeout(() => {
                         const url = new URL(form.action);
                         const params = new URLSearchParams(new FormData(form));
+                        params.set(input.name, input.value.trim());
                         url.search = params.toString();
 
                         // Add a loading indicator to the search icon if possible
@@ -905,6 +961,7 @@
                 // Handle normal form submit (e.g. hitting Enter)
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
+                    input.dataset.forceSearch = '1';
                     input.dispatchEvent(new Event('input'));
                 });
             });

@@ -95,7 +95,15 @@ class DefectiveStockController extends Controller
      */
     public function index()
     {
-        $defectiveStocks = \App\Models\DefectiveStock::with(['product', 'branch', 'user'])->latest()->get();
+        $branchId = $this->getActiveBranchId();
+
+        $defectiveStocks = \App\Models\DefectiveStock::with(['product', 'branch', 'user'])
+            ->when($branchId, function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->latest()
+            ->get();
+
         return view('defective-stock.index', compact('defectiveStocks'));
     }
 
@@ -150,12 +158,52 @@ class DefectiveStockController extends Controller
     }
 
     /**
+     * A defective item that turns out to be fine goes back into sellable stock and
+     * stops counting as a loss (the reports only sum records still marked 'defective').
+     */
+    public function markGood(\App\Models\DefectiveStock $defectiveStock)
+    {
+        if (!auth()->user()->hasRole('Administrator') || $defectiveStock->shop_id !== auth()->user()->shop_id) {
+            abort(403);
+        }
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            // Re-read under lock so a double-click can't add the stock twice.
+            $record = \App\Models\DefectiveStock::lockForUpdate()->findOrFail($defectiveStock->id);
+
+            if ($record->isRestored()) {
+                \Illuminate\Support\Facades\DB::rollBack();
+                return back()->with('error', 'This item was already marked as good.');
+            }
+
+            $product = \App\Models\Product::find($record->product_id);
+            if (!$product) {
+                throw new \Exception('The product no longer exists.');
+            }
+
+            $this->adjustStock($record->branch_id, $product, $record->quantity);
+            $record->update(['status' => 'good', 'restored_at' => now()]);
+
+            \Illuminate\Support\Facades\DB::commit();
+            return back()->with('success', "{$product->name} marked as good and added back to stock.");
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error marking item as good: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Show the form for editing a recorded defective stock entry.
      */
     public function edit(\App\Models\DefectiveStock $defectiveStock)
     {
         if ($defectiveStock->shop_id !== auth()->user()->shop_id) {
             abort(403);
+        }
+
+        if ($defectiveStock->isRestored()) {
+            return redirect()->route('defective-stock.index')->with('error', 'This item was already returned to stock and can no longer be edited.');
         }
 
         $products = $this->productsWithStock($defectiveStock->branch_id);
@@ -170,6 +218,10 @@ class DefectiveStockController extends Controller
     {
         if ($defectiveStock->shop_id !== auth()->user()->shop_id) {
             abort(403);
+        }
+
+        if ($defectiveStock->isRestored()) {
+            return redirect()->route('defective-stock.index')->with('error', 'This item was already returned to stock and can no longer be edited.');
         }
 
         $request->validate([
@@ -222,7 +274,8 @@ class DefectiveStockController extends Controller
 
         \Illuminate\Support\Facades\DB::beginTransaction();
         try {
-            if ($request->boolean('restore_stock')) {
+            // A record already marked good had its stock restored then — don't add it again.
+            if ($request->boolean('restore_stock') && !$defectiveStock->isRestored()) {
                 $product = \App\Models\Product::find($defectiveStock->product_id);
                 if ($product) {
                     $this->adjustStock($defectiveStock->branch_id, $product, $defectiveStock->quantity);
@@ -236,6 +289,41 @@ class DefectiveStockController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             return back()->with('error', 'Error deleting record: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Remove multiple selected defective-stock records at once, optionally
+     * restoring each one's quantity back to stock first (same choice as a single delete).
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No records selected.');
+        }
+
+        $records = \App\Models\DefectiveStock::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->get();
+
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            foreach ($records as $record) {
+                if ($request->boolean('restore_stock') && !$record->isRestored()) {
+                    $product = \App\Models\Product::find($record->product_id);
+                    if ($product) {
+                        $this->adjustStock($record->branch_id, $product, $record->quantity);
+                    }
+                }
+                $record->delete();
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+            return redirect()->route('defective-stock.index')->with('success', 'Selected records deleted successfully.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return back()->with('error', 'Error deleting records: ' . $e->getMessage());
         }
     }
 }

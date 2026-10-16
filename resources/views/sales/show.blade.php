@@ -11,10 +11,10 @@
     </div>
     <div>
         
-        @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Services / Consulting']) && $sale->payment_status !== 'proforma')
-            <a href="{{ route('sales.returns.create', $sale->id) }}" class="btn btn-warning shadow-sm">
-                <i class="bi bi-arrow-return-left me-2"></i> {{ __('Return Items') }}
-            </a>
+        @if(Auth::user()->shop && in_array(Auth::user()->shop->business_type, ['Retail / General', 'Electronics / IT']) && $sale->payment_status !== 'proforma')
+        <a href="{{ route('sales.returns.create', $sale->id) }}" class="btn btn-warning px-3 shadow-sm text-dark" style="border-radius: 8px;">
+            <i class="bi bi-arrow-return-left me-1"></i> {{ __('Return/Refund') }}
+        </a>
         @endif
         <button onclick="shareReceipt(event)" class="btn btn-success px-3 shadow-sm" style="border-radius: 8px;">
             <i class="bi bi-share me-1"></i> {{ __('Share') }}
@@ -22,9 +22,14 @@
         <a href="{{ route('sales.pdf', $sale->id) }}?v={{ time() }}" class="btn btn-danger px-3 shadow-sm" style="border-radius: 8px;">
             <i class="bi bi-file-earmark-pdf me-1"></i> {{ __('PDF') }}
         </a>
-        <button onclick="window.print()" class="btn btn-primary px-3 shadow-sm" style="border-radius: 8px;">
-            <i class="bi bi-printer me-1"></i> {{ __('Print') }}
-        </button>
+        <div class="btn-group shadow-sm">
+            <button type="button" onclick="ZPrinter.print()" class="btn btn-primary px-3" style="border-radius: 8px 0 0 8px;">
+                <i class="bi bi-printer me-1"></i> {{ __('Print') }}
+            </button>
+            <button type="button" class="btn btn-primary px-2 border-start border-light border-opacity-50" style="border-radius: 0 8px 8px 0;" data-bs-toggle="modal" data-bs-target="#printerSettingsModal" title="{{ __('Printer Settings') }}" aria-label="{{ __('Printer Settings') }}">
+                <i class="bi bi-gear"></i>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -189,6 +194,8 @@ async function shareReceipt(event) {
         </div>
     </div>
 </div>
+
+@include('partials.thermal_printer', ['sale' => $sale])
 
 <style>
 @media print {

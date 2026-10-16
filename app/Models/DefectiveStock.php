@@ -9,7 +9,16 @@ class DefectiveStock extends Model
 {
     use HasTenant;
 
-    protected $fillable = ['branch_id', 'product_id', 'user_id', 'quantity', 'reason'];
+    protected $fillable = ['branch_id', 'product_id', 'user_id', 'quantity', 'reason', 'status', 'restored_at'];
+
+    protected $casts = [
+        'restored_at' => 'datetime',
+    ];
+
+    public function isRestored(): bool
+    {
+        return $this->status === 'good';
+    }
 
     public function product()
     {

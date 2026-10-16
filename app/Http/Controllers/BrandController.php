@@ -64,4 +64,21 @@ class BrandController extends Controller
         $brand->delete();
         return redirect()->route('brands.index')->with('success', 'Brand deleted successfully.');
     }
+
+    /**
+     * Remove multiple selected brands at once.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No brands selected.');
+        }
+
+        \App\Models\Brand::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->delete();
+
+        return redirect()->route('brands.index')->with('success', 'Selected brands deleted successfully.');
+    }
 }

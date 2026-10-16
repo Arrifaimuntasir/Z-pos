@@ -74,4 +74,21 @@ class ExpenseController extends Controller
         $expense->delete();
         return redirect()->route('expenses.index')->with('success', 'Expense deleted successfully.');
     }
+
+    /**
+     * Remove multiple selected expenses at once.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No expenses selected.');
+        }
+
+        Expense::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->delete();
+
+        return redirect()->route('expenses.index')->with('success', 'Selected expenses deleted successfully.');
+    }
 }

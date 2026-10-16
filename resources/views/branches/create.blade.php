@@ -4,9 +4,6 @@
 
 @section('content')
 <div class="mb-4">
-    <a href="{{ route('branches.index') }}" class="text-decoration-none text-muted mb-2 d-inline-block">
-        <i class="bi bi-arrow-left me-1"></i> {{ __('Back to Branches') }}
-    </a>
     <h4 class="fw-bold mb-0 text-dark">{{ __('Add New Branch') }}</h4>
 </div>
 

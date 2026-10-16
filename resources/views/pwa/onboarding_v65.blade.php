@@ -344,7 +344,7 @@
                             <span class="badge bg-success bg-opacity-10 text-success">TZS 15K/mo</span>
                         </div>
                         <ul class="pricing-features">
-                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('7 Days Free Trial') }}</span></li>
+                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('14 Days Free Trial') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('1 Branch') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('2 Users') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Products') }}</span></li>
@@ -370,7 +370,7 @@
                             <span class="badge bg-success">TZS 45K/mo</span>
                         </div>
                         <ul class="pricing-features">
-                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('7 Days Free Trial') }}</span></li>
+                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('14 Days Free Trial') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Up to 5 Branches') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Users') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Products') }}</span></li>
@@ -396,7 +396,7 @@
                             <span class="badge bg-dark">TZS 110K/mo</span>
                         </div>
                         <ul class="pricing-features">
-                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('7 Days Free Trial') }}</span></li>
+                            <li><i class="bi bi-gift-fill text-success"></i> <span>{{ __('14 Days Free Trial') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Branches') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Users') }}</span></li>
                             <li><i class="bi bi-check-circle-fill"></i> <span>{{ __('Unlimited Products') }}</span></li>

@@ -318,7 +318,7 @@
     <div class="row g-3 mb-4">
 
         {{-- Total Sales --}}
-        <div class="col-6 col-lg-3">
+        <div class="{{ $isAdmin ? 'col-6 col-lg-3' : 'col-12 col-md-6 col-lg-4' }}">
             <div class="kpi-card">
                 <div class="d-flex align-items-start justify-content-between mb-3">
                     <div class="kpi-icon icon-blue"><i class="bi bi-cash-stack"></i></div>
@@ -329,7 +329,8 @@
             </div>
         </div>
 
-        {{-- Gross Profit --}}
+        {{-- Gross Profit (admin only: profit reveals the buying price) --}}
+        @if($isAdmin)
         <div class="col-6 col-lg-3">
             <div class="kpi-card">
                 <div class="d-flex align-items-start justify-content-between mb-3">
@@ -340,6 +341,7 @@
                 <p class="kpi-desc">{{ __('Revenue minus cost of goods') }}</p>
             </div>
         </div>
+        @endif
 
         @if($isAdmin)
         {{-- Purchases --}}

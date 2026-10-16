@@ -605,7 +605,7 @@ section.py-5.text-white p {
                         </div>
                         <hr class="pc-divider">
                         <ul class="pc-features">
-                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('1 Branch') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('2 Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -637,7 +637,7 @@ section.py-5.text-white p {
                         </div>
                         <hr class="pc-divider">
                         <ul class="pc-features">
-                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Up to 5 Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -668,7 +668,7 @@ section.py-5.text-white p {
                         </div>
                         <hr class="pc-divider">
                         <ul class="pc-features">
-                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill" style="color:#f59e0b;"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>

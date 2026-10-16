@@ -243,7 +243,8 @@ class SaleController extends Controller
                 ->whereHas('roles', function($q) {
                     $q->where('name', 'Administrator');
                 })->get();
-                
+
+            $sale->load('items.product');
             \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewSaleNotification($sale));
 
             return redirect()->route('sales.show', $sale->id)->with('success', 'Sale completed successfully!');

@@ -14,11 +14,39 @@
 </div>
 
 <div class="card border-0 shadow-sm" style="border-radius: 16px;">
+    <div class="card-header bg-white border-bottom py-3 px-3 px-md-4 d-flex justify-content-end gap-2">
+        <button type="submit" form="bulkDeleteForm"
+            class="btn btn-sm btn-danger px-3 shadow-sm rounded-pill align-items-center gap-1 d-none"
+            onclick="return confirm('{{ __('Are you sure you want to delete the selected customers?') }}')"
+            id="deleteBtn">
+            <i class="bi bi-trash3-fill me-1"></i> <span>{{ __('Delete') }}</span>
+        </button>
+        <button type="button" class="btn btn-sm shadow-sm rounded-pill px-3 fw-bold" style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da;" id="toggleSelectBtn">
+            <i class="bi bi-check2-square me-1"></i> {{ __('Select') }}
+        </button>
+    </div>
+
+    <div id="selectAllBar" class="d-none px-3 px-md-4 py-2 border-bottom" style="background-color: #f1f5f9;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="form-check mb-0">
+                <input class="form-check-input border-secondary" type="checkbox" id="selectAll" style="cursor:pointer; width:1.15rem; height:1.15rem;">
+                <label class="form-check-label ms-1 fw-bold text-dark" for="selectAll" style="font-size:0.9rem;">{{ __('Select All') }}</label>
+            </div>
+            <span class="text-muted small" id="selectedCountLabel">0 {{ __('selected') }}</span>
+        </div>
+    </div>
+
+    <form id="bulkDeleteForm" action="{{ route('customers.bulk-destroy') }}" method="POST">
+        @csrf
+        @method('DELETE')
+    </form>
+
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-muted">
                     <tr>
+                        <th class="ps-3 border-0 selection-th d-none" style="width: 40px;"></th>
                         <th class="ps-4 fw-medium border-0 rounded-start" style="padding-top: 15px; padding-bottom: 15px;">{{ __('Customer Name') }}</th>
                         <th class="fw-medium border-0">{{ __('Phone') }}</th>
                         <th class="fw-medium border-0">{{ __('Email') }}</th>
@@ -29,6 +57,9 @@
                 <tbody class="border-top-0">
                     @forelse($customers as $customer)
                     <tr>
+                        <td class="ps-3 selection-cell d-none">
+                            <input class="form-check-input row-checkbox" type="checkbox" name="ids[]" form="bulkDeleteForm" value="{{ $customer->id }}" style="cursor: pointer; width: 1.2rem; height: 1.2rem;">
+                        </td>
                         <td class="ps-4 py-3">
                             <div class="fw-bold text-dark">{{ $customer->name }}</div>
                         </td>
@@ -50,7 +81,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <div class="mb-3"><i class="bi bi-people fs-1 text-light-secondary"></i></div>
                             <h6 class="fw-bold">{{ __('No customers found') }}</h6>
                             <p class="small mb-0">{{ __('Start by adding your first customer.') }}</p>
@@ -62,4 +93,71 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleSelectBtn    = document.getElementById('toggleSelectBtn');
+    const deleteBtn          = document.getElementById('deleteBtn');
+    const selectAllBar       = document.getElementById('selectAllBar');
+    const selectAllInput     = document.getElementById('selectAll');
+    const selectedCountLabel = document.getElementById('selectedCountLabel');
+    const checkboxCells      = document.querySelectorAll('.selection-cell');
+    const selectionThs       = document.querySelectorAll('.selection-th');
+    const checkboxes         = document.querySelectorAll('.row-checkbox');
+
+    let selectMode = false;
+
+    function updateUI() {
+        const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+        selectedCountLabel.textContent = checkedCount + ' {{ __("selected") }}';
+
+        if (checkedCount > 0) {
+            deleteBtn.classList.remove('d-none');
+            deleteBtn.classList.add('d-inline-flex');
+        } else {
+            deleteBtn.classList.add('d-none');
+            deleteBtn.classList.remove('d-inline-flex');
+        }
+
+        if (selectAllInput) {
+            selectAllInput.checked = checkboxes.length > 0 && checkedCount === checkboxes.length;
+            selectAllInput.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+        }
+    }
+
+    toggleSelectBtn.addEventListener('click', function () {
+        selectMode = !selectMode;
+        if (selectMode) {
+            toggleSelectBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i> {{ __("Cancel") }}';
+            selectAllBar.classList.remove('d-none');
+            checkboxCells.forEach(c => c.classList.remove('d-none'));
+            selectionThs.forEach(c => c.classList.remove('d-none'));
+        } else {
+            toggleSelectBtn.innerHTML = '<i class="bi bi-check2-square me-1"></i> {{ __("Select") }}';
+            selectAllBar.classList.add('d-none');
+            checkboxCells.forEach(c => c.classList.add('d-none'));
+            selectionThs.forEach(c => c.classList.add('d-none'));
+            checkboxes.forEach(cb => cb.checked = false);
+            if (selectAllInput) {
+                selectAllInput.checked = false;
+                selectAllInput.indeterminate = false;
+            }
+            updateUI();
+        }
+    });
+
+    if (selectAllInput) {
+        selectAllInput.addEventListener('change', function () {
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            updateUI();
+        });
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateUI));
+
+    updateUI();
+});
+</script>
+@endpush
 @endsection

@@ -210,7 +210,7 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-medium">Notes (Optional)</label>
+                        <label class="form-label text-muted small fw-medium">{{ __('Notes (Optional)') }}</label>
                         <textarea name="notes" class="form-control" rows="2" placeholder="{{ __('Any comments...') }}"></textarea>
                     </div>
 
@@ -220,6 +220,9 @@
                     <button type="submit" name="action" value="proforma" class="btn btn-outline-primary btn-lg w-100 fw-bold shadow-sm mt-2" style="border-radius: 10px;" id="proformaBtn" disabled>
                         <i class="bi bi-file-earmark-text me-2"></i> {{ __('Save as Pro-forma') }}
                     </button>
+                    <p class="text-muted mt-1 mb-0" style="font-size: 0.72rem;">
+                        <i class="bi bi-info-circle me-1"></i>{{ __('A draft/quote only - not yet paid. Not the same as a Credit (debt) sale.') }}
+                    </p>
                 </div>
             </div>
         </div>

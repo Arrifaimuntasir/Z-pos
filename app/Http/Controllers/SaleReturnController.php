@@ -18,7 +18,7 @@ class SaleReturnController extends Controller
         $this->middleware(function ($request, $next) {
             $allowedTypes = ['Retail / General', 'Electronics / IT'];
             if (auth()->check() && auth()->user()->shop && !in_array(auth()->user()->shop->business_type, $allowedTypes)) {
-                return redirect()->route('dashboard')->with('error', 'Returns feature is not available for your business type.');
+                return redirect()->route('home')->with('error', 'Returns feature is not available for your business type.');
             }
             return $next($request);
         });

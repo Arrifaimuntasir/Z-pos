@@ -11,7 +11,8 @@ class PlansController extends Controller
     {
         $shop = auth()->user()->shop;
         $currentPackage = $shop->package ?? 'starter';
+        $currentBillingCycle = $shop->billing_cycle ?? 'monthly';
 
-        return view('plans.index', compact('currentPackage'));
+        return view('plans.index', compact('currentPackage', 'currentBillingCycle'));
     }
 }

@@ -81,6 +81,13 @@
                                             {{ __('New Notification') }}
                                         @endif
                                     </h6>
+                                    @if(!empty($notification->data['items']))
+                                        <ul class="mb-1 text-muted small ps-3">
+                                            @foreach($notification->data['items'] as $item)
+                                                <li>{{ $item['product_name'] }} &times; {{ rtrim(rtrim(number_format($item['quantity'], 2), '0'), '.') }} @ TSh {{ number_format($item['price']) }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                     <p class="mb-1 text-muted small">
                                         @if(isset($notification->data['amount']))
                                             <strong>Amount:</strong> TSh {{ number_format($notification->data['amount']) }}<br>

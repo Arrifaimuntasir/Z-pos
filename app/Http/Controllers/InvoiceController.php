@@ -15,7 +15,11 @@ class InvoiceController extends Controller
     {
         $search = $request->query('search');
         $isAdmin = auth()->user()->hasRole('Administrator');
+        $branchId = $this->getActiveBranchId();
         $invoices = Sale::with('customer')
+            ->when($branchId, function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
             ->when(!$isAdmin, function ($q) {
                 $q->where('user_id', auth()->id());
             })

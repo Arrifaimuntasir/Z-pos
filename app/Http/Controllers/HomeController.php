@@ -27,7 +27,13 @@ class HomeController extends Controller
             return redirect()->route('superadmin.shops.index');
         }
 
-        $filter = $request->query('filter', 'overall');
+        // Remember the chosen period so returning to the dashboard from another page
+        // (plain /home link) keeps it until the user picks a different one.
+        $requestedFilter = $request->query('filter');
+        if (in_array($requestedFilter, ['overall', 'today', 'month', 'half_year', 'year'], true)) {
+            session(['dashboard_filter' => $requestedFilter]);
+        }
+        $filter = session('dashboard_filter', 'overall');
         $startDate = null;
         $endDate = null;
 

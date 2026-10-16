@@ -507,51 +507,82 @@ document.addEventListener('DOMContentLoaded', () => {
         const1: 'https://images.unsplash.com/photo-1581166397057-235af2b3c6dd?auto=format&fit=crop&w=600&q=80',
         const2: 'https://images.unsplash.com/photo-1504307651254-35680f356f12?auto=format&fit=crop&w=600&q=80',
         const3: 'https://images.unsplash.com/photo-1541889811995-17364b4c73ee?auto=format&fit=crop&w=600&q=80',
-        auto1: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80',
-        auto2: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80',
-        auto3: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80',
+        super1: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+        super2: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&w=600&q=80',
+        super3: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80',
+        serv1: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80',
+        serv2: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80',
+        serv3: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=600&q=80',
         gen1: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80',
         gen2: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80',
         gen3: 'https://images.unsplash.com/photo-1507676184212-d0330a15233c?auto=format&fit=crop&w=600&q=80'
     };
 
-    const templates = [
-        { id: 'elec1', cat: 'electronics', name: 'Pro Electronics', img: imgs.elec1, color: '#3b82f6', layout: 'zamar' },
-        { id: 'elec2', cat: 'electronics', name: 'Modern Tech', img: imgs.elec2, color: '#0f172a', layout: 'modern' },
-        { id: 'elec3', cat: 'electronics', name: 'Minimal Device', img: imgs.elec3, color: '#0ea5e9', layout: 'minimal' },
-        { id: 'food1', cat: 'restaurant', name: 'Pro Restaurant', img: imgs.food1, color: '#ef4444', layout: 'zamar' },
-        { id: 'food2', cat: 'restaurant', name: 'Premium Dining', img: imgs.food2, color: '#b91c1c', layout: 'modern' },
-        { id: 'food3', cat: 'restaurant', name: 'Cafe Fresh', img: imgs.food3, color: '#f59e0b', layout: 'minimal' },
-        { id: 'pharm1', cat: 'pharmacy', name: 'Pro Pharmacy', img: imgs.pharm1, color: '#10b981', layout: 'zamar' },
-        { id: 'pharm2', cat: 'pharmacy', name: 'Health Care', img: imgs.pharm2, color: '#059669', layout: 'modern' },
-        { id: 'pharm3', cat: 'pharmacy', name: 'Medical Clean', img: imgs.pharm3, color: '#06b6d4', layout: 'minimal' },
-        { id: 'fash1', cat: 'fashion', name: 'Pro Boutique', img: imgs.fash1, color: '#ec4899', layout: 'zamar' },
-        { id: 'fash2', cat: 'fashion', name: 'Fashion Dark', img: imgs.fash2, color: '#18181b', layout: 'modern' },
-        { id: 'fash3', cat: 'fashion', name: 'Style Classic', img: imgs.fash3, color: '#f43f5e', layout: 'minimal' },
-        { id: 'const1', cat: 'construction', name: 'Pro Builders', img: imgs.const1, color: '#f59e0b', layout: 'zamar' },
-        { id: 'const2', cat: 'construction', name: 'Heavy Duty', img: imgs.const2, color: '#451a03', layout: 'modern' },
-        { id: 'const3', cat: 'construction', name: 'Civil Works', img: imgs.const3, color: '#d97706', layout: 'minimal' },
-        { id: 'auto1', cat: 'auto', name: 'Pro Auto', img: imgs.auto1, color: '#dc2626', layout: 'zamar' },
-        { id: 'auto2', cat: 'auto', name: 'Supercar', img: imgs.auto2, color: '#09090b', layout: 'modern' },
-        { id: 'auto3', cat: 'auto', name: 'Mechanic Pro', img: imgs.auto3, color: '#2563eb', layout: 'minimal' },
-        { id: 'gen1', cat: 'general', name: 'Pro Corporate', img: imgs.gen1, color: '#3b82f6', layout: 'zamar' },
-        { id: 'gen2', cat: 'general', name: 'Executive Dark', img: imgs.gen2, color: '#334155', layout: 'modern' },
-        { id: 'gen3', cat: 'general', name: 'Agency Light', img: imgs.gen3, color: '#8b5cf6', layout: 'minimal' }
+    // 10 distinct layout designs, reused across every category so each category
+    // gets its own full set of 10 templates without needing 80 hand-built layouts.
+    const LAYOUTS = [
+        { key: 'zamar',    name: 'Pro Split' },
+        { key: 'modern',   name: 'Modern Dark' },
+        { key: 'minimal',  name: 'Minimal Clean' },
+        { key: 'wave',     name: 'Wave Curve' },
+        { key: 'luxury',   name: 'Luxury Noir' },
+        { key: 'stripe',   name: 'Dynamic Stripe' },
+        { key: 'badge',    name: 'Seal Badge' },
+        { key: 'gradient', name: 'Vivid Gradient' },
+        { key: 'frame',    name: 'Classic Frame' },
+        { key: 'split',    name: 'Bold Split' },
     ];
 
-    const CATS = ['All', 'Electronics', 'Restaurant', 'Pharmacy', 'Fashion', 'Construction', 'Auto', 'General'];
+    // Category metadata: matches the real business_type options in Shop Settings.
+    const CATEGORY_INFO = {
+        general:      { label: 'General',      imgs: [imgs.gen1, imgs.gen2, imgs.gen3],
+            colors: ['#3b82f6','#334155','#8b5cf6','#0ea5e9','#78716c','#ef4444','#6366f1','#2563eb','#0f766e','#be123c'] },
+        electronics:  { label: 'Electronics',  imgs: [imgs.elec1, imgs.elec2, imgs.elec3],
+            colors: ['#3b82f6','#0f172a','#0ea5e9','#0891b2','#1d4ed8','#4f46e5','#7c3aed','#2563eb','#155e75','#1e40af'] },
+        pharmacy:     { label: 'Pharmacy',     imgs: [imgs.pharm1, imgs.pharm2, imgs.pharm3],
+            colors: ['#10b981','#059669','#06b6d4','#0d9488','#065f46','#16a34a','#0891b2','#14b8a6','#047857','#0e7490'] },
+        supermarket:  { label: 'Supermarket',  imgs: [imgs.super1, imgs.super2, imgs.super3],
+            colors: ['#16a34a','#15803d','#84cc16','#22c55e','#4d7c0f','#ea580c','#65a30d','#059669','#365314','#ca8a04'] },
+        restaurant:   { label: 'Restaurant',   imgs: [imgs.food1, imgs.food2, imgs.food3],
+            colors: ['#ef4444','#b91c1c','#f59e0b','#dc2626','#7c2d12','#ea580c','#c2410c','#f97316','#991b1b','#be123c'] },
+        construction: { label: 'Construction', imgs: [imgs.const1, imgs.const2, imgs.const3],
+            colors: ['#f59e0b','#451a03','#d97706','#b45309','#78350f','#ea580c','#a16207','#f97316','#92400e','#c2410c'] },
+        fashion:      { label: 'Fashion',      imgs: [imgs.fash1, imgs.fash2, imgs.fash3],
+            colors: ['#ec4899','#18181b','#f43f5e','#db2777','#4c0519','#be185d','#a21caf','#e11d48','#701a75','#9d174d'] },
+        services:     { label: 'Services',     imgs: [imgs.serv1, imgs.serv2, imgs.serv3],
+            colors: ['#7c3aed','#1e1b4b','#6366f1','#4f46e5','#312e81','#5b21b6','#4338ca','#6d28d9','#1e3a8a','#3730a3'] },
+    };
+
+    // Build all 80 templates (8 categories x 10 layouts) from the data above.
+    const templates = [];
+    Object.keys(CATEGORY_INFO).forEach(cat => {
+        const info = CATEGORY_INFO[cat];
+        LAYOUTS.forEach((layout, i) => {
+            templates.push({
+                id: `${cat}_${layout.key}`,
+                cat,
+                name: layout.name,
+                img: info.imgs[i % info.imgs.length],
+                color: info.colors[i % info.colors.length],
+                layout: layout.key,
+            });
+        });
+    });
+
+    const CATS = ['All', 'General', 'Electronics', 'Pharmacy', 'Supermarket', 'Restaurant', 'Construction', 'Fashion', 'Services'];
 
     /* ==========================================
      * SMART DETECT
      * ========================================== */
     const sysCat = (document.getElementById('sys-cat').value || '').toLowerCase();
     let recCat = 'General';
-    if (sysCat.match(/electronic|phone|computer|gadget/)) recCat = 'Electronics';
-    else if (sysCat.match(/restaurant|food|cafe|hotel/)) recCat = 'Restaurant';
+    if (sysCat.match(/electronic|phone|computer|gadget|\bit\b/)) recCat = 'Electronics';
     else if (sysCat.match(/pharmac|medic|health|clinic|hospital/)) recCat = 'Pharmacy';
-    else if (sysCat.match(/boutique|fashion|cloth|wear/)) recCat = 'Fashion';
+    else if (sysCat.match(/supermarket|grocery/)) recCat = 'Supermarket';
+    else if (sysCat.match(/restaurant|food|cafe|hotel/)) recCat = 'Restaurant';
     else if (sysCat.match(/hardware|construct|tool|civil/)) recCat = 'Construction';
-    else if (sysCat.match(/car|auto|garage|mechanic/)) recCat = 'Auto';
+    else if (sysCat.match(/boutique|fashion|cloth|wear/)) recCat = 'Fashion';
+    else if (sysCat.match(/service|consult/)) recCat = 'Services';
 
     let activeCat = recCat;
     let activeTpl = templates.find(t => t.cat === recCat.toLowerCase()) || templates[0];
@@ -650,8 +681,22 @@ document.addEventListener('DOMContentLoaded', () => {
             thumbOverlay = `<div style="position:absolute;left:0;top:0;bottom:0;width:44%;background:rgba(255,255,255,0.92);clip-path:polygon(0 0,100% 0,75% 100%,0 100%);"></div><div style="position:absolute;left:0;top:0;bottom:0;width:6px;background:${tpl.color};"></div>`;
         } else if (tpl.layout === 'modern') {
             thumbOverlay = `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.55);"></div>`;
-        } else {
+        } else if (tpl.layout === 'minimal') {
             thumbOverlay = `<div style="position:absolute;left:0;top:0;bottom:0;width:35%;background:rgba(0,0,0,0.35);"></div><div style="position:absolute;right:0;top:0;bottom:0;width:65%;background:rgba(255,255,255,0.9);"></div>`;
+        } else if (tpl.layout === 'wave') {
+            thumbOverlay = `<div style="position:absolute;inset:0;background:${tpl.color};clip-path:ellipse(62% 75% at 22% 50%);opacity:0.92;"></div>`;
+        } else if (tpl.layout === 'luxury') {
+            thumbOverlay = `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.78);"></div><div style="position:absolute;inset:8px;border:1px solid ${tpl.color};"></div>`;
+        } else if (tpl.layout === 'stripe') {
+            thumbOverlay = `<div style="position:absolute;inset:0;clip-path:polygon(0 0,48% 0,38% 100%,0 100%);background:${tpl.color};"></div>`;
+        } else if (tpl.layout === 'badge') {
+            thumbOverlay = `<div style="position:absolute;inset:0;background:${tpl.color};opacity:0.85;"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:white;border:2px solid rgba(255,255,255,0.8);"></div>`;
+        } else if (tpl.layout === 'gradient') {
+            thumbOverlay = `<div style="position:absolute;inset:0;background:linear-gradient(135deg,${tpl.color} 0%,rgba(255,255,255,0.25) 100%);"></div>`;
+        } else if (tpl.layout === 'frame') {
+            thumbOverlay = `<div style="position:absolute;inset:0;background:rgba(0,0,0,0.15);"></div><div style="position:absolute;inset:6px;border:2px solid white;"></div>`;
+        } else if (tpl.layout === 'split') {
+            thumbOverlay = `<div style="position:absolute;left:0;top:0;bottom:0;width:45%;background:${tpl.color};"></div>`;
         }
 
         el.innerHTML = `
@@ -834,6 +879,239 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`;
     }
 
+    function renderFrontWave(el, v, tpl) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background-image:url('${tpl.img}');background-size:cover;background-position:center;overflow:hidden;">
+                <div style="position:absolute;inset:0;clip-path:ellipse(62% 75% at 22% 50%);background:${v.bg};"></div>
+                <div style="position:relative;z-index:2;width:60%;height:100%;padding:1.5rem 1.25rem 1.5rem 1.75rem;display:flex;flex-direction:column;justify-content:center;">
+                    <img src="${sysLogo}" style="height:50px;object-fit:contain;margin-bottom:10px;align-self:flex-start;max-width:110px;" onerror="this.style.display='none'">
+                    <h3 style="font-weight:800;color:${v.prim};margin:0 0 4px;font-size:1.2rem;line-height:1.15;">${trunc(v.name, 22)}</h3>
+                    <p style="font-weight:600;color:${v.text};margin:0;font-size:0.8rem;opacity:0.75;">${trunc(v.tag, 30)}</p>
+                    <div style="width:38px;height:4px;border-radius:2px;background:${v.prim};margin-top:12px;"></div>
+                </div>
+            </div>`;
+    }
+
+    function renderBackWave(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:${v.bg};overflow:hidden;">
+                <div style="position:absolute;inset:0;clip-path:ellipse(58% 78% at 18% 50%);background:${v.prim};"></div>
+                <div style="position:relative;z-index:2;width:54%;padding:1.5rem 1.25rem 1.5rem 1.75rem;display:flex;flex-direction:column;justify-content:center;color:white;">
+                    <h4 style="font-weight:800;margin:0 0 14px;font-size:0.95rem;letter-spacing:0.3px;">${trunc(v.name.toUpperCase(), 18)}</h4>
+                    <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;font-size:0.78rem;font-weight:600;"><i class="bi bi-telephone-fill"></i><span>${trunc(v.phone, 16)}</span></div>
+                    <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;font-size:0.7rem;font-weight:600;word-break:break-all;"><i class="bi bi-envelope-fill"></i><span>${trunc(v.email, 20)}</span></div>
+                    <div style="display:flex;align-items:flex-start;gap:9px;font-size:0.74rem;font-weight:600;"><i class="bi bi-geo-alt-fill" style="margin-top:2px;"></i><span>${trunc(v.addr, 20)}</span></div>
+                </div>
+                <div style="position:absolute;right:8%;top:50%;transform:translateY(-50%);z-index:2;background:white;padding:7px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.12);border:2px solid ${v.accent};text-align:center;">
+                    <img src="${sysQr}" style="width:76px;height:76px;display:block;">
+                    <div style="margin-top:4px;font-size:0.5rem;font-weight:800;color:${v.prim};letter-spacing:1px;">SCAN ME</div>
+                </div>
+            </div>`;
+    }
+
+    function renderFrontLuxury(el, v, tpl) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:#0a0a0a;background-image:url('${tpl.img}');background-size:cover;background-position:center;">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.78);"></div>
+                <div style="position:absolute;inset:10px;border:1px solid ${v.accent};"></div>
+                <div style="position:relative;z-index:2;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.5rem;">
+                    <div style="width:44px;height:44px;border-radius:50%;border:1px solid ${v.accent};display:flex;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;background:white;">
+                        <img src="${sysLogo}" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'">
+                    </div>
+                    <h3 style="font-weight:700;color:white;margin:0;font-size:1.15rem;letter-spacing:3px;text-transform:uppercase;">${trunc(v.name, 20)}</h3>
+                    <div style="width:26px;height:1px;background:${v.accent};margin:10px auto;"></div>
+                    <p style="color:${v.accent};font-weight:500;font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;margin:0;">${trunc(v.tag, 28)}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderBackLuxury(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:#0a0a0a;">
+                <div style="position:absolute;inset:10px;border:1px solid ${v.accent};"></div>
+                <div style="position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;padding:0 1.75rem;">
+                    <div style="flex:1;color:white;">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;"><i class="bi bi-telephone-fill" style="color:${v.accent};font-size:12px;"></i><span style="font-size:0.78rem;font-weight:500;letter-spacing:0.5px;">${trunc(v.phone, 17)}</span></div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;"><i class="bi bi-envelope-fill" style="color:${v.accent};font-size:12px;"></i><span style="font-size:0.72rem;font-weight:500;word-break:break-all;">${trunc(v.email, 22)}</span></div>
+                        <div style="display:flex;align-items:flex-start;gap:10px;"><i class="bi bi-geo-alt-fill" style="color:${v.accent};font-size:12px;margin-top:2px;"></i><span style="font-size:0.76rem;font-weight:500;line-height:1.3;">${trunc(v.addr, 24)}</span></div>
+                    </div>
+                    <div style="background:white;padding:7px;border-radius:4px;">
+                        <img src="${sysQr}" style="width:74px;height:74px;display:block;">
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function renderFrontStripe(el, v, tpl) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background-image:url('${tpl.img}');background-size:cover;background-position:center;"></div>
+                <div style="position:absolute;inset:0;clip-path:polygon(0 0,48% 0,38% 100%,0 100%);background:${v.prim};"></div>
+                <div style="position:absolute;inset:0;clip-path:polygon(48% 0,54% 0,44% 100%,38% 100%);background:${v.accent};"></div>
+                <div style="position:relative;z-index:2;width:40%;height:100%;padding:1.5rem 0.5rem 1.5rem 1.5rem;display:flex;flex-direction:column;justify-content:center;color:white;">
+                    <img src="${sysLogo}" style="height:42px;object-fit:contain;margin-bottom:8px;max-width:90px;" onerror="this.style.display='none'">
+                    <h3 style="font-weight:800;margin:0 0 4px;font-size:1.05rem;line-height:1.15;">${trunc(v.name, 18)}</h3>
+                    <p style="font-weight:600;font-size:0.72rem;opacity:0.85;margin:0;">${trunc(v.tag, 24)}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderBackStripe(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:${v.bg};overflow:hidden;">
+                <div style="position:absolute;inset:0;clip-path:polygon(0 0,30% 0,20% 100%,0 100%);background:${v.prim};"></div>
+                <div style="position:relative;z-index:2;width:100%;height:100%;display:flex;align-items:center;padding-left:2rem;">
+                    <div style="flex:1;">
+                        <h4 style="font-weight:800;margin-bottom:12px;font-size:0.9rem;color:${v.text};">${trunc(v.name.toUpperCase(), 20)}</h4>
+                        <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><span style="width:22px;height:22px;border-radius:6px;background:${v.prim};color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-telephone-fill" style="font-size:10px;"></i></span><span style="font-size:0.78rem;font-weight:600;color:${v.text};">${trunc(v.phone, 17)}</span></div>
+                        <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><span style="width:22px;height:22px;border-radius:6px;background:${v.prim};color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-envelope-fill" style="font-size:10px;"></i></span><span style="font-size:0.72rem;font-weight:600;color:${v.text};word-break:break-all;">${trunc(v.email, 20)}</span></div>
+                        <div style="display:flex;align-items:flex-start;gap:9px;"><span style="width:22px;height:22px;border-radius:6px;background:${v.prim};color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><i class="bi bi-geo-alt-fill" style="font-size:10px;"></i></span><span style="font-size:0.76rem;font-weight:600;color:${v.text};line-height:1.3;">${trunc(v.addr, 22)}</span></div>
+                    </div>
+                    <div style="padding-right:1.5rem;">
+                        <div style="background:white;padding:7px;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,0.08);border:2px solid ${v.prim};">
+                            <img src="${sysQr}" style="width:72px;height:72px;display:block;">
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function renderFrontBadge(el, v, tpl) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background-image:url('${tpl.img}');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;text-align:center;">
+                <div style="position:absolute;inset:0;background:${v.prim};opacity:0.88;"></div>
+                <div style="position:relative;z-index:2;">
+                    <div style="width:70px;height:70px;border-radius:50%;background:white;border:4px solid ${v.accent};display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 6px 14px rgba(0,0,0,0.25);">
+                        <img src="${sysLogo}" style="width:78%;height:78%;object-fit:contain;" onerror="this.style.display='none'">
+                    </div>
+                    <h3 style="font-weight:800;color:white;margin:0;font-size:1.1rem;letter-spacing:0.5px;">${trunc(v.name, 20)}</h3>
+                    <p style="color:white;opacity:0.85;font-weight:600;font-size:0.75rem;margin:4px 0 0;">${trunc(v.tag, 28)}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderBackBadge(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;background:${v.bg};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:1.25rem;">
+                <div style="background:white;padding:7px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1);border:2px solid ${v.prim};margin-bottom:10px;">
+                    <img src="${sysQr}" style="width:76px;height:76px;display:block;">
+                </div>
+                <div style="font-size:0.78rem;font-weight:700;color:${v.text};margin-bottom:3px;">${trunc(v.phone, 20)}</div>
+                <div style="font-size:0.7rem;font-weight:600;color:${v.text};opacity:0.8;margin-bottom:3px;word-break:break-all;">${trunc(v.email, 26)}</div>
+                <div style="font-size:0.72rem;font-weight:600;color:${v.text};opacity:0.8;">${trunc(v.addr, 28)}</div>
+            </div>`;
+    }
+
+    function renderFrontGradient(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:linear-gradient(135deg,${v.prim} 0%,${v.accent} 100%);overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 1.75rem;">
+                <div style="position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,0.12);"></div>
+                <div style="position:absolute;bottom:-60px;left:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+                <div style="position:relative;z-index:2;">
+                    <div style="background:white;display:inline-block;padding:6px 10px;border-radius:8px;margin-bottom:12px;">
+                        <img src="${sysLogo}" style="height:32px;object-fit:contain;max-width:90px;display:block;" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <h3 style="font-weight:800;color:white;margin:0 0 4px;font-size:1.3rem;line-height:1.15;">${trunc(v.name, 20)}</h3>
+                    <p style="color:white;opacity:0.9;font-weight:600;font-size:0.82rem;margin:0;">${trunc(v.tag, 28)}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderBackGradient(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,${v.prim} 0%,${v.accent} 100%);position:relative;overflow:hidden;display:flex;align-items:center;">
+                <div style="position:absolute;top:-40px;left:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.1);"></div>
+                <div style="flex:1;padding:0 1.75rem;color:white;position:relative;z-index:2;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;"><i class="bi bi-telephone-fill" style="font-size:12px;"></i><span style="font-size:0.8rem;font-weight:600;">${trunc(v.phone, 17)}</span></div>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;"><i class="bi bi-envelope-fill" style="font-size:12px;"></i><span style="font-size:0.74rem;font-weight:600;word-break:break-all;">${trunc(v.email, 22)}</span></div>
+                    <div style="display:flex;align-items:flex-start;gap:10px;"><i class="bi bi-geo-alt-fill" style="font-size:12px;margin-top:2px;"></i><span style="font-size:0.78rem;font-weight:600;line-height:1.3;">${trunc(v.addr, 24)}</span></div>
+                </div>
+                <div style="padding-right:1.5rem;position:relative;z-index:2;">
+                    <div style="background:white;padding:7px;border-radius:10px;">
+                        <img src="${sysQr}" style="width:76px;height:76px;display:block;">
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function renderFrontFrame(el, v, tpl) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:${v.bg};padding:14px;">
+                <div style="width:100%;height:100%;border:1.5px solid ${v.prim};position:relative;padding:1.1rem 1.25rem;display:flex;flex-direction:column;justify-content:center;">
+                    <div style="position:absolute;inset:4px;border:1px solid ${v.prim};opacity:0.4;"></div>
+                    <div style="position:absolute;top:12px;right:12px;width:64px;height:64px;border-radius:6px;overflow:hidden;border:2px solid ${v.prim};">
+                        <img src="${tpl.img}" style="width:100%;height:100%;object-fit:cover;">
+                    </div>
+                    <img src="${sysLogo}" style="height:40px;object-fit:contain;margin-bottom:10px;max-width:90px;" onerror="this.style.display='none'">
+                    <h3 style="font-weight:700;color:${v.text};margin:0 0 4px;font-size:1.1rem;line-height:1.15;">${trunc(v.name, 22)}</h3>
+                    <p style="color:${v.prim};font-weight:600;font-size:0.78rem;margin:0;">${trunc(v.tag, 26)}</p>
+                </div>
+            </div>`;
+    }
+
+    function renderBackFrame(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;position:relative;background:${v.bg};padding:14px;">
+                <div style="width:100%;height:100%;border:1.5px solid ${v.prim};position:relative;display:flex;align-items:center;padding:0 1.25rem;">
+                    <div style="position:absolute;inset:4px;border:1px solid ${v.prim};opacity:0.4;"></div>
+                    <div style="flex:1;position:relative;z-index:2;">
+                        <h4 style="font-weight:700;margin-bottom:11px;font-size:0.85rem;color:${v.text};text-transform:uppercase;letter-spacing:1px;">${trunc(v.name, 20)}</h4>
+                        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;"><i class="bi bi-telephone-fill" style="color:${v.prim};font-size:11px;"></i><span style="font-size:0.76rem;font-weight:600;color:${v.text};">${trunc(v.phone, 17)}</span></div>
+                        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;"><i class="bi bi-envelope-fill" style="color:${v.prim};font-size:11px;"></i><span style="font-size:0.7rem;font-weight:600;color:${v.text};word-break:break-all;">${trunc(v.email, 20)}</span></div>
+                        <div style="display:flex;align-items:flex-start;gap:9px;"><i class="bi bi-geo-alt-fill" style="color:${v.prim};font-size:11px;margin-top:2px;"></i><span style="font-size:0.74rem;font-weight:600;color:${v.text};line-height:1.3;">${trunc(v.addr, 22)}</span></div>
+                    </div>
+                    <div style="position:relative;z-index:2;">
+                        <img src="${sysQr}" style="width:66px;height:66px;display:block;">
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    function renderFrontSplit(el, v, tpl) {
+        const initial = (v.name || 'B').trim().charAt(0).toUpperCase();
+        el.innerHTML = `
+            <div style="width:45%;height:100%;background:${v.prim};display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+                <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.8rem;color:white;margin-bottom:10px;">${initial}</div>
+                <p style="color:white;opacity:0.85;font-weight:700;font-size:0.7rem;text-align:center;padding:0 0.75rem;letter-spacing:0.5px;">${trunc(v.tag, 26)}</p>
+            </div>
+            <div style="width:55%;height:100%;position:relative;background-image:url('${tpl.img}');background-size:cover;background-position:center;">
+                <div style="position:absolute;left:0;right:0;bottom:0;padding:1rem;background:linear-gradient(0deg,rgba(0,0,0,0.75) 0%,transparent 100%);">
+                    <h3 style="font-weight:800;color:white;margin:0;font-size:1.05rem;line-height:1.15;">${trunc(v.name, 20)}</h3>
+                </div>
+            </div>`;
+    }
+
+    function renderBackSplit(el, v) {
+        el.innerHTML = `
+            <div style="width:100%;height:100%;background:${v.bg};display:flex;">
+                <div style="width:8px;background:${v.prim};"></div>
+                <div style="flex:1;padding:1.5rem;display:flex;flex-direction:column;justify-content:center;">
+                    <h4 style="font-weight:800;margin-bottom:12px;font-size:0.9rem;color:${v.text};">${trunc(v.name.toUpperCase(), 22)}</h4>
+                    <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><i class="bi bi-telephone-fill" style="color:${v.prim};font-size:12px;"></i><span style="font-size:0.78rem;font-weight:600;color:${v.text};">${trunc(v.phone, 18)}</span></div>
+                    <div style="display:flex;align-items:center;gap:9px;margin-bottom:9px;"><i class="bi bi-envelope-fill" style="color:${v.prim};font-size:12px;"></i><span style="font-size:0.72rem;font-weight:600;color:${v.text};word-break:break-all;">${trunc(v.email, 22)}</span></div>
+                    <div style="display:flex;align-items:flex-start;gap:9px;"><i class="bi bi-geo-alt-fill" style="color:${v.prim};font-size:12px;margin-top:2px;"></i><span style="font-size:0.76rem;font-weight:600;color:${v.text};line-height:1.3;">${trunc(v.addr, 24)}</span></div>
+                </div>
+                <div style="display:flex;align-items:center;padding-right:1.25rem;">
+                    <div style="background:white;padding:6px;border-radius:8px;box-shadow:0 4px 8px rgba(0,0,0,0.08);">
+                        <img src="${sysQr}" style="width:68px;height:68px;display:block;">
+                    </div>
+                </div>
+            </div>`;
+    }
+
+    const LAYOUT_RENDERERS = {
+        zamar:    [renderFrontZamar, renderBackZamar],
+        modern:   [renderFrontModern, renderBackModern],
+        minimal:  [renderFrontMinimal, renderBackMinimal],
+        wave:     [renderFrontWave, renderBackWave],
+        luxury:   [renderFrontLuxury, renderBackLuxury],
+        stripe:   [renderFrontStripe, renderBackStripe],
+        badge:    [renderFrontBadge, renderBackBadge],
+        gradient: [renderFrontGradient, renderBackGradient],
+        frame:    [renderFrontFrame, renderBackFrame],
+        split:    [renderFrontSplit, renderBackSplit],
+    };
+
     function renderCard(frontEl, backEl) {
         const v = getVals();
         const tpl = activeTpl;
@@ -844,16 +1122,9 @@ document.addEventListener('DOMContentLoaded', () => {
             $liveCard.className = `card-3d-wrapper ${fontClass}`;
         }
 
-        if (tpl.layout === 'zamar') {
-            renderFrontZamar(frontEl, v, tpl);
-            renderBackZamar(backEl, v, tpl);
-        } else if (tpl.layout === 'modern') {
-            renderFrontModern(frontEl, v, tpl);
-            renderBackModern(backEl, v);
-        } else {
-            renderFrontMinimal(frontEl, v, tpl);
-            renderBackMinimal(backEl, v);
-        }
+        const [renderFront, renderBack] = LAYOUT_RENDERERS[tpl.layout] || LAYOUT_RENDERERS.minimal;
+        renderFront(frontEl, v, tpl);
+        renderBack(backEl, v, tpl);
     }
 
     /* ==========================================

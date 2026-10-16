@@ -192,6 +192,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     // Cashier & Admin shared routes
+    // Petroleum Station: attendants open the day and record fuel sales
+    Route::prefix('petroleum')->name('petroleum.')->group(function () {
+        Route::get('/day', [App\Http\Controllers\Petroleum\FuelDayController::class, 'index'])->name('day.index');
+        Route::post('/day/open', [App\Http\Controllers\Petroleum\FuelDayController::class, 'open'])->name('day.open');
+        Route::get('/sales', [App\Http\Controllers\Petroleum\FuelSaleController::class, 'index'])->name('sales.index');
+        Route::get('/sales/create', [App\Http\Controllers\Petroleum\FuelSaleController::class, 'create'])->name('sales.create');
+        Route::post('/sales', [App\Http\Controllers\Petroleum\FuelSaleController::class, 'store'])->name('sales.store');
+        Route::get('/sales/{sale}', [App\Http\Controllers\Petroleum\FuelSaleController::class, 'show'])->name('sales.show');
+    });
+    // Read-only product list for cashiers (the view hides cost price and all edit controls for non-admins).
+    // Every other products route stays in the admin group below.
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::delete('/customers/bulk-destroy', [App\Http\Controllers\CustomerController::class, 'bulkDestroy'])->name('customers.bulk-destroy');
     Route::resource('customers', App\Http\Controllers\CustomerController::class);
     Route::get('/sales/{sale}/returns/create', [App\Http\Controllers\SaleReturnController::class, 'create'])->name('sales.returns.create');
     Route::post('/sales/{sale}/returns', [App\Http\Controllers\SaleReturnController::class, 'store'])->name('sales.returns.store');
@@ -206,6 +219,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/sales/{sale}/pdf', [App\Http\Controllers\SaleController::class, 'downloadPdf'])->name('sales.pdf');
     Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->only(['index', 'show']);
     Route::get('/invoices/{invoice}/pdf', [App\Http\Controllers\InvoiceController::class, 'downloadPdf'])->name('invoices.pdf');
+    Route::delete('/warranties/bulk-destroy', [App\Http\Controllers\WarrantyController::class, 'bulkDestroy'])->name('warranties.bulk-destroy');
     Route::resource('warranties', App\Http\Controllers\WarrantyController::class);
     Route::get('/warranties/{warranty}/pdf', [App\Http\Controllers\WarrantyController::class, 'downloadPdf'])->name('warranties.pdf');
     
@@ -238,22 +252,47 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/push-subscriptions', [App\Http\Controllers\PushSubscriptionController::class, 'destroy']);
     
     // Master Data & Inventory
+    Route::delete('/categories/bulk-destroy', [CategoryController::class, 'bulkDestroy'])->name('categories.bulk-destroy');
     Route::resource('categories', CategoryController::class);
+    Route::delete('/brands/bulk-destroy', [App\Http\Controllers\BrandController::class, 'bulkDestroy'])->name('brands.bulk-destroy');
     Route::resource('brands', App\Http\Controllers\BrandController::class);
+    Route::delete('/units/bulk-destroy', [App\Http\Controllers\UnitController::class, 'bulkDestroy'])->name('units.bulk-destroy');
     Route::resource('units', App\Http\Controllers\UnitController::class);
+    Route::delete('/suppliers/bulk-destroy', [App\Http\Controllers\SupplierController::class, 'bulkDestroy'])->name('suppliers.bulk-destroy');
     Route::resource('suppliers', App\Http\Controllers\SupplierController::class);
     Route::delete('/products/bulk-delete', [ProductController::class, 'bulkDestroy'])->name('products.bulk-destroy');
-    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class)->except(['index']);
     Route::resource('purchases', App\Http\Controllers\PurchaseController::class);
+    Route::post('/purchases/{id}/complete', [App\Http\Controllers\PurchaseController::class, 'markComplete'])->name('purchases.complete');
+    Route::delete('/defective-stock/bulk-destroy', [App\Http\Controllers\DefectiveStockController::class, 'bulkDestroy'])->name('defective-stock.bulk-destroy');
     Route::resource('defective-stock', App\Http\Controllers\DefectiveStockController::class);
     Route::post('/defective-stock/{id}/repair', [App\Http\Controllers\DefectiveStockController::class, 'repair'])->name('defective-stock.repair');
+    Route::post('/defective-stock/{defectiveStock}/mark-good', [App\Http\Controllers\DefectiveStockController::class, 'markGood'])->name('defective-stock.mark-good');
+
+    // Petroleum Station
+    Route::prefix('petroleum')->name('petroleum.')->group(function () {
+        Route::resource('tanks', App\Http\Controllers\Petroleum\FuelTankController::class)->except(['show']);
+        Route::resource('pumps', App\Http\Controllers\Petroleum\FuelPumpController::class)->except(['show']);
+        Route::resource('nozzles', App\Http\Controllers\Petroleum\FuelNozzleController::class)->except(['show']);
+        Route::get('/day/close', [App\Http\Controllers\Petroleum\FuelDayController::class, 'closeForm'])->name('day.close');
+        Route::post('/day/close', [App\Http\Controllers\Petroleum\FuelDayController::class, 'close'])->name('day.close.store');
+        Route::get('/day/closings/{closing}', [App\Http\Controllers\Petroleum\FuelDayController::class, 'showClosing'])->name('day.closings.show');
+        Route::resource('deliveries', App\Http\Controllers\Petroleum\FuelDeliveryController::class)->only(['index', 'create', 'store']);
+    });
     
     // Expenses & Reports
+    Route::delete('/expenses/bulk-destroy', [App\Http\Controllers\ExpenseController::class, 'bulkDestroy'])->name('expenses.bulk-destroy');
     Route::resource('expenses', App\Http\Controllers\ExpenseController::class);
     Route::get('/reports', [App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/pdf', [App\Http\Controllers\ReportController::class, 'indexPdf'])->name('reports.index.pdf');
     Route::get('/reports/profit-loss', [App\Http\Controllers\ReportController::class, 'profitLoss'])->name('reports.profit_loss');
+    Route::get('/reports/profit-loss/pdf', [App\Http\Controllers\ReportController::class, 'profitLossPdf'])->name('reports.profit_loss.pdf');
     Route::get('/reports/sales', [App\Http\Controllers\ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/sales/pdf', [App\Http\Controllers\ReportController::class, 'salesPdf'])->name('reports.sales.pdf');
     Route::get('/reports/expenses', [App\Http\Controllers\ReportController::class, 'expenses'])->name('reports.expenses');
+    Route::get('/reports/expenses/pdf', [App\Http\Controllers\ReportController::class, 'expensesPdf'])->name('reports.expenses.pdf');
+    Route::get('/reports/stock-movement', [App\Http\Controllers\ReportController::class, 'stockMovement'])->name('reports.stock_movement');
+    Route::get('/reports/stock-movement/pdf', [App\Http\Controllers\ReportController::class, 'stockMovementPdf'])->name('reports.stock_movement.pdf');
     
     // Branches
     Route::resource('branches', \App\Http\Controllers\BranchController::class)->except(['show']);

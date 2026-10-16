@@ -8,10 +8,18 @@
         <h3 class="fw-bold mb-1 text-dark">{{ __('Sales Report') }}</h3>
         <p class="text-muted small mb-0">{{ __('Detailed sales history') }}</p>
     </div>
-    <div>
+    <div class="d-flex flex-column flex-sm-row gap-2">
         <div class="card bg-success text-white px-4 py-2 border-0 shadow-sm rounded-pill">
-            <span class="small fw-semibold">Total Sales: {{ number_format($totalSales) }} TSh</span>
+            <span class="small fw-semibold">{{ __('Total Sales') }}: {{ number_format($totalSales) }} TSh</span>
         </div>
+        @if($totalRefunds > 0)
+        <div class="card bg-danger text-white px-4 py-2 border-0 shadow-sm rounded-pill">
+            <span class="small fw-semibold">{{ __('Refunds') }}: -{{ number_format($totalRefunds) }} TSh</span>
+        </div>
+        @endif
+        <a href="{{ route('reports.sales.pdf', ['start_date' => $startDate, 'end_date' => $endDate]) }}" class="btn btn-outline-primary shadow-sm" style="border-radius: 8px;">
+            <i class="bi bi-download me-2"></i> {{ __('Download PDF') }}
+        </a>
     </div>
 </div>
 

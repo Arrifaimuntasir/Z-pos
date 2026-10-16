@@ -270,7 +270,7 @@
                         <p class="text-muted">{{ __('Perfect for single retail shops.') }}</p>
                         <div class="price mt-4">{{ __('TZS 15K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 20K') }}</small></div>
                         <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('1 Branch') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('2 Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -291,7 +291,7 @@
                         <p class="text-muted">{{ __('For growing multi-branch businesses.') }}</p>
                         <div class="price mt-4">{{ __('TZS 45K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 50K') }}</small></div>
                         <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Up to 5 Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>
@@ -311,7 +311,7 @@
                         <p class="text-muted">{{ __('Custom solutions for large chains.') }}</p>
                         <div class="price mt-4">{{ __('TZS 110K') }}<span>/mo</span> <br><small class="text-muted text-decoration-line-through fs-6">{{ __('TZS 130K') }}</small></div>
                         <ul class="mb-4">
-                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('7 Days Free Trial') }}</li>
+                            <li><i class="bi bi-gift-fill text-success"></i> {{ __('14 Days Free Trial') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Branches') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Users') }}</li>
                             <li><i class="bi bi-check-circle-fill"></i> {{ __('Unlimited Products') }}</li>

@@ -49,10 +49,19 @@ class NewSaleNotification extends Notification
      */
     public function toDatabase(object $notifiable): array
     {
+        $items = $this->sale->items->map(function ($item) {
+            return [
+                'product_name' => $item->product->name ?? 'N/A',
+                'quantity' => $item->quantity,
+                'price' => $item->unit_price,
+            ];
+        })->values()->toArray();
+
         return [
             'sale_id' => $this->sale->id,
             'amount' => $this->sale->total_amount,
             'reference_no' => $this->sale->reference_no,
+            'items' => $items,
             'message' => 'Mauzo mapya yamefanyika kwa thamani ya Tsh ' . number_format($this->sale->total_amount),
         ];
     }

@@ -10,10 +10,11 @@
 @endpush
 
 @section('content')
+@php $isGrocery = Auth::user()->shop && Auth::user()->shop->business_type === 'Supermarket / Grocery'; @endphp
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h4 class="fw-bold mb-0 text-dark">{{ __('Damaged Stock') }}</h4>
-        <span class="text-muted small">{{ __('Remove defective or damaged units from stock before they are sold') }}</span>
+        <h4 class="fw-bold mb-0 text-dark">{{ $isGrocery ? __('Defective Items') : __('Damaged Stock') }}</h4>
+        <span class="text-muted small">{{ $isGrocery ? __('Set aside defective units as a loss. If they turn out fine, mark them as good later to return them to stock.') : __('Remove defective or damaged units from stock before they are sold') }}</span>
     </div>
     <div>
         <a href="{{ route('defective-stock.index') }}" class="btn btn-light shadow-sm rounded-3">
@@ -60,7 +61,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-danger w-100 py-2 fw-semibold" style="border-radius: 8px;">
-                        <i class="bi bi-dash-circle me-2"></i>{{ __('Remove from Stock') }}
+                        <i class="bi bi-dash-circle me-2"></i>{{ $isGrocery ? __('Add Defective Item') : __('Remove from Stock') }}
                     </button>
                 </form>
             </div>

@@ -199,4 +199,21 @@ class WarrantyController extends Controller
         $warranty->delete();
         return redirect()->route('warranties.index')->with('success', 'Warranty deleted successfully.');
     }
+
+    /**
+     * Remove multiple selected warranties at once.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No warranties selected.');
+        }
+
+        Warranty::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->delete();
+
+        return redirect()->route('warranties.index')->with('success', 'Selected warranties deleted successfully.');
+    }
 }

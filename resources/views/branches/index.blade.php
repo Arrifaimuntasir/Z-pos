@@ -41,7 +41,7 @@
                                 <div class="fw-bold text-dark">
                                     {{ $branch->name }}
                                     @if($branch->name === 'Main Branch')
-                                        <span class="badge bg-secondary ms-1" style="font-size: 10px;">{{ __('Default') }}</span>
+                                        <span class="badge bg-primary text-white ms-1" style="font-size: 10px;">{{ __('Default') }}</span>
                                     @endif
                                 </div>
                             </div>

@@ -6,16 +6,28 @@
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
         <h4 class="fw-bold mb-0">{{ __('Products') }}</h4>
+        @if(isset($activeBranch) && $activeBranch)
+            <span class="badge bg-primary rounded-pill mt-1 px-3 py-1">
+                <i class="bi bi-shop me-1"></i> {{ $activeBranch->name }}
+            </span>
+        @else
+            <span class="badge bg-light text-dark border rounded-pill mt-1 px-3 py-1">
+                <i class="bi bi-grid me-1"></i> {{ __('All Branches') }}
+            </span>
+        @endif
     </div>
+    @if(Auth::user()->hasRole('Administrator'))
     <a href="{{ route('products.create') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Product') }}
     </a>
+    @endif
 </div>
 
 
 <div class="card shadow-sm border-0 rounded-4">
     <div class="card-header bg-white border-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <!-- Bulk Delete Controls -->
+        @if(Auth::user()->hasRole('Administrator'))
         <div class="d-flex align-items-center">
             <button type="button" id="toggleSelectBtn" class="btn btn-sm shadow-sm rounded-pill px-3 fw-bold" style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da;">
                 <i class="bi bi-check2-square"></i> {{ __('Select') }}
@@ -28,6 +40,9 @@
                 </button>
             </form>
         </div>
+        @else
+        <div></div>
+        @endif
 
         <!-- Search Bar -->
         <form action="{{ route('products.index') }}" method="GET" class="custom-search-bar d-flex align-items-center bg-white shadow-sm rounded-pill border" style="width: 100%; max-width: 350px;">
@@ -43,32 +58,43 @@
                 <table class="table table-hover align-middle">
                     <thead class="text-muted table-light">
                         <tr>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <th class="select-column d-none" style="width: 40px; min-width: 40px;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="selectAll">
                                 </div>
                             </th>
+                            @endif
                             <th style="min-width: 200px;">{{ __('Product') }}</th>
                             <th style="min-width: 150px;">{{ __('Brand & Model') }}</th>
                             <th style="min-width: 120px;">{{ __('SKU') }}</th>
+                            @if(!$activeBranchId && $shopHasBranches)
+                            <th style="min-width: 130px;">{{ __('Branch') }}</th>
+                            @endif
                             <th class="text-center" style="min-width: 120px;">{{ __('Stock') }}</th>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <th class="text-end" style="min-width: 120px;">{{ __('Buying Price') }}</th>
+                            @endif
                             <th class="text-end" style="min-width: 120px;">{{ __('Selling Price') }}</th>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <th class="text-end" style="min-width: 100px;">{{ __('Actions') }}</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($products as $product)
                         <tr>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <td class="select-column d-none">
                                 <div class="form-check">
                                     <input class="form-check-input product-checkbox" type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulkDeleteForm">
                                 </div>
                             </td>
+                            @endif
                             <td>
                                 <div class="search-toolbar">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white bg-primary me-3 shadow-sm" style="width: 28px; height: 28px; font-size: 0.85rem;">
-                                        {{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}
+                                        {{ $loop->iteration }}
                                     </div>
                                     <div>
                                         <h6 class="mb-0 fw-bold">{{ $product->name }}</h6>
@@ -81,6 +107,17 @@
                                 <div class="text-muted small">{{ $product->model ?? '-' }}</div>
                             </td>
                             <td>{{ $product->sku }}</td>
+                            @if(!$activeBranchId && $shopHasBranches)
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    @forelse($product->branches as $b)
+                                        <span class="badge bg-light text-dark border rounded-pill">{{ $b->name }}</span>
+                                    @empty
+                                        <span class="text-muted small">-</span>
+                                    @endforelse
+                                </div>
+                            </td>
+                            @endif
                             <td class="text-center">
                                 @php
                                     $hasBranches = $product->branches->isNotEmpty();
@@ -103,8 +140,11 @@
                                     <span class="badge bg-success rounded-pill px-3">{{ $stock }} {{ $product->unit->short_name ?? '' }}{!! $label !!}</span>
                                 @endif
                             </td>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <td class="text-end fw-semibold text-muted">{{ number_format($product->cost_price) }} TSh</td>
+                            @endif
                             <td class="text-end fw-bold">{{ number_format($product->selling_price) }} TSh</td>
+                            @if(Auth::user()->hasRole('Administrator'))
                             <td class="text-end">
                                 <div class="btn-group gap-1">
                                     <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-light text-primary shadow-sm" style="border-radius: 6px;">
@@ -119,10 +159,17 @@
                                     </form>
                                 </div>
                             </td>
+                            @endif
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
+                            @php
+                                // Always shown: Product, Brand & Model, SKU, Stock, Selling Price
+                                $emptyColspan = 5;
+                                $emptyColspan += (!$activeBranchId && $shopHasBranches) ? 1 : 0;
+                                $emptyColspan += Auth::user()->hasRole('Administrator') ? 3 : 0; // select, buying price, actions
+                            @endphp
+                            <td colspan="{{ $emptyColspan }}" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-3"></i>
                                 {{ __('No products found. Add your first product to get started.') }}
                             </td>
@@ -138,6 +185,7 @@
         </div>
     </div>
 
+@if(Auth::user()->hasRole('Administrator'))
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const selectAll = document.getElementById('selectAll');
@@ -189,4 +237,5 @@
         });
     });
 </script>
+@endif
 @endsection

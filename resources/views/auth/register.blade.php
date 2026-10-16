@@ -294,6 +294,7 @@
                             <option value="Restaurant / Food" {{ old('business_type') == 'Restaurant / Food' ? 'selected' : '' }}>{{ __('Restaurant / Cafe / Food') }}</option>
                             <option value="Hardware / Construction" {{ old('business_type') == 'Hardware / Construction' ? 'selected' : '' }}>{{ __('Hardware / Construction') }}</option>
                             <option value="Clothing / Boutique" {{ old('business_type') == 'Clothing / Boutique' ? 'selected' : '' }}>{{ __('Clothing / Boutique') }}</option>
+                            <option value="Petroleum Station / Fuel" {{ old('business_type') == 'Petroleum Station / Fuel' ? 'selected' : '' }}>{{ __('Petroleum Station / Fuel') }}</option>
                             <option value="Services / Consulting" {{ old('business_type') == 'Services / Consulting' ? 'selected' : '' }}>{{ __('Services / Consulting') }}</option>
                         </select>
                         @error('business_type')

@@ -11,7 +11,15 @@ class PurchaseController extends Controller
      */
     public function index()
     {
-        $purchases = \App\Models\Purchase::with('supplier')->latest()->get();
+        $branchId = $this->getActiveBranchId();
+
+        $purchases = \App\Models\Purchase::with('supplier')
+            ->when($branchId, function ($q) use ($branchId) {
+                $q->where('branch_id', $branchId);
+            })
+            ->latest()
+            ->get();
+
         return view('purchases.index', compact('purchases'));
     }
 
@@ -35,7 +43,7 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
             'reference_no' => ['required', \Illuminate\Validation\Rule::unique('purchases')->where('shop_id', \Illuminate\Support\Facades\Auth::user()->shop_id)],
             'purchase_date' => 'required|date',
             'status' => 'required|string',
@@ -68,7 +76,7 @@ class PurchaseController extends Controller
         }
 
         $purchase = \App\Models\Purchase::create([
-            'supplier_id' => $request->supplier_id,
+            'supplier_id' => $request->supplier_id ?: null,
             'reference_no' => $request->reference_no,
             'purchase_date' => $request->purchase_date,
             'status' => $request->status,
@@ -133,7 +141,7 @@ class PurchaseController extends Controller
         }
 
         $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
+            'supplier_id' => 'nullable|exists:suppliers,id',
             'purchase_date' => 'required|date',
             'status' => 'required|string|in:completed,pending',
             'product_id' => 'required|array',
@@ -188,7 +196,7 @@ class PurchaseController extends Controller
             }
 
             $purchase->update([
-                'supplier_id' => $request->supplier_id,
+                'supplier_id' => $request->supplier_id ?: null,
                 'purchase_date' => $request->purchase_date,
                 'status' => $request->status,
                 'notes' => $request->notes,

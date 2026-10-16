@@ -72,4 +72,21 @@ class UnitController extends Controller
         $unit->delete();
         return redirect()->route('units.index')->with('success', 'Unit deleted successfully.');
     }
+
+    /**
+     * Remove multiple selected units at once.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No units selected.');
+        }
+
+        \App\Models\Unit::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->delete();
+
+        return redirect()->route('units.index')->with('success', 'Selected units deleted successfully.');
+    }
 }

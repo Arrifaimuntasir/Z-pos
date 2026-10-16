@@ -41,12 +41,17 @@ class ProductController extends Controller
 
         $activeBranchId = $branchId;
         $activeBranch = $branchId ? \App\Models\Branch::find($branchId) : null;
+        $shopHasBranches = \App\Models\Branch::where('shop_id', auth()->user()->shop_id)->exists();
 
-        return view('products.index', compact('products', 'search', 'activeBranchId', 'activeBranch'));
+        return view('products.index', compact('products', 'search', 'activeBranchId', 'activeBranch', 'shopHasBranches'));
     }
 
     public function create()
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $categories = Category::all();
         $brands = Brand::all();
         $units = Unit::all();
@@ -58,6 +63,10 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => [
@@ -155,6 +164,10 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $categories = Category::all();
         $brands = Brand::all();
         $units = Unit::all();
@@ -171,6 +184,10 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => [
@@ -253,12 +270,20 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 
     public function bulkDestroy(Request $request)
     {
+        if (!auth()->user()->hasRole('Administrator')) {
+            abort(403);
+        }
+
         $request->validate([
             'product_ids' => 'required|array',
             'product_ids.*' => 'exists:products,id'

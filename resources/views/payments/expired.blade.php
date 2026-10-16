@@ -208,23 +208,12 @@
             @endif
 
             <div class="payment-info-box shadow-sm">
-                <div class="mb-3">
-                    <div class="d-flex align-items-center mb-1">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/NMB_Bank_Plc.png" height="20" class="me-2" style="object-fit:contain" onerror="this.style.display='none'">
-                        <h6>{{ __('NMB Bank') }}</h6>
-                    </div>
-                    <p class="fw-bold text-dark fs-5">23710025242</p>
-                    <p class="small text-muted">{{ __('Account Name: MUSTASIR KHAMIS MOHAMED') }}</p>
+                <div class="d-flex align-items-center mb-1">
+                    <i class="bi bi-phone-vibrate text-danger me-2 fs-5"></i>
+                    <h6>{{ __('M-Pesa Lipa Number') }}</h6>
                 </div>
-                <hr class="text-muted opacity-25">
-                <div>
-                    <div class="d-flex align-items-center mb-1">
-                        <i class="bi bi-phone-vibrate text-danger me-2 fs-5"></i>
-                        <h6>{{ __('Lipa Namba (Airtel Money / All Networks)') }}</h6>
-                    </div>
-                    <p class="fw-bold text-danger fs-5">135511433</p>
-                    <p class="small text-muted">{{ __('Name: MUNTASIR MOHAMED') }}</p>
-                </div>
+                <p class="fw-bold text-danger fs-4">356641837</p>
+                <p class="small text-muted">{{ __('Name') }}: LIPA Z POS</p>
             </div>
 
             @if($pendingPayment)

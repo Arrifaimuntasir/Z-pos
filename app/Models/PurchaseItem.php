@@ -8,7 +8,6 @@ use App\Traits\HasTenant;
 class PurchaseItem extends Model
 {
     use HasTenant;
-
     protected $fillable = [
         'purchase_id',
         'product_id',

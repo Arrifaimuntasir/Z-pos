@@ -8,7 +8,6 @@ use App\Traits\HasTenant;
 class SaleItem extends Model
 {
     use HasTenant;
-    
     protected $fillable = [
         'sale_id',
         'product_id',
@@ -18,6 +17,10 @@ class SaleItem extends Model
         'unit_price',
         'subtotal',
         'imei_serial_number',
+    ];
+
+    protected $casts = [
+        'quantity' => 'float',
     ];
 
     public function sale()

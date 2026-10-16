@@ -81,7 +81,7 @@ class GoogleController extends Controller
             'name' => $shopName,
             'package' => $package,
             'billing_cycle' => $billingCycle,
-            'valid_until' => now()->addDays(7), // 7 days free trial
+            'valid_until' => now()->addDays(14), // 14 days free trial
         ]);
 
         // Create User

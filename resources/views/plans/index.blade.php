@@ -54,7 +54,7 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h4 class="fw-bold text-dark mb-0">{{ $plan['name'] }}</h4>
                     @if($currentPackage === $plan['key'])
-                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">{{ __('Current Plan') }}</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill plans-current-badge {{ $currentBillingCycle !== 'monthly' ? 'd-none' : '' }}" data-cycle="{{ $currentBillingCycle }}">{{ __('Current Plan') }}</span>
                     @endif
                 </div>
                 <p class="text-muted small">{{ $plan['desc'] }}</p>
@@ -96,6 +96,9 @@ function setPlansBilling(cycle) {
         var url = new URL(el.href, window.location.origin);
         url.searchParams.set('billing', cycle);
         el.href = url.toString();
+    });
+    document.querySelectorAll('.plans-current-badge').forEach(function (el) {
+        el.classList.toggle('d-none', el.dataset.cycle !== cycle);
     });
 
     var activeStyle = 'background-color: #64748b; color: white; border: 1px solid #64748b;';

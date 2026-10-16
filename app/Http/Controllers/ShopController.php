@@ -19,10 +19,11 @@ class ShopController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'business_type' => 'required|string|in:Retail / General,Electronics / IT,Pharmacy / Health,Supermarket / Grocery,Restaurant / Food,Hardware / Construction,Clothing / Boutique',
+            'business_type' => 'required|string|in:Retail / General,Electronics / IT,Pharmacy / Health,Supermarket / Grocery,Restaurant / Food,Hardware / Construction,Clothing / Boutique,Petroleum Station / Fuel',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'receipt_message' => 'nullable|string',
+            'receipt_paper_width' => 'nullable|in:58,80',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'business_type.in' => __('Please select another business. Services / Consulting is coming soon.'),
@@ -37,6 +38,7 @@ class ShopController extends Controller
         $shop->phone = $request->phone;
         $shop->address = $request->address;
         $shop->receipt_message = $request->receipt_message;
+        $shop->receipt_paper_width = (int) ($request->receipt_paper_width ?: 80);
 
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('logos', 'public');

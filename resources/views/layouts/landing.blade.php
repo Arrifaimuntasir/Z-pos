@@ -171,7 +171,7 @@
                         </li>
                     @endif
                     <li class="nav-item">
-                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-3 py-2" style="border-radius: 8px; white-space: nowrap; font-size: 0.85rem;">{{ __('Try free for 7 days') }}</a>
+                        <a href="{{ route('register') }}" class="btn btn-success text-white fw-bold shadow-sm px-3 py-2" style="border-radius: 8px; white-space: nowrap; font-size: 0.85rem;">{{ __('Try free for 14 days') }}</a>
                     </li>
                 </ul>
             </div>

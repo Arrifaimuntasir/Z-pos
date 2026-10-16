@@ -81,4 +81,21 @@ class CustomerController extends Controller
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
     }
+
+    /**
+     * Remove multiple selected customers at once.
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return back()->with('error', 'No customers selected.');
+        }
+
+        \App\Models\Customer::whereIn('id', $ids)
+            ->where('shop_id', auth()->user()->shop_id)
+            ->delete();
+
+        return redirect()->route('customers.index')->with('success', 'Selected customers deleted successfully.');
+    }
 }

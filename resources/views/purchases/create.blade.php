@@ -92,8 +92,8 @@
                     <h6 class="fw-bold mb-4">{{ __('Purchase Info') }}</h6>
                     
                     <div class="mb-3">
-                        <label class="form-label fw-medium text-dark">{{ __('Supplier') }} <span class="text-danger">*</span></label>
-                        <select name="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror" required>
+                        <label class="form-label fw-medium text-dark">{{ __('Supplier') }} <span class="text-muted small">({{ __('Optional') }})</span></label>
+                        <select name="supplier_id" class="form-select @error('supplier_id') is-invalid @enderror">
                             <option value="">{{ __('Select Supplier...') }}</option>
                             @foreach($suppliers as $supplier)
                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>

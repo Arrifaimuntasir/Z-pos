@@ -33,14 +33,22 @@ class BusinessCardController extends Controller
             return redirect()->route('home')->with('error', 'No shop found for your account.');
         }
 
-        // Generate vCard data
+        // Generate vCard data — use the phone/email the owner set up specifically for
+        // this card (card_phone/card_email), falling back to their shop/account defaults,
+        // same fallback the card editor itself shows.
+        $cardPhone = $shop->card_phone ?: $shop->phone;
+        $cardEmail = $shop->card_email ?: auth()->user()->email;
+
         $vcard = "BEGIN:VCARD\n";
         $vcard .= "VERSION:3.0\n";
         $vcard .= "N:;" . $shop->name . ";;;\n";
         $vcard .= "FN:" . $shop->name . "\n";
         $vcard .= "ORG:" . $shop->name . "\n";
-        if ($shop->phone) {
-            $vcard .= "TEL;TYPE=WORK,VOICE:" . $shop->phone . "\n";
+        if ($cardPhone) {
+            $vcard .= "TEL;TYPE=WORK,VOICE:" . $cardPhone . "\n";
+        }
+        if ($cardEmail) {
+            $vcard .= "EMAIL;TYPE=WORK:" . $cardEmail . "\n";
         }
         if ($shop->address) {
             $vcard .= "ADR;TYPE=WORK:;;" . $shop->address . ";;;;\n";
