@@ -361,6 +361,21 @@
                 </li>
                 @endif
 
+                @if(Auth::user()->shop && !in_array(Auth::user()->shop->business_type, ['Restaurant / Food', 'Petroleum Station / Fuel']))
+                <li>
+                    <div class="custom-dropdown-parent {{ request()->is('warehouses*') || request()->is('stock-transfer*') || request()->is('stock-movements*') ? 'active-dropdown' : '' }}">
+                        <a href="#warehouseSubmenu" onclick="event.preventDefault();" data-bs-toggle="collapse" aria-expanded="false" class="dropdown-toggle" style="color: #64748b; padding: 12px 15px; display: block;">
+                            <i class="bi bi-building me-3"></i> {{ __('Godown') }}
+                        </a>
+                        <ul class="collapse list-unstyled custom-submenu" id="warehouseSubmenu" data-bs-parent="#sidebarMenu">
+                            <li><a href="{{ route('warehouses.index') }}">{{ __('Godowns & Stock') }}</a></li>
+                            <li><a href="{{ route('stock.transfer.create') }}">{{ __('Transfer Stock') }}</a></li>
+                            <li><a href="{{ route('stock.movements.index') }}">{{ __('Stock Movements') }}</a></li>
+                        </ul>
+                    </div>
+                </li>
+                @endif
+
                 @if($isPetroleum)
                 {{-- ===== PETROLEUM STATION MENU ===== --}}
                 <li class="px-3 mb-1 mt-2" style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:#94a3b8;text-transform:uppercase;">⛽ {{ __('Fuel Operations') }}</li>

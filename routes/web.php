@@ -192,6 +192,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     
     // Cashier & Admin shared routes
+    // Warehouse / Godown Management (all except Restaurant & Petroleum)
+    Route::get('/warehouses/product-stock', [App\Http\Controllers\WarehouseController::class, 'getProductStock'])->name('warehouses.product-stock');
+    Route::resource('warehouses', App\Http\Controllers\WarehouseController::class);
+    Route::get('/stock-transfer', [App\Http\Controllers\WarehouseController::class, 'transferCreate'])->name('stock.transfer.create');
+    Route::post('/stock-transfer', [App\Http\Controllers\WarehouseController::class, 'transferStore'])->name('stock.transfer.store');
+    Route::get('/stock-movements', [App\Http\Controllers\WarehouseController::class, 'movements'])->name('stock.movements.index');
+
     // Petroleum Station: attendants open the day and record fuel sales
     Route::prefix('petroleum')->name('petroleum.')->group(function () {
         Route::get('/day', [App\Http\Controllers\Petroleum\FuelDayController::class, 'index'])->name('day.index');
