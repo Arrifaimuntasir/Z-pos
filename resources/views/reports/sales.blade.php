@@ -57,7 +57,7 @@
                 <tbody>
                     @forelse($sales as $sale)
                         <tr>
-                            <td class="ps-4">{{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}</td>
+                            <td class="ps-4">{{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}</td>
                             <td><span class="fw-medium">{{ $sale->reference_no }}</span></td>
                             <td>{{ $sale->customer->name ?? 'Walk-in Customer' }}</td>
                             <td class="text-end fw-bold">{{ number_format($sale->total_amount) }} TSh</td>

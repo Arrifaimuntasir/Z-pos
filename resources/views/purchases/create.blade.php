@@ -58,9 +58,9 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="5">
-                                        <button type="button" class="btn btn-sm btn-outline-primary" id="addItemBtn">
-                                            <i class="bi bi-plus"></i> {{ __('Add Another Item') }}
+                                    <td colspan="5" class="py-3" style="background: transparent; border-color: inherit;">
+                                        <button type="button" class="btn btn-sm btn-outline-primary px-3 py-2 fw-semibold shadow-xs" id="addItemBtn" style="border-radius: 8px;">
+                                            <i class="bi bi-plus-lg me-1"></i> {{ __('Add Another Item') }}
                                         </button>
                                     </td>
                                 </tr>

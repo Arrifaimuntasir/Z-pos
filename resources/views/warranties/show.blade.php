@@ -7,6 +7,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Theme Mode Pre-init Script (Zero-Flash) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('zpos_theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.classList.add('dark-mode');
+            }
+        })();
+    </script>
     <style>
         body {
             background-color: #f3f4f6;
@@ -14,12 +24,38 @@
             padding: 20px;
             display: flex;
             justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        [data-theme="dark"] body,
+        body.dark-mode {
+            background-color: #0b1120 !important;
+            color: #f1f5f9;
         }
         .print-btn-container {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
+        }
+        [data-theme="dark"] .print-btn-container,
+        body.dark-mode .print-btn-container {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+        [data-theme="dark"] .btn-light,
+        body.dark-mode .btn-light {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f1f5f9 !important;
+        }
+        [data-theme="dark"] .certificate-wrapper,
+        body.dark-mode .certificate-wrapper {
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+            border: 1px solid #1e293b;
         }
         
         /* A5 Landscape approximate size */

@@ -66,14 +66,23 @@ class StaffController extends Controller
         $firstName = array_shift($nameParts);
         $lastName = count($nameParts) > 0 ? implode(' ', $nameParts) : '';
 
-        $user = User::create([
+        // Auto-ensure can_manage_products column exists in database
+        $this->ensureCanManageProductsColumnExists();
+
+        $userData = [
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'shop_id' => $shopId,
             'branch_id' => $validated['branch_id'] ?? null,
-        ]);
+        ];
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'can_manage_products')) {
+            $userData['can_manage_products'] = $request->boolean('can_manage_products');
+        }
+
+        $user = User::create($userData);
 
         $user->assignRole('Cashier');
 
@@ -123,10 +132,17 @@ class StaffController extends Controller
         $firstName = array_shift($nameParts);
         $lastName = count($nameParts) > 0 ? implode(' ', $nameParts) : '';
 
+        // Auto-ensure can_manage_products column exists in database
+        $this->ensureCanManageProductsColumnExists();
+
         $staff->first_name = $firstName;
         $staff->last_name = $lastName;
         $staff->email = $validated['email'];
         $staff->branch_id = $validated['branch_id'] ?? null;
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'can_manage_products')) {
+            $staff->can_manage_products = $request->boolean('can_manage_products');
+        }
 
         if (!empty($validated['password'])) {
             $staff->password = Hash::make($validated['password']);
@@ -135,6 +151,23 @@ class StaffController extends Controller
         $staff->save();
 
         return redirect()->route('staff.index')->with('success', 'Account updated successfully.');
+    }
+
+    protected function ensureCanManageProductsColumnExists(): void
+    {
+        try {
+            if (!\Illuminate\Support\Facades\Schema::hasColumn('users', 'can_manage_products')) {
+                try {
+                    \Illuminate\Support\Facades\Schema::table('users', function ($table) {
+                        $table->boolean('can_manage_products')->default(false)->after('is_active');
+                    });
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\DB::statement("ALTER TABLE `users` ADD COLUMN `can_manage_products` TINYINT(1) NOT NULL DEFAULT 0 AFTER `is_active`");
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silently ignore if DB permissions prevent ALTER TABLE
+        }
     }
 
     public function destroy(User $staff)

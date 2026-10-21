@@ -5,63 +5,62 @@
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h2 class="fw-bold mb-1" style="color: #0f172a;">{{ __('Warranties') }}</h2>
+        <h2 class="fw-bold mb-1 text-dark">{{ __('Warranties') }}</h2>
         <p class="text-muted small mb-0" style="font-size: 14px;">{{ __('Manage customer warranties') }}</p>
     </div>
     <div>
-        <a href="{{ route('warranties.create') }}" class="btn fw-bold shadow-sm rounded-pill px-4 py-2" style="background-color: #0f172a; color: white;">
+        <a href="{{ route('warranties.create') }}" class="btn btn-primary fw-bold shadow-sm rounded-pill px-4 py-2">
             <i class="bi bi-plus-lg me-1"></i> {{ __('Generate Warranty') }}
         </a>
     </div>
 </div>
 
 <!-- Metrics Dashboard -->
-<!-- Metrics Dashboard -->
 <div class="row mb-5 g-4">
     <div class="col-md-4">
-        <div class="card border shadow-sm rounded-4 h-100" style="border-color: #e2e8f0 !important;">
+        <div class="card border shadow-sm rounded-4 h-100">
             <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 56px; height: 56px; background-color: #f1f5f9; color: #475569;">
                     <i class="bi bi-shield-check fs-4"></i>
                 </div>
                 <div>
                     <h6 class="text-muted mb-1" style="font-size: 14px; font-weight: 500;">{{ __('Total Generated') }}</h6>
-                    <h2 class="fw-bold mb-0" style="color: #0f172a; font-size: 28px;">{{ $totalWarranties }}</h2>
+                    <h2 class="fw-bold mb-0 text-dark" style="font-size: 28px;">{{ $totalWarranties }}</h2>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border shadow-sm rounded-4 h-100" style="border-color: #e2e8f0 !important;">
+        <div class="card border shadow-sm rounded-4 h-100">
             <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 56px; height: 56px; background-color: #dcfce7; color: #16a34a;">
                     <i class="bi bi-shield-fill-check fs-4"></i>
                 </div>
                 <div>
                     <h6 class="text-muted mb-1" style="font-size: 14px; font-weight: 500;">{{ __('Active Warranties') }}</h6>
-                    <h2 class="fw-bold mb-0" style="color: #0f172a; font-size: 28px;">{{ $activeWarranties }}</h2>
+                    <h2 class="fw-bold mb-0 text-dark" style="font-size: 28px;">{{ $activeWarranties }}</h2>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card border shadow-sm rounded-4 h-100" style="border-color: #e2e8f0 !important;">
+        <div class="card border shadow-sm rounded-4 h-100">
             <div class="card-body p-4 d-flex align-items-center">
                 <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 56px; height: 56px; background-color: #fee2e2; color: #dc2626;">
                     <i class="bi bi-shield-fill-x fs-4"></i>
                 </div>
                 <div>
                     <h6 class="text-muted mb-1" style="font-size: 14px; font-weight: 500;">{{ __('Expired Warranties') }}</h6>
-                    <h2 class="fw-bold mb-0" style="color: #0f172a; font-size: 28px;">{{ $expiredWarranties }}</h2>
+                    <h2 class="fw-bold mb-0 text-dark" style="font-size: 28px;">{{ $expiredWarranties }}</h2>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4" style="background: #fff;">
+<div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-white border-bottom-0 pt-4 pb-3 px-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-        <h4 class="mb-0 fw-bold" style="color: #1e293b;">{{ __('Recent Warranties') }}</h4>
+        <h4 class="mb-0 fw-bold text-dark">{{ __('Recent Warranties') }}</h4>
         <form action="{{ route('warranties.index') }}" method="GET" class="custom-search-bar d-flex align-items-center bg-white shadow-sm rounded-pill border" style="width: 100%; max-width: 450px;">
     <button type="submit" class="btn border-0 ps-3 pe-2 text-primary shadow-none bg-transparent" style="padding-top: 0; padding-bottom: 0;"><i class="bi bi-search fs-5"></i></button>
     <input type="text" name="search" class="form-control border-0 shadow-none bg-transparent" placeholder="{{ __('Search customer or warrant') }}" value="{{ request('search') }}" style="font-size: 0.95rem; height: 42px;">
@@ -99,16 +98,16 @@
         <!-- Desktop Table View -->
         <div class="table-responsive d-none d-md-block">
             <table class="table table-hover align-middle mb-0">
-                <thead style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <thead class="table-light">
                     <tr>
                         <th class="selection-th d-none" style="width: 40px;"></th>
-                        <th class="px-4 py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">#</th>
-                        <th class="py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Warranty No') }}</th>
-                        <th class="py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Customer') }}</th>
-                        <th class="py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Product') }}</th>
-                        <th class="py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Duration') }}</th>
-                        <th class="py-3" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Valid Until') }}</th>
-                        <th class="px-4 py-3 text-end" style="color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Actions') }}</th>
+                        <th class="px-4 py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">#</th>
+                        <th class="py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Warranty No') }}</th>
+                        <th class="py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Customer') }}</th>
+                        <th class="py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Product') }}</th>
+                        <th class="py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Duration') }}</th>
+                        <th class="py-3 text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Valid Until') }}</th>
+                        <th class="px-4 py-3 text-end text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody style="border-top: 0;">
@@ -118,13 +117,13 @@
                             <input class="form-check-input row-checkbox" type="checkbox" data-id="{{ $warranty->id }}" style="cursor: pointer; width: 1.2rem; height: 1.2rem;">
                         </td>
                         <td class="px-4 text-muted" style="font-size: 13px;">{{ $loop->iteration + $warranties->firstItem() - 1 }}</td>
-                        <td class="fw-bold" style="color: #0f172a;">{{ $warranty->warranty_number }}</td>
-                        <td style="color: #1e293b;">{{ $warranty->customer_name ?: '-' }}</td>
+                        <td class="fw-bold text-dark">{{ $warranty->warranty_number }}</td>
+                        <td>{{ $warranty->customer_name ?: '-' }}</td>
                         <td>
-                            <div class="fw-bold" style="color: #0f172a;">{{ $warranty->product_name }}</div>
+                            <div class="fw-bold text-dark">{{ $warranty->product_name }}</div>
                             <div style="font-size: 12px; color: #94a3b8;">SN: {{ $warranty->serial_number ?: 'N/A' }}</div>
                         </td>
-                        <td style="color: #1e293b;">{{ $warranty->duration }}</td>
+                        <td>{{ $warranty->duration }}</td>
                         <td>
                             @php
                                 $isValid = \Carbon\Carbon::now()->startOfDay()->lte($warranty->end_date);
@@ -139,7 +138,7 @@
                             <a href="{{ route('warranties.edit', $warranty->id) }}" class="btn btn-sm rounded-pill px-3 me-2" style="border: 1px solid #3b82f6; color: #3b82f6; background: transparent; font-weight: 500;">
                                 <i class="bi bi-pencil-square me-1"></i> {{ __('Edit') }}
                             </a>
-                            <a href="{{ route('warranties.show', $warranty->id) }}" target="_blank" class="btn btn-sm rounded-pill px-3 me-2" style="border: 1px solid #0f172a; color: #0f172a; background: transparent; font-weight: 500;">
+                            <a href="{{ route('warranties.show', $warranty->id) }}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill px-3 me-2" style="font-weight: 500;">
                                 <i class="bi bi-printer-fill me-1"></i> {{ __('Print') }}
                             </a>
                             <form action="{{ route('warranties.destroy', $warranty->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this warranty?') }}')">

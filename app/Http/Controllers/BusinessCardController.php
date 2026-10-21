@@ -28,10 +28,18 @@ class BusinessCardController extends Controller
                 $table->string('card_logo')->nullable();
             });
         }
+
+        if (!Schema::hasColumn('shops', 'card_settings')) {
+            Schema::table('shops', function($table) {
+                $table->text('card_settings')->nullable();
+            });
+        }
         
         if (!$shop) {
             return redirect()->route('home')->with('error', 'No shop found for your account.');
         }
+
+        $cardSettings = $shop->card_settings ? json_decode($shop->card_settings, true) : [];
 
         // Generate vCard data — use the phone/email the owner set up specifically for
         // this card (card_phone/card_email), falling back to their shop/account defaults,
@@ -63,7 +71,7 @@ class BusinessCardController extends Controller
             
         $qrCode = 'data:image/svg+xml;base64,' . base64_encode($svg);
 
-        return view('shop.business_card', compact('shop', 'qrCode'));
+        return view('shop.business_card', compact('shop', 'qrCode', 'cardSettings'));
     }
 
     public function save(Request $request)
@@ -73,11 +81,33 @@ class BusinessCardController extends Controller
             return response()->json(['success' => false, 'message' => 'No shop found']);
         }
 
+        if (!Schema::hasColumn('shops', 'card_settings')) {
+            Schema::table('shops', function($table) {
+                $table->text('card_settings')->nullable();
+            });
+        }
+
         $shop->card_theme = $request->card_theme;
         $shop->card_color = $request->card_color;
         $shop->card_phone = $request->card_phone;
         $shop->card_email = $request->card_email;
         $shop->card_message = $request->card_message;
+
+        $settings = [
+            'theme'   => $request->card_theme,
+            'color'   => $request->card_color,
+            'bg'      => $request->card_bg,
+            'text'    => $request->card_text,
+            'accent'  => $request->card_accent,
+            'font'    => $request->card_font,
+            'name'    => $request->card_name,
+            'tagline' => $request->card_message,
+            'phone'   => $request->card_phone,
+            'email'   => $request->card_email,
+            'address' => $request->card_address,
+            'social'  => $request->card_social,
+        ];
+        $shop->card_settings = json_encode($settings);
         
         if ($request->has('card_logo_data') && !empty($request->card_logo_data)) {
             $image_parts = explode(";base64,", $request->card_logo_data);

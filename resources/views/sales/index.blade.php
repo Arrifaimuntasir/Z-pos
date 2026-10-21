@@ -88,7 +88,7 @@
                                 <input class="form-check-input sale-checkbox" type="checkbox" name="ids[]" form="bulkDeleteForm" value="{{ $sale->id }}" style="cursor: pointer; width: 1.2rem; height: 1.2rem;">
                             </td>
                             <td class="ps-4">
-                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}
                             </td>
                             <td><span class="fw-medium">{{ $sale->reference_no }}</span></td>
                             <td>

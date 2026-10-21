@@ -51,7 +51,7 @@
                 <tbody>
                     @forelse($expenses as $expense)
                         <tr>
-                            <td class="ps-4">{{ \Carbon\Carbon::parse($expense->expense_date)->format('M d, Y') }}</td>
+                            <td class="ps-4">{{ \Carbon\Carbon::parse($expense->expense_date)->format('d M Y') }}</td>
                             <td><span class="fw-medium">{{ $expense->category }}</span></td>
                             <td>{{ $expense->description ?? '-' }}</td>
                             <td class="text-end pe-4 fw-bold text-danger">{{ number_format($expense->amount) }} TSh</td>

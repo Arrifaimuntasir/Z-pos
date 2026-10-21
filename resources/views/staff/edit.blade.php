@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+@extends('layouts.admin')
 
 @section('title', 'Add Staff')
 
@@ -89,6 +89,22 @@
                         @enderror
                     </div>
                     @endif
+
+                    <div class="card border border-light-subtle bg-light mb-4" style="border-radius: 12px;">
+                        <div class="card-body p-3">
+                            <div class="form-check form-switch d-flex align-items-center justify-content-between ps-0 mb-0">
+                                <div>
+                                    <label class="form-check-label fw-bold text-dark mb-0" for="canManageProducts" style="cursor: pointer;">
+                                        <i class="bi bi-box-seam text-primary me-2"></i>{{ __('Ruhusu Kuongeza na Kuhariri Bidhaa') }}
+                                    </label>
+                                    <div class="text-muted small mt-1">
+                                        {{ __('Mpe mfanyakazi huyu uwezo wa kuongeza bidhaa mpya, kurekebisha bei na kuedit taarifa za bidhaa dukani.') }}
+                                    </div>
+                                </div>
+                                <input class="form-check-input ms-3" type="checkbox" role="switch" name="can_manage_products" id="canManageProducts" value="1" {{ old('can_manage_products', $staff->can_manage_products) ? 'checked' : '' }} style="width: 2.5em; height: 1.3em; cursor: pointer;">
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="mt-4 pt-2 border-top">
                         <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold w-100" style="border-radius: 8px;">

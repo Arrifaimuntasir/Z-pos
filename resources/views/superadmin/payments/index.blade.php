@@ -39,7 +39,7 @@
                 <tbody class="border-top-0">
                     @forelse($payments as $payment)
                     <tr>
-                        <td class="ps-4 text-muted small">{{ $payment->created_at ? $payment->created_at->format('M d, Y H:i') : 'N/A' }}</td>
+                        <td class="ps-4 text-muted small">{{ $payment->created_at ? $payment->created_at->format('d M Y, H:i') : 'N/A' }}</td>
                         <td class="fw-bold">{{ $payment->shop ? $payment->shop->name : 'Unknown Shop' }}</td>
                         <td>
                             @php

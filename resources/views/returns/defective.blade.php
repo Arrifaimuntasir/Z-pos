@@ -72,7 +72,7 @@
                 <tbody>
                     @forelse($query as $item)
                     <tr>
-                        <td class="ps-4">{{ $item->saleReturn ? \Carbon\Carbon::parse($item->saleReturn->return_date)->format('M d, Y') : '-' }}</td>
+                        <td class="ps-4">{{ $item->saleReturn ? \Carbon\Carbon::parse($item->saleReturn->return_date)->format('d M Y') : '-' }}</td>
                         <td><span class="fw-medium text-dark">{{ $item->saleReturn->reference_no ?? '-' }}</span></td>
                         <td>
                             <div class="search-toolbar">

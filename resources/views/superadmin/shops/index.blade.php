@@ -126,12 +126,12 @@ $tabs = [
                                 @endif
                             </td>
                             <td style="font-size: 0.85rem;">
-                                <div class="mb-1"><span class="text-muted">Reg:</span> <span class="text-dark fw-semibold">{{ $shop->created_at->format('Y-m-d') }}</span></div>
+                                <div class="mb-1"><span class="text-muted">Reg:</span> <span class="text-dark fw-semibold">{{ $shop->created_at->format('d/m/Y') }}</span></div>
                                 <div>
                                     <span class="text-muted">Valid:</span> 
                                     @if($shop->valid_until)
                                         <span class="fw-bold {{ $expired ? 'text-danger' : 'text-success' }}">
-                                            {{ Carbon::parse($shop->valid_until)->format('Y-m-d') }}
+                                            {{ Carbon::parse($shop->valid_until)->format('d/m/Y') }}
                                         </span>
                                     @else
                                         <span class="text-muted fw-semibold">N/A</span>
@@ -251,13 +251,13 @@ $tabs = [
                         <div class="row mb-3" style="font-size: 0.85rem;">
                             <div class="col-6">
                                 <span class="text-muted">Reg:</span><br>
-                                <span class="text-dark fw-bold">{{ $shop->created_at->format('Y-m-d') }}</span>
+                                <span class="text-dark fw-bold">{{ $shop->created_at->format('d/m/Y') }}</span>
                             </div>
                             <div class="col-6">
                                 <span class="text-muted">Valid:</span><br>
                                 @if($shop->valid_until)
                                     <span class="fw-bold {{ $expired ? 'text-danger' : 'text-success' }}">
-                                        {{ Carbon::parse($shop->valid_until)->format('Y-m-d') }}
+                                        {{ Carbon::parse($shop->valid_until)->format('d/m/Y') }}
                                     </span>
                                 @else
                                     <span class="text-dark fw-bold">N/A</span>

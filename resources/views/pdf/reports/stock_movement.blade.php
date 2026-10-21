@@ -13,6 +13,7 @@
             <th>{{ __('Category') }}</th>
             <th class="text-right">{{ __('Opening Stock') }}</th>
             <th class="text-right">{{ __('Sold') }}</th>
+            <th class="text-right">{{ __('Damaged') }}</th>
             <th class="text-right">{{ __('Remaining') }}</th>
             <th>{{ __('Movement') }}</th>
         </tr>
@@ -24,6 +25,7 @@
             <td>{{ $row->product->category->name ?? '-' }}</td>
             <td class="text-right">{{ number_format($row->opening) }} {{ $row->product->unit->short_name ?? '' }}</td>
             <td class="text-right">{{ number_format($row->sold) }} {{ $row->product->unit->short_name ?? '' }}</td>
+            <td class="text-right" style="{{ ($row->damaged ?? 0) > 0 ? 'color: #dc2626; font-weight: bold;' : '' }}">{{ number_format($row->damaged ?? 0) }} {{ $row->product->unit->short_name ?? '' }}</td>
             <td class="text-right">{{ number_format($row->current) }} {{ $row->product->unit->short_name ?? '' }}</td>
             <td>
                 @if($row->sellThrough === null)
@@ -38,7 +40,7 @@
             </td>
         </tr>
         @empty
-        <tr><td colspan="6" class="text-center">{{ __('No products found.') }}</td></tr>
+        <tr><td colspan="7" class="text-center">{{ __('No products found.') }}</td></tr>
         @endforelse
     </tbody>
 </table>

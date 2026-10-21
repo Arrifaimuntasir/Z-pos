@@ -24,7 +24,7 @@ class ShopController extends Controller
             'address' => 'nullable|string',
             'receipt_message' => 'nullable|string',
             'receipt_paper_width' => 'nullable|in:58,80',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ], [
             'business_type.in' => __('Please select another business. Services / Consulting is coming soon.'),
         ]);
@@ -48,5 +48,18 @@ class ShopController extends Controller
         $shop->save();
 
         return back()->with('success', 'Shop settings updated successfully.');
+    }
+
+    /**
+     * Persist theme preference per shop
+     */
+    public function updateTheme(Request $request)
+    {
+        $theme = in_array($request->theme, ['dark', 'light'], true) ? $request->theme : 'light';
+        $user = auth()->user();
+        if ($user && $user->shop) {
+            $user->shop->update(['theme' => $theme]);
+        }
+        return response()->json(['status' => 'ok', 'theme' => $theme]);
     }
 }

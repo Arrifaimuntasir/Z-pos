@@ -1,499 +1,1541 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title', __('Executive Dashboard'))
 
 @section('content')
 <style>
-    /* ===== DASHBOARD DESIGN SYSTEM ===== */
-    .dashboard-wrapper { padding: 0; }
+    /* ==========================================================================
+       ENTERPRISE POS/ERP EXECUTIVE DASHBOARD DESIGN SYSTEM
+       Crafted with Senior-Grade Precision, Dual-Direction Live Pulse & Dark Mode
+       ========================================================================== */
+    :root {
+        --dash-bg: #f8fafc;
+        --dash-surface: #ffffff;
+        --dash-border: #e2e8f0;
+        --dash-border-subtle: #f1f5f9;
+        --dash-text-main: #0f172a;
+        --dash-text-muted: #64748b;
+        --dash-text-light: #94a3b8;
+        --dash-primary: #2563eb;
+        --dash-primary-hover: #1d4ed8;
+        --dash-success: #059669;
+        --dash-warning: #d97706;
+        --dash-danger: #dc2626;
+        --dash-radius-lg: 16px;
+        --dash-radius-md: 12px;
+        --dash-radius-sm: 8px;
+        --dash-shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+        --dash-shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+        --dash-shadow-hover: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+    }
 
-    /* Header */
-    .dash-header {
+    [data-theme="dark"], body.dark-mode {
+        --dash-bg: #0b1120;
+        --dash-surface: #111827;
+        --dash-border: #1f2937;
+        --dash-border-subtle: #1e293b;
+        --dash-text-main: #ffffff;
+        --dash-text-muted: #94a3b8;
+        --dash-text-light: #64748b;
+        --dash-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+        --dash-shadow-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    .dashboard-container {
+        padding: 0;
+        color: var(--dash-text-main);
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    /* Tabular figures for numbers alignment */
+    .num-tabular {
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
+    }
+
+    /* ===== 1. EXECUTIVE HEADER & CONTROLS ===== */
+    .exec-header {
+        background: var(--dash-surface);
+        border: 1px solid var(--dash-border);
+        border-radius: var(--dash-radius-lg);
+        padding: 18px 24px;
+        margin-bottom: 20px;
+        box-shadow: var(--dash-shadow-card);
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 24px;
+        gap: 16px;
     }
-    .dash-header h4 {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #0f172a;
+    .exec-title-group h3 {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: var(--dash-text-main);
         margin: 0;
+        letter-spacing: -0.03em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
-    .dash-header .date-pill {
-        font-size: 0.75rem;
-        color: #94a3b8;
-        font-weight: 500;
-        margin-top: 2px;
+    .shop-badge {
+        font-size: 0.72rem;
+        font-weight: 700;
+        background: #f1f5f9;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+        padding: 3px 9px;
+        border-radius: var(--dash-radius-sm);
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
     }
-    .filter-select {
-        padding: 8px 14px;
-        border-radius: 10px;
-        border: 1.5px solid #e2e8f0;
+    .exec-meta-subtitle {
+        font-size: 0.8rem;
+        color: var(--dash-text-muted);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .status-live-dot {
+        width: 7px;
+        height: 7px;
+        background: var(--dash-success);
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+    }
+
+    .exec-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .exec-select {
+        height: 40px;
+        padding: 0 14px;
+        border-radius: var(--dash-radius-md);
+        border: 1px solid var(--dash-border);
+        background: #ffffff;
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: #1e293b;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.15s ease;
+        box-shadow: var(--dash-shadow-sm);
+    }
+    .exec-select:hover {
+        border-color: #cbd5e1;
+    }
+    .exec-select:focus {
+        border-color: var(--dash-primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .exec-action-btn {
+        height: 40px;
+        padding: 0 14px;
+        border-radius: var(--dash-radius-md);
+        border: 1px solid var(--dash-border);
+        background: #ffffff;
         font-size: 0.82rem;
         font-weight: 600;
         color: #334155;
-        background: #fff;
-        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+        box-shadow: var(--dash-shadow-sm);
+    }
+    .exec-action-btn:hover {
+        background: #f8fafc;
+        color: var(--dash-text-main);
+        border-color: #cbd5e1;
+    }
+
+    /* Custom Date Range Controls */
+    .exec-custom-range-bar {
+        background: var(--dash-surface);
+        border: 1px solid var(--dash-border);
+        border-radius: var(--dash-radius-md);
+        padding: 12px 18px;
+        box-shadow: var(--dash-shadow-sm);
+    }
+    .exec-date-input {
+        background: var(--dash-surface);
+        border: 1.5px solid var(--dash-border);
+        color: var(--dash-text-main);
+        border-radius: var(--dash-radius-sm);
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        height: 38px;
+        transition: border-color 0.15s ease;
+    }
+    .exec-date-input:focus {
+        border-color: var(--dash-primary);
         outline: none;
-        transition: border .2s;
-        min-width: 190px;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
-    .filter-select:focus { border-color: #6366f1; }
 
-    /* ===== KPI CARDS ===== */
-    .kpi-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    /* Filter Active Banner */
+    .filter-banner-strip {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid var(--dash-primary);
+        border-radius: var(--dash-radius-md);
+        padding: 10px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .filter-badge-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: #0f172a;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.78rem;
+    }
+
+    /* ===== 2. QUICK OPERATIONS BAR (Live Pulse Smooth Infinite Marquee) ===== */
+    .pulse-marquee-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
         position: relative;
-        overflow: hidden;
-        transition: box-shadow .2s, transform .2s;
-        height: 100%;
+        padding: 4px 0 10px 0;
+        mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
     }
-    .kpi-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .kpi-card-colored {
-        border: none;
-        color: #fff;
+    .pulse-track {
+        display: flex;
+        gap: 14px;
+        width: max-content;
+        animation: pulseTrackSlide 30s linear infinite;
+        will-change: transform;
     }
-    .kpi-card-colored .kpi-label,
-    .kpi-card-colored .kpi-desc { color: rgba(255,255,255,0.8) !important; }
-    .kpi-card-colored .kpi-value { color: #fff; }
-
-    .kpi-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
+    .pulse-track:hover {
+        animation-play-state: paused;
+    }
+    @keyframes pulseTrackSlide {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .quick-op-item {
+        flex-shrink: 0;
+    }
+    .quick-op-btn {
+        background: var(--dash-surface);
+        border: 1.5px solid var(--dash-border);
+        border-radius: var(--dash-radius-md);
+        padding: 12px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        color: var(--dash-text-main);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: var(--dash-shadow-card);
+        width: 220px;
+        min-width: 220px;
+        box-sizing: border-box;
+    }
+    .quick-op-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--dash-shadow-hover);
+        border-color: #cbd5e1;
+        color: var(--dash-primary);
+    }
+    .quick-op-btn.primary-pos {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border-color: #0f172a;
+        color: #ffffff;
+    }
+    .quick-op-btn.primary-pos:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        border-color: #1d4ed8;
+        color: #ffffff;
+    }
+    .quick-op-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+    .quick-op-btn:hover .quick-op-icon {
+        transform: scale(1.08);
+    }
+
+    /* Light Mode Quick Op Icons: Bold, High Contrast & 100% Visible */
+    .quick-op-icon.qoi-dark { background: rgba(255, 255, 255, 0.2); color: #ffffff; }
+    .quick-op-icon.qoi-dark i { color: #ffffff !important; }
+
+    .quick-op-icon.qoi-blue { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .quick-op-icon.qoi-blue i { color: #1d4ed8 !important; font-size: 1.15rem !important; }
+
+    .quick-op-icon.qoi-green { background: #d1fae5; color: #047857; border: 1px solid #a7f3d0; }
+    .quick-op-icon.qoi-green i { color: #047857 !important; font-size: 1.15rem !important; }
+
+    .quick-op-icon.qoi-amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .quick-op-icon.qoi-amber i { color: #b45309 !important; font-size: 1.15rem !important; }
+
+    .quick-op-icon.qoi-purple { background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .quick-op-icon.qoi-purple i { color: #6d28d9 !important; font-size: 1.15rem !important; }
+
+    .quick-op-texts {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+        min-width: 0;
+    }
+    .quick-op-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .quick-op-sub {
+        font-size: 0.69rem;
+        color: var(--dash-text-muted);
+    }
+    .primary-pos .quick-op-sub { color: rgba(255, 255, 255, 0.7); }
+
+    /* ===== 3. STATIC FINANCIAL KPI CARDS (Exact match to User Reference Image) ===== */
+    .kpi-card {
+        border-radius: 18px;
+        padding: 20px 22px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+    }
+    .kpi-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    .kpi-card-title {
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .kpi-card-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
         flex-shrink: 0;
     }
-    .kpi-label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        margin-bottom: 4px;
-    }
-    .kpi-value {
-        font-size: 1.55rem;
+    .kpi-card-value {
+        font-size: 1.85rem;
         font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.03em;
         color: #0f172a;
-        line-height: 1;
-        margin-bottom: 4px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
     }
-    .kpi-value .kpi-currency {
-        font-size: 0.78rem;
-        font-weight: 500;
-        color: #94a3b8;
-        margin-left: 2px;
+    .kpi-card-unit {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #64748b;
     }
-    .kpi-desc {
-        font-size: 0.7rem;
-        color: #94a3b8;
-        margin: 0;
-    }
-    .kpi-accent {
-        position: absolute;
-        bottom: -16px;
-        right: -16px;
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        opacity: 0.08;
-    }
-
-    /* Gradient KPI backgrounds */
-    .kpi-blue    { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-    .kpi-green   { background: linear-gradient(135deg, #059669, #10b981); }
-    .kpi-orange  { background: linear-gradient(135deg, #d97706, #f59e0b); }
-    .kpi-red     { background: linear-gradient(135deg, #dc2626, #ef4444); }
-    .kpi-teal    { background: linear-gradient(135deg, #0891b2, #06b6d4); }
-
-    /* Icon bg light versions */
-    .icon-blue   { background: #ede9fe; color: #4f46e5; }
-    .icon-green  { background: #d1fae5; color: #059669; }
-    .icon-orange { background: #fef3c7; color: #d97706; }
-    .icon-red    { background: #fee2e2; color: #dc2626; }
-    .icon-teal   { background: #cffafe; color: #0891b2; }
-
-    /* ===== CHART CARDS ===== */
-    .chart-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 20px 20px 14px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        height: 100%;
-    }
-    .chart-card-header {
+    .kpi-card-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding-top: 12px;
+        margin-top: auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-        gap: 8px;
     }
-    .chart-card-title {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 0;
-    }
-    .chart-badge {
-        font-size: 0.7rem;
-        background: #f1f5f9;
-        color: #64748b;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-weight: 500;
-    }
-
-    /* Cash flow summary strip */
-    .cashflow-strip {
-        display: flex;
-        gap: 16px;
-        padding: 14px 0 0;
-        border-top: 1px solid #f1f5f9;
-        margin-top: 8px;
-        flex-wrap: wrap;
-    }
-    .cashflow-item { flex: 1; min-width: 90px; }
-    .cashflow-dot {
-        width: 8px; height: 8px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 5px;
-    }
-    .cashflow-label { font-size: 0.68rem; color: #94a3b8; font-weight: 600; margin-bottom: 2px; }
-    .cashflow-amount { font-size: 0.95rem; font-weight: 800; color: #0f172a; }
-
-    /* ===== LEGEND DOTS ===== */
-    .legend-dot {
-        width: 8px; height: 8px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        margin-top: 2px;
-    }
-
-    /* ===== RECENT SALES TABLE ===== */
-    .table-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    }
-    .recent-table th {
-        font-size: 0.68rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .5px;
-        color: #94a3b8;
-        border: none;
-        padding: 0 12px 10px;
-        background: transparent;
-    }
-    .recent-table td {
-        font-size: 0.82rem;
-        border: none;
-        padding: 10px 12px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f8fafc;
-    }
-    .recent-table tbody tr:last-child td { border-bottom: none; }
-    .recent-table tbody tr:hover td { background: #f8fafc; }
-    .ref-badge {
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: #4f46e5;
-        background: #ede9fe;
-        padding: 2px 8px;
-        border-radius: 6px;
-        letter-spacing: .3px;
-    }
-    .status-pill {
-        font-size: 0.68rem;
-        font-weight: 700;
-        padding: 3px 10px;
-        border-radius: 20px;
-    }
-
-    /* ===== QUICK ACTIONS ===== */
-    .quick-action-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 18px;
-        border: 1px solid #f1f5f9;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    }
-    .quick-btn {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        text-decoration: none;
+    .kpi-footer-label {
         font-size: 0.82rem;
         font-weight: 600;
-        color: #334155;
-        border: 1.5px solid #e2e8f0;
-        transition: all .2s;
-        background: #fff;
-        margin-bottom: 8px;
+        color: #64748b;
     }
-    .quick-btn:hover { border-color: #4f46e5; color: #4f46e5; background: #ede9fe; }
-    .quick-btn .qb-icon {
-        width: 32px; height: 32px;
+    .kpi-badge {
+        padding: 3px 12px;
         border-radius: 8px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 14px;
-        flex-shrink: 0;
+        font-size: 0.76rem;
+        font-weight: 700;
+        background: #ffffff;
     }
 
-    /* ===== TOP PRODUCTS ===== */
-    .product-row {
+    /* Light Mode Exact Themes (from User Reference Image) */
+    .kpi-card-blue {
+        background: #f0f7ff;
+        border: 1.5px solid #dbeafe;
+    }
+    .kpi-card-blue .kpi-card-title { color: #2563eb; }
+    .kpi-card-blue .kpi-card-icon { color: #3b82f6; }
+    .kpi-card-blue .kpi-badge {
+        color: #1d4ed8;
+        border: 1.5px solid #bfdbfe;
+    }
+
+    .kpi-card-green {
+        background: #f0fdf4;
+        border: 1.5px solid #dcfce7;
+    }
+    .kpi-card-green .kpi-card-title { color: #16a34a; }
+    .kpi-card-green .kpi-card-icon { color: #16a34a; }
+    .kpi-card-green .kpi-badge {
+        color: #059669;
+        border: 1.5px solid #a7f3d0;
+    }
+
+    .kpi-card-amber {
+        background: #fefce8;
+        border: 1.5px solid #fef08a;
+    }
+    .kpi-card-amber .kpi-card-title { color: #d97706; }
+    .kpi-card-amber .kpi-card-icon { color: #d97706; }
+    .kpi-card-amber .kpi-badge {
+        color: #b45309;
+        border: 1.5px solid #fde68a;
+    }
+
+    .kpi-card-rose {
+        background: #fff1f2;
+        border: 1.5px solid #ffe4e6;
+    }
+    .kpi-card-rose .kpi-card-title { color: #dc2626; }
+    .kpi-card-rose .kpi-card-icon { color: #dc2626; }
+    .kpi-card-rose .kpi-badge {
+        color: #be123c;
+        border: 1.5px solid #fecdd3;
+    }
+
+    /* Net Profit Master Card */
+    .net-profit-hero {
+        background: var(--dash-surface);
+        border: 1px solid var(--dash-border);
+        border-radius: var(--dash-radius-lg);
+        padding: 20px 24px;
+        box-shadow: var(--dash-shadow-card);
+        margin-bottom: 22px;
+        position: relative;
+        overflow: hidden;
+    }
+    .net-profit-hero.is-profit {
+        border-left: 5px solid var(--dash-success);
+        background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    }
+    .net-profit-hero.is-loss {
+        border-left: 5px solid var(--dash-danger);
+        background: linear-gradient(180deg, #ffffff 0%, #fef2f2 100%);
+    }
+
+    /* ===== CHARTS & DATA VISUALIZATION CARDS ===== */
+    .dash-card {
+        background: var(--dash-surface);
+        border: 1px solid var(--dash-border);
+        border-radius: var(--dash-radius-lg);
+        padding: 22px 24px;
+        box-shadow: var(--dash-shadow-card);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .dash-card-header {
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
         gap: 10px;
-        padding: 9px 0;
-        border-bottom: 1px solid #f8fafc;
     }
-    .product-row:last-child { border-bottom: none; }
-    .product-rank {
-        width: 22px; height: 22px;
-        border-radius: 6px;
-        background: #f1f5f9;
-        color: #64748b;
-        font-size: 0.65rem;
+    .dash-card-title {
+        font-size: 0.95rem;
         font-weight: 800;
-        display: flex; align-items: center; justify-content: center;
+        color: var(--dash-text-main);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.01em;
+    }
+    .dash-card-badge {
+        font-size: 0.72rem;
+        font-weight: 600;
+        background: #f1f5f9;
+        color: #475569;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Summary bar below chart */
+    .chart-summary-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 12px;
+        padding-top: 16px;
+        margin-top: auto;
+        border-top: 1px solid var(--dash-border-subtle);
+    }
+    .csb-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .csb-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--dash-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .csb-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .csb-val {
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--dash-text-main);
+    }
+
+    /* ===== RECENT TRANSACTIONS TABLE ===== */
+    .exec-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    .exec-table th {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--dash-text-muted);
+        background: #f8fafc;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--dash-border);
+        white-space: nowrap;
+    }
+    .exec-table td {
+        font-size: 0.82rem;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--dash-border-subtle);
+        vertical-align: middle;
+        color: #334155;
+    }
+    .exec-table tbody tr:hover td {
+        background: #f8fafc;
+    }
+    .exec-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .ref-code-badge {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: #1e293b;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        padding: 2px 7px;
+        border-radius: 6px;
+    }
+
+    /* Status Pills */
+    .badge-paid {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .badge-partial {
+        background: #fffbeb;
+        color: #92400e;
+        border: 1px solid #fde68a;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .badge-unpaid {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecdd3;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Top Products Leaderboard */
+    .top-product-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--dash-border-subtle);
+    }
+    .top-product-item:last-child {
+        border-bottom: none;
+    }
+    .top-rank-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.74rem;
+        font-weight: 800;
         flex-shrink: 0;
     }
-    .product-rank.rank-1 { background: #fef3c7; color: #d97706; }
-    .product-rank.rank-2 { background: #e0e7ff; color: #4f46e5; }
-    .product-rank.rank-3 { background: #d1fae5; color: #059669; }
+    .rank-1 { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .rank-2 { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .rank-3 { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+    .rank-other { background: #f8fafc; color: #64748b; border: 1px solid #f1f5f9; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-        .kpi-value { font-size: 1.25rem; }
-        .chart-card { padding: 14px; }
-        .table-card { padding: 14px; }
-        .cashflow-strip { gap: 10px; }
-        .filter-select { min-width: unset; width: 100%; }
-        .dash-header { gap: 10px; }
-        .quick-btn { padding: 9px 12px; }
+    .tpi-progress {
+        height: 4px;
+        background: #f1f5f9;
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 5px;
     }
-    @media (max-width: 480px) {
-        .kpi-card { padding: 15px; }
-        .kpi-icon { width: 38px; height: 38px; font-size: 15px; }
+    .tpi-progress-bar {
+        height: 100%;
+        background: var(--dash-primary);
+        border-radius: 2px;
+    }
+
+    /* ==========================================================================
+       HIGH CONTRAST DARK MODE - PURE WHITE TEXT (NO GRAY)
+       ========================================================================== */
+    [data-theme="dark"], body.dark-mode {
+        --dash-bg: #0b1120;
+        --dash-surface: #111827;
+        --dash-border: #1f2937;
+        --dash-border-subtle: #1e293b;
+        --dash-text-main: #ffffff;
+        --dash-text-muted: #ffffff;
+        --dash-text-light: #ffffff;
+        --dash-shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+        --dash-shadow-hover: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ALL DASHBOARD TEXT IS PURE WHITE IN DARK MODE */
+    [data-theme="dark"] .dashboard-container,
+    body.dark-mode .dashboard-container {
+        color: #ffffff;
+    }
+    [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+    [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6,
+    [data-theme="dark"] p, [data-theme="dark"] label,
+    [data-theme="dark"] strong, [data-theme="dark"] small,
+    [data-theme="dark"] .text-dark,
+    body.dark-mode .text-dark,
+    [data-theme="dark"] strong.text-dark,
+    body.dark-mode strong.text-dark,
+    [data-theme="dark"] .fw-bold.text-dark,
+    body.dark-mode .fw-bold.text-dark,
+    [data-theme="dark"] .fw-semibold.text-dark,
+    body.dark-mode .fw-semibold.text-dark,
+    [data-theme="dark"] .text-muted,
+    body.dark-mode .text-muted,
+    [data-theme="dark"] small.text-muted,
+    body.dark-mode small.text-muted,
+    [data-theme="dark"] .exec-meta-subtitle,
+    body.dark-mode .exec-meta-subtitle,
+    [data-theme="dark"] .exec-meta-subtitle strong,
+    body.dark-mode .exec-meta-subtitle strong {
+        color: #ffffff !important;
+    }
+
+    /* KPI Cards in Dark Mode */
+    [data-theme="dark"] .kpi-card,
+    body.dark-mode .kpi-card {
+        background: #111827 !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+    }
+    [data-theme="dark"] .kpi-card-blue,
+    body.dark-mode .kpi-card-blue {
+        border: 1.5px solid #2563eb !important;
+    }
+    [data-theme="dark"] .kpi-card-green,
+    body.dark-mode .kpi-card-green {
+        border: 1.5px solid #059669 !important;
+    }
+    [data-theme="dark"] .kpi-card-amber,
+    body.dark-mode .kpi-card-amber {
+        border: 1.5px solid #d97706 !important;
+    }
+    [data-theme="dark"] .kpi-card-rose,
+    body.dark-mode .kpi-card-rose {
+        border: 1.5px solid #dc2626 !important;
+    }
+
+    [data-theme="dark"] .kpi-card-title,
+    body.dark-mode .kpi-card-title,
+    [data-theme="dark"] .kpi-card-value,
+    body.dark-mode .kpi-card-value,
+    [data-theme="dark"] .kpi-card-unit,
+    body.dark-mode .kpi-card-unit,
+    [data-theme="dark"] .kpi-footer-label,
+    body.dark-mode .kpi-footer-label,
+    [data-theme="dark"] .kpi-badge,
+    body.dark-mode .kpi-badge {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .kpi-card-icon,
+    body.dark-mode .kpi-card-icon {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+    }
+    [data-theme="dark"] .kpi-card-blue .kpi-card-icon,
+    body.dark-mode .kpi-card-blue .kpi-card-icon {
+        background: rgba(37, 99, 235, 0.25) !important;
+        border: 1.5px solid rgba(96, 165, 250, 0.5) !important;
+    }
+    [data-theme="dark"] .kpi-card-blue .kpi-card-icon i,
+    body.dark-mode .kpi-card-blue .kpi-card-icon i { color: #60a5fa !important; }
+
+    [data-theme="dark"] .kpi-card-green .kpi-card-icon,
+    body.dark-mode .kpi-card-green .kpi-card-icon {
+        background: rgba(16, 185, 129, 0.25) !important;
+        border: 1.5px solid rgba(52, 211, 153, 0.5) !important;
+    }
+    [data-theme="dark"] .kpi-card-green .kpi-card-icon i,
+    body.dark-mode .kpi-card-green .kpi-card-icon i { color: #34d399 !important; }
+
+    [data-theme="dark"] .kpi-card-amber .kpi-card-icon,
+    body.dark-mode .kpi-card-amber .kpi-card-icon {
+        background: rgba(245, 158, 11, 0.25) !important;
+        border: 1.5px solid rgba(251, 191, 36, 0.5) !important;
+    }
+    [data-theme="dark"] .kpi-card-amber .kpi-card-icon i,
+    body.dark-mode .kpi-card-amber .kpi-card-icon i { color: #fbbf24 !important; }
+
+    [data-theme="dark"] .kpi-card-rose .kpi-card-icon,
+    body.dark-mode .kpi-card-rose .kpi-card-icon {
+        background: rgba(220, 38, 38, 0.25) !important;
+        border: 1.5px solid rgba(248, 113, 113, 0.5) !important;
+    }
+    [data-theme="dark"] .kpi-card-rose .kpi-card-icon i,
+    body.dark-mode .kpi-card-rose .kpi-card-icon i { color: #f87171 !important; }
+
+    [data-theme="dark"] .kpi-card-footer,
+    body.dark-mode .kpi-card-footer {
+        border-top: 1px solid #1f2937 !important;
+    }
+    [data-theme="dark"] .kpi-badge,
+    body.dark-mode .kpi-badge {
+        background: #1e293b !important;
+        border-color: #374151 !important;
+    }
+
+    /* Quick Operations & Dash Cards in Dark Mode */
+    [data-theme="dark"] .quick-op-btn:not(.primary-pos),
+    body.dark-mode .quick-op-btn:not(.primary-pos) {
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .quick-op-btn:hover,
+    body.dark-mode .quick-op-btn:hover {
+        border-color: #3b82f6 !important;
+    }
+    [data-theme="dark"] .quick-op-label,
+    body.dark-mode .quick-op-label,
+    [data-theme="dark"] .quick-op-sub,
+    body.dark-mode .quick-op-sub {
+        color: #ffffff !important;
+    }
+
+    /* Dark Mode Icons - Deep Tinted Backgrounds + Bright Glowing Crisp Icons */
+    [data-theme="dark"] .quick-op-icon.qoi-dark,
+    body.dark-mode .quick-op-icon.qoi-dark {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    }
+    [data-theme="dark"] .quick-op-icon.qoi-dark i,
+    body.dark-mode .quick-op-icon.qoi-dark i {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .quick-op-icon.qoi-blue,
+    body.dark-mode .quick-op-icon.qoi-blue {
+        background: rgba(37, 99, 235, 0.25) !important;
+        border: 1.5px solid rgba(96, 165, 250, 0.5) !important;
+    }
+    [data-theme="dark"] .quick-op-icon.qoi-blue i,
+    body.dark-mode .quick-op-icon.qoi-blue i {
+        color: #60a5fa !important;
+    }
+
+    [data-theme="dark"] .quick-op-icon.qoi-green,
+    body.dark-mode .quick-op-icon.qoi-green {
+        background: rgba(16, 185, 129, 0.25) !important;
+        border: 1.5px solid rgba(52, 211, 153, 0.5) !important;
+    }
+    [data-theme="dark"] .quick-op-icon.qoi-green i,
+    body.dark-mode .quick-op-icon.qoi-green i {
+        color: #34d399 !important;
+    }
+
+    [data-theme="dark"] .quick-op-icon.qoi-amber,
+    body.dark-mode .quick-op-icon.qoi-amber {
+        background: rgba(245, 158, 11, 0.25) !important;
+        border: 1.5px solid rgba(251, 191, 36, 0.5) !important;
+    }
+    [data-theme="dark"] .quick-op-icon.qoi-amber i,
+    body.dark-mode .quick-op-icon.qoi-amber i {
+        color: #fbbf24 !important;
+    }
+
+    [data-theme="dark"] .quick-op-icon.qoi-purple,
+    body.dark-mode .quick-op-icon.qoi-purple {
+        background: rgba(168, 85, 247, 0.25) !important;
+        border: 1.5px solid rgba(192, 132, 252, 0.5) !important;
+    }
+    [data-theme="dark"] .quick-op-icon.qoi-purple i,
+    body.dark-mode .quick-op-icon.qoi-purple i {
+        color: #c084fc !important;
+    }
+
+    /* Guarantee visibility for all icons across dark mode */
+    [data-theme="dark"] i.bi,
+    body.dark-mode i.bi,
+    [data-theme="dark"] .bi,
+    body.dark-mode .bi {
+        opacity: 1 !important;
+    }
+    [data-theme="dark"] .dash-card-title,
+    body.dark-mode .dash-card-title,
+    [data-theme="dark"] .csb-val,
+    body.dark-mode .csb-val,
+    [data-theme="dark"] .csb-label,
+    body.dark-mode .csb-label {
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .dash-card-badge,
+    body.dark-mode .dash-card-badge {
+        background-color: #1e293b !important;
+        border: 1px solid #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .csb-val small,
+    body.dark-mode .csb-val small {
+        color: #cbd5e1 !important;
+    }
+
+    /* Modern Dark Link Button */
+    .dash-card-link-btn {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 5px 14px;
+        border-radius: 20px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.15s ease;
+    }
+    .dash-card-link-btn:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    [data-theme="dark"] .dash-card-link-btn,
+    body.dark-mode .dash-card-link-btn {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .dash-card-link-btn:hover,
+    body.dark-mode .dash-card-link-btn:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+
+    /* APEXCHARTS HIGH CONTRAST DARK MODE ENGINE (SVG Uses fill, not color) */
+    [data-theme="dark"] .apexcharts-canvas text,
+    body.dark-mode .apexcharts-canvas text,
+    [data-theme="dark"] .apexcharts-canvas text.apexcharts-text,
+    body.dark-mode .apexcharts-canvas text.apexcharts-text {
+        fill: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .apexcharts-canvas text.apexcharts-datalabel-value,
+    body.dark-mode .apexcharts-canvas text.apexcharts-datalabel-value {
+        fill: #ffffff !important;
+        font-weight: 800 !important;
+    }
+    [data-theme="dark"] .apexcharts-canvas text.apexcharts-datalabel-label,
+    body.dark-mode .apexcharts-canvas text.apexcharts-datalabel-label {
+        fill: #cbd5e1 !important;
+        font-weight: 600 !important;
+    }
+    [data-theme="dark"] .apexcharts-legend-text,
+    body.dark-mode .apexcharts-legend-text {
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .apexcharts-tooltip,
+    body.dark-mode .apexcharts-tooltip {
+        background: #111827 !important;
+        color: #ffffff !important;
+        border: 1px solid #374151 !important;
+    }
+    [data-theme="dark"] .apexcharts-tooltip-title,
+    body.dark-mode .apexcharts-tooltip-title {
+        background: #1e293b !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-select,
+    body.dark-mode .exec-select {
+        background-color: #111827 !important;
+        border-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-select option,
+    body.dark-mode .exec-select option {
+        background-color: #111827 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-action-btn,
+    body.dark-mode .exec-action-btn {
+        background-color: #111827 !important;
+        border-color: #374151 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-custom-range-bar,
+    body.dark-mode .exec-custom-range-bar {
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+    }
+    [data-theme="dark"] .exec-date-input,
+    body.dark-mode .exec-date-input {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+        color-scheme: dark;
+    }
+    [data-theme="dark"] .filter-banner-strip,
+    body.dark-mode .filter-banner-strip {
+        background-color: #111827 !important;
+        border-color: #1f2937 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .shop-badge,
+    body.dark-mode .shop-badge {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-table th,
+    body.dark-mode .exec-table th {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border-bottom-color: #1f2937 !important;
+    }
+    [data-theme="dark"] .exec-table td,
+    body.dark-mode .exec-table td {
+        background-color: transparent !important;
+        border-bottom-color: #1f2937 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .exec-table tbody tr:hover td,
+    body.dark-mode .exec-table tbody tr:hover td {
+        background-color: #1f2937 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .ref-code-badge,
+    body.dark-mode .ref-code-badge {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .btn-light,
+    body.dark-mode .btn-light {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .top-rank-badge.rank-2,
+    [data-theme="dark"] .top-rank-badge.rank-other,
+    body.dark-mode .top-rank-badge.rank-2,
+    body.dark-mode .top-rank-badge.rank-other {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .tpi-progress,
+    body.dark-mode .tpi-progress {
+        background-color: #1e293b !important;
+    }
+    [data-theme="dark"] .net-profit-hero.is-profit,
+    body.dark-mode .net-profit-hero.is-profit {
+        background: linear-gradient(180deg, #111827 0%, rgba(6, 95, 70, 0.25) 100%) !important;
+        border-color: #1f2937 !important;
+    }
+    [data-theme="dark"] .net-profit-hero.is-loss,
+    body.dark-mode .net-profit-hero.is-loss {
+        background: linear-gradient(180deg, #111827 0%, rgba(153, 27, 27, 0.25) 100%) !important;
+        border-color: #1f2937 !important;
+    }
+
+    /* Responsiveness & Zero-Overflow Engine */
+    .dashboard-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    .pulse-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+    }
+    .pulse-marquee-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+    }
+    @media (max-width: 991px) {
+        .exec-header { padding: 14px 18px; }
+        .metric-main-value { font-size: 1.45rem; }
+        .dash-card { padding: 16px 18px; }
+    }
+    @media (max-width: 768px) {
+        .net-profit-hero { padding: 16px; }
+        .net-profit-hero .num-tabular { font-size: 1.45rem !important; }
+        .quick-op-btn { width: 195px; min-width: 195px; padding: 10px 12px; }
+        .metric-card { width: 245px; min-width: 245px; padding: 16px; }
+    }
+    @media (max-width: 576px) {
+        .exec-header { flex-direction: column; align-items: stretch; gap: 12px; padding: 14px; }
+        .exec-title-group h3 { font-size: 1.15rem; }
+        .exec-controls { width: 100%; flex-direction: row; gap: 8px; }
+        .exec-select { flex: 1; min-width: 0; font-size: 0.78rem; height: 38px; }
+        .exec-action-btn { height: 38px; padding: 0 10px; }
+        .chart-summary-bar { grid-template-columns: 1fr 1fr; }
     }
 </style>
 
-<div class="dashboard-wrapper">
+<div class="dashboard-container">
 
-    {{-- ===== HEADER ===== --}}
-    <div class="dash-header">
-        <div>
-            <h4><i class="bi bi-speedometer2 me-2 text-primary"></i>{{ __('Dashboard') }}</h4>
-            <div class="date-pill">{{ __('Business statistics') }} &nbsp;·&nbsp; {{ date('l, d M Y') }}</div>
+    {{-- ========================================================================
+         1. EXECUTIVE HEADER
+         ======================================================================== --}}
+    <div class="exec-header">
+        <div class="exec-title-group">
+            <h3>
+                @if(auth()->user()->shop)
+                    <span>{{ auth()->user()->shop->name }}</span>
+                @else
+                    <span>{{ config('app.name', 'Z-pos') }}</span>
+                @endif
+            </h3>
+            <div class="exec-meta-subtitle">
+                <span>{{ date('l, d F Y') }}</span>
+                @if(session('active_branch_name'))
+                <span class="d-none d-sm-inline">
+                    &bull; {{ __('Branch') }}: <strong>{{ session('active_branch_name') }}</strong>
+                </span>
+                @endif
+            </div>
         </div>
-        <select id="dashboardFilter" class="filter-select" onchange="window.location.href='?filter='+this.value">
-            <option value="overall" {{ $filter == 'overall' ? 'selected' : '' }}>📊 {{ __('Overall statistics') }}</option>
-            <option value="today"   {{ $filter == 'today'   ? 'selected' : '' }}>📅 {{ __("Today's statistics") }}</option>
-            <option value="month"   {{ $filter == 'month'   ? 'selected' : '' }}>📆 {{ __("This month's statistics") }}</option>
-            <option value="half_year" {{ $filter == 'half_year' ? 'selected' : '' }}>📈 {{ __('Half-year statistics') }}</option>
-            <option value="year"    {{ $filter == 'year'    ? 'selected' : '' }}>🗓️ {{ __('Yearly statistics') }}</option>
-        </select>
+
+        <div class="exec-controls">
+            {{-- Staff / Cashier Switcher (Administrator / Super Admin Only) --}}
+            @if($isAdmin && $cashiers->isNotEmpty())
+            <select id="cashierFilter" class="exec-select" onchange="window.location.href='?cashier_id='+this.value">
+                <option value="all" {{ !$selectedCashierId ? 'selected' : '' }}>
+                    👥 {{ __('All Staff Overview') }}
+                </option>
+                @foreach($cashiers as $c)
+                @php $isOwn = $c->id === auth()->id() || $c->hasRole('Administrator'); @endphp
+                <option value="{{ $c->id }}" {{ $selectedCashierId == $c->id ? 'selected' : '' }}>
+                    {{ $isOwn ? '👑' : '💼' }} {{ $c->name }} ({{ $isOwn ? __('Owner') : __('Cashier') }})
+                </option>
+                @endforeach
+            </select>
+            @endif
+
+            {{-- Period Filter --}}
+            <select id="dashboardFilter" class="exec-select" onchange="handleDashboardPeriodChange(this.value)">
+                <option value="overall"   {{ $filter == 'overall'   ? 'selected' : '' }}>📊 {{ __('All-Time Data') }}</option>
+                <option value="today"     {{ $filter == 'today'     ? 'selected' : '' }}>📅 {{ __("Today's Analytics") }}</option>
+                <option value="month"     {{ $filter == 'month'     ? 'selected' : '' }}>📆 {{ __("This Month") }}</option>
+                <option value="half_year" {{ $filter == 'half_year' ? 'selected' : '' }}>📈 {{ __('Last 6 Months') }}</option>
+                <option value="year"      {{ $filter == 'year'      ? 'selected' : '' }}>🗓️ {{ __('This Year') }}</option>
+                <option value="custom"    {{ $filter == 'custom'    ? 'selected' : '' }}>🎯 {{ __('Custom Date Range') }}</option>
+            </select>
+
+            {{-- Quick Reports Link --}}
+            <a href="{{ route('reports.index') }}" class="exec-action-btn" title="{{ __('View Comprehensive Reports') }}">
+                <i class="bi bi-file-earmark-bar-graph"></i>
+                <span class="d-none d-md-inline">{{ __('Reports') }}</span>
+            </a>
+        </div>
     </div>
 
-    {{-- ===== KPI CARDS ===== --}}
+    {{-- Custom Date Range Bar --}}
+    <div id="customRangeBar" class="exec-custom-range-bar mb-3" style="{{ $filter === 'custom' ? 'display: block;' : 'display: none;' }}">
+        <form method="GET" action="{{ route('home') }}" class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 mb-0">
+            <input type="hidden" name="filter" value="custom">
+            @if($selectedCashierId)
+                <input type="hidden" name="cashier_id" value="{{ $selectedCashierId }}">
+            @endif
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-2 rounded-3 d-flex align-items-center gap-1">
+                    <i class="bi bi-funnel-fill"></i>
+                    <strong class="small">{{ __('Date Range Filter') }}:</strong>
+                </span>
+
+                <div class="d-flex align-items-center gap-1">
+                    <label class="small fw-bold text-muted mb-0 me-1" for="dashStartDate">{{ __('From Date') }}:</label>
+                    <input type="date" id="dashStartDate" name="start_date" value="{{ $customStartDate }}" class="exec-date-input" required>
+                </div>
+
+                <div class="d-flex align-items-center gap-1">
+                    <label class="small fw-bold text-muted mb-0 me-1" for="dashEndDate">{{ __('To Date') }}:</label>
+                    <input type="date" id="dashEndDate" name="end_date" value="{{ $customEndDate }}" class="exec-date-input" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm px-3 fw-bold d-flex align-items-center gap-1 shadow-sm" style="height: 38px; border-radius: 8px;">
+                    <i class="bi bi-funnel-fill"></i> {{ __('Filter Statistics') }}
+                </button>
+
+                @if($filter === 'custom')
+                <a href="{{ route('home', array_filter(['filter' => 'overall', 'cashier_id' => $selectedCashierId])) }}" class="btn btn-outline-secondary btn-sm px-3 d-flex align-items-center gap-1" style="height: 38px; border-radius: 8px;" title="{{ __('Reset Filter') }}">
+                    <i class="bi bi-x-circle"></i> {{ __('Reset') }}
+                </a>
+                @endif
+            </div>
+
+            @if($filter === 'custom')
+            <div class="small fw-semibold d-flex align-items-center gap-1 py-1 px-2 rounded bg-light border text-primary">
+                <i class="bi bi-calendar-check-fill text-primary"></i>
+                <span>{{ \Carbon\Carbon::parse($customStartDate)->format('d/m/Y') }} &mdash; {{ \Carbon\Carbon::parse($customEndDate)->format('d/m/Y') }}</span>
+            </div>
+            @endif
+        </form>
+    </div>
+
+    {{-- Filter Indicator (When filtering by specific staff) --}}
+    @if($selectedCashier)
+    @php
+        $isOwnerRole = $selectedCashier->id === auth()->id() || $selectedCashier->hasRole('Administrator');
+        $initials = strtoupper(substr($selectedCashier->name, 0, 2));
+    @endphp
+    <div class="filter-banner-strip">
+        <div class="d-flex align-items-center gap-2">
+            <span class="filter-badge-avatar">{{ $initials }}</span>
+            <div>
+                <strong class="text-dark">{{ $selectedCashier->name }}</strong>
+                <span class="badge {{ $isOwnerRole ? 'bg-dark text-white' : 'bg-primary text-white' }} ms-1" style="font-size: 0.68rem;">
+                    {{ $isOwnerRole ? __('Owner') : __('Cashier') }}
+                </span>
+                <span class="text-muted ms-2" style="font-size: 0.78rem;">
+                    &bull; {{ number_format($salesCount) }} {{ __('transactions recorded') }}
+                </span>
+            </div>
+        </div>
+        <a href="?cashier_id=all" class="btn btn-sm btn-outline-secondary px-3 py-1 rounded-pill" style="font-size: 0.75rem;">
+            <i class="bi bi-x-circle me-1"></i>{{ __('Reset to All Staff') }}
+        </a>
+    </div>
+    @endif
+
+    {{-- ========================================================================
+         2. QUICK OPERATIONS BAR (Live Pulse Smooth Infinite Marquee)
+         ======================================================================== --}}
+    <div class="pulse-marquee-wrapper mb-4">
+        <div class="pulse-track">
+            @for($loopSet = 0; $loopSet < 2; $loopSet++)
+            <div class="quick-op-item">
+                <a href="{{ route('sales.create') }}" class="quick-op-btn primary-pos">
+                    <div class="quick-op-icon qoi-dark">
+                        <i class="bi bi-cart4"></i>
+                    </div>
+                    <div class="quick-op-texts">
+                        <span class="quick-op-label">{{ __('New Sale / POS') }}</span>
+                        <span class="quick-op-sub">{{ __('Keyboard (F2)') }}</span>
+                    </div>
+                </a>
+            </div>
+
+            @if(Auth::user()->canManageProducts())
+            <div class="quick-op-item">
+                <a href="{{ route('products.create') }}" class="quick-op-btn">
+                    <div class="quick-op-icon qoi-blue">
+                        <i class="bi bi-plus-square"></i>
+                    </div>
+                    <div class="quick-op-texts">
+                        <span class="quick-op-label">{{ __('Add Product') }}</span>
+                        <span class="quick-op-sub">{{ __('Catalogue entry') }}</span>
+                    </div>
+                </a>
+            </div>
+            @endif
+
+            @if(Auth::user()->hasRole('Administrator') || Auth::user()->hasRole('Super Admin'))
+            <div class="quick-op-item">
+                <a href="{{ route('purchases.create') }}" class="quick-op-btn">
+                    <div class="quick-op-icon qoi-green">
+                        <i class="bi bi-box-arrow-in-down"></i>
+                    </div>
+                    <div class="quick-op-texts">
+                        <span class="quick-op-label">{{ __('Stock Intake') }}</span>
+                        <span class="quick-op-sub">{{ __('Supplier purchases') }}</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="quick-op-item">
+                <a href="{{ route('expenses.create') }}" class="quick-op-btn">
+                    <div class="quick-op-icon qoi-amber">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div class="quick-op-texts">
+                        <span class="quick-op-label">{{ __('Add Expense') }}</span>
+                        <span class="quick-op-sub">{{ __('Bills & operational cost') }}</span>
+                    </div>
+                </a>
+            </div>
+            @endif
+
+            <div class="quick-op-item">
+                <a href="{{ route('sales.index') }}" class="quick-op-btn">
+                    <div class="quick-op-icon qoi-purple">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <div class="quick-op-texts">
+                        <span class="quick-op-label">{{ __('Sales History') }}</span>
+                        <span class="quick-op-sub">{{ __('Receipts & invoices') }}</span>
+                    </div>
+                </a>
+            </div>
+            @endfor
+        </div>
+    </div>
+
+    {{-- ========================================================================
+         3. CORE FINANCIAL METRICS (Static 4-Card Executive Grid - Exactly as Pictured)
+         ======================================================================== --}}
+    @php
+        $avgTicket = $salesCount > 0 ? round($totalSales / $salesCount) : 0;
+        $profitMargin = $totalSales > 0 ? round(($grossProfit / $totalSales) * 100, 1) : 0;
+        $totalOutflow = $totalPurchases + $totalExpense;
+        $returnRate = $totalSales > 0 ? round(($returnsTotal / $totalSales) * 100, 1) : 0;
+    @endphp
+
     <div class="row g-3 mb-4">
-
-        {{-- Total Sales --}}
-        <div class="{{ $isAdmin ? 'col-6 col-lg-3' : 'col-12 col-md-6 col-lg-4' }}">
-            <div class="kpi-card">
-                <div class="d-flex align-items-start justify-content-between mb-3">
-                    <div class="kpi-icon icon-blue"><i class="bi bi-cash-stack"></i></div>
-                    <span class="kpi-label">{{ __('Total Sales') }}</span>
-                </div>
-                <div class="kpi-value">{{ number_format($totalSales) }}<span class="kpi-currency">TSh</span></div>
-                <p class="kpi-desc">{{ __('Sales revenue received') }}</p>
-            </div>
-        </div>
-
-        {{-- Gross Profit (admin only: profit reveals the buying price) --}}
-        @if($isAdmin)
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="d-flex align-items-start justify-content-between mb-3">
-                    <div class="kpi-icon icon-teal"><i class="bi bi-graph-up-arrow"></i></div>
-                    <span class="kpi-label">{{ __('Gross Profit') }}</span>
-                </div>
-                <div class="kpi-value">{{ number_format($grossProfit) }}<span class="kpi-currency">TSh</span></div>
-                <p class="kpi-desc">{{ __('Revenue minus cost of goods') }}</p>
-            </div>
-        </div>
-        @endif
-
-        @if($isAdmin)
-        {{-- Purchases --}}
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="d-flex align-items-start justify-content-between mb-3">
-                    <div class="kpi-icon icon-orange"><i class="bi bi-bag-check"></i></div>
-                    <span class="kpi-label">{{ __('Purchases') }}</span>
-                </div>
-                <div class="kpi-value" style="color:#d97706;">{{ number_format($totalPurchases) }}<span class="kpi-currency">TSh</span></div>
-                <p class="kpi-desc">{{ __('Stock bought from suppliers') }}</p>
-            </div>
-        </div>
-
-        {{-- Expenses --}}
-        <div class="col-6 col-lg-3">
-            <div class="kpi-card">
-                <div class="d-flex align-items-start justify-content-between mb-3">
-                    <div class="kpi-icon icon-red"><i class="bi bi-receipt-cutoff"></i></div>
-                    <span class="kpi-label">{{ __('Expenses') }}</span>
-                </div>
-                <div class="kpi-value" style="color:#dc2626;">{{ number_format($totalExpense) }}<span class="kpi-currency">TSh</span></div>
-                <p class="kpi-desc">{{ __('Rent, utilities, salaries etc.') }}</p>
-            </div>
-        </div>
-
-        {{-- Net Profit / Loss - Full-width accent card --}}
-        <div class="col-12">
-            @php $isProfit = $netProfit >= 0; @endphp
-            <div class="kpi-card kpi-card-colored {{ $isProfit ? 'kpi-green' : 'kpi-red' }}" style="padding: 20px 24px;">
-                <div class="row align-items-center">
-                    <div class="col-auto">
-                        <div class="kpi-icon" style="background:rgba(255,255,255,0.2); color:#fff; width:52px; height:52px; font-size:22px;">
-                            <i class="bi {{ $isProfit ? 'bi-graph-up-arrow' : 'bi-graph-down-arrow' }}"></i>
-                        </div>
+        {{-- Card 1: TOTAL SALES (Blue Theme) --}}
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-card-blue">
+                <div class="kpi-card-top">
+                    <span class="kpi-card-title">{{ $selectedCashier ? ($isOwnerRole ? __('OWNER SALES') : __('CASHIER SALES')) : __('TOTAL SALES') }}</span>
+                    <div class="kpi-card-icon">
+                        <i class="bi bi-wallet2"></i>
                     </div>
-                    <div class="col">
-                        <div class="kpi-label" style="color:rgba(255,255,255,0.7);">{{ $isProfit ? __('Net Profit') : __('Net Loss') }}</div>
-                        <div class="kpi-value" style="font-size:1.8rem;">
-                            {{ $isProfit ? '+' : '' }}{{ number_format($netProfit) }}
-                            <span class="kpi-currency" style="color:rgba(255,255,255,0.7);">TSh</span>
-                        </div>
-                    </div>
-                    <div class="col-auto d-none d-sm-block">
-                        <p class="kpi-desc mb-0" style="text-align:right; font-size:0.75rem; color:rgba(255,255,255,0.75);">
-                            {{ __('Gross Profit - Expenses') }}<br>
-                            <strong style="color:#fff;">{{ number_format($grossProfit) }}</strong> - <strong style="color:#fff;">{{ number_format($totalExpense) }}</strong>
-                        </p>
-                    </div>
+                </div>
+                <div class="kpi-card-value num-tabular">
+                    <span>{{ number_format($totalSales) }}</span>
+                    <span class="kpi-card-unit">TSh</span>
+                </div>
+                <div class="kpi-card-footer">
+                    <span class="kpi-footer-label">{{ __('Revenue') }}</span>
+                    <span class="kpi-badge kpi-badge-blue">{{ __('Inflow') }}</span>
                 </div>
             </div>
         </div>
-        @endif
-    </div>
 
-    @if($isAdmin)
-    {{-- ===== CASH FLOW CHART ===== --}}
-    <div class="row g-3 mb-3">
-        <div class="col-12">
-            <div class="chart-card">
-                <div class="chart-card-header">
-                    <span class="chart-card-title"><i class="bi bi-activity me-2 text-primary"></i>{{ __('Cash Flow') }}</span>
-                    <span class="chart-badge">{{ __('This year') }} · {{ __('monthly') }}</span>
+        {{-- Card 2: GROSS PROFIT (Green Theme) --}}
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-card-green">
+                <div class="kpi-card-top">
+                    <span class="kpi-card-title">{{ __('GROSS PROFIT') }}</span>
+                    <div class="kpi-card-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
                 </div>
-                <div id="cashFlowChart"></div>
-                <div class="cashflow-strip">
-                    <div class="cashflow-item">
-                        <div class="cashflow-label"><span class="cashflow-dot" style="background:#10b981;"></span>{{ __('Cash In') }}</div>
-                        <div class="cashflow-amount">{{ number_format(array_sum($monthlyIncome)) }} <small style="font-size:.65rem;color:#94a3b8;">TSh</small></div>
+                <div class="kpi-card-value num-tabular">
+                    <span>{{ number_format($grossProfit) }}</span>
+                    <span class="kpi-card-unit">TSh</span>
+                </div>
+                <div class="kpi-card-footer">
+                    <span class="kpi-footer-label">{{ __('Margin') }}</span>
+                    <span class="kpi-badge kpi-badge-green">{{ $profitMargin }}%</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card 3: PURCHASES (Amber Theme) --}}
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-card-amber">
+                <div class="kpi-card-top">
+                    <span class="kpi-card-title">{{ __('PURCHASES') }}</span>
+                    <div class="kpi-card-icon">
+                        <i class="bi bi-bag-check"></i>
                     </div>
-                    <div class="cashflow-item">
-                        <div class="cashflow-label"><span class="cashflow-dot" style="background:#f59e0b;"></span>{{ __('Cash Out') }}</div>
-                        <div class="cashflow-amount">{{ number_format(array_sum($monthlyExpense)) }} <small style="font-size:.65rem;color:#94a3b8;">TSh</small></div>
+                </div>
+                <div class="kpi-card-value num-tabular">
+                    <span>{{ number_format($totalPurchases) }}</span>
+                    <span class="kpi-card-unit">TSh</span>
+                </div>
+                <div class="kpi-card-footer">
+                    <span class="kpi-footer-label">{{ __('Stock Cost') }}</span>
+                    <span class="kpi-badge kpi-badge-amber">{{ __('Suppliers') }}</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card 4: EXPENSES (Rose Theme) --}}
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="kpi-card kpi-card-rose">
+                <div class="kpi-card-top">
+                    <span class="kpi-card-title">{{ __('EXPENSES') }}</span>
+                    <div class="kpi-card-icon">
+                        <i class="bi bi-receipt"></i>
                     </div>
-                    <div class="cashflow-item">
-                        @php $netCash = array_sum($monthlyNetCash); @endphp
-                        <div class="cashflow-label"><span class="cashflow-dot" style="background:#6366f1;"></span>{{ __('Net Cash Flow') }}</div>
-                        <div class="cashflow-amount" style="color:{{ $netCash >= 0 ? '#059669' : '#dc2626' }}">
-                            {{ $netCash >= 0 ? '+' : '' }}{{ number_format($netCash) }} <small style="font-size:.65rem;color:#94a3b8;">TSh</small>
-                        </div>
-                    </div>
+                </div>
+                <div class="kpi-card-value num-tabular">
+                    <span>{{ number_format($totalExpense) }}</span>
+                    <span class="kpi-card-unit">TSh</span>
+                </div>
+                <div class="kpi-card-footer">
+                    <span class="kpi-footer-label">{{ __('Operating Cost') }}</span>
+                    <span class="kpi-badge kpi-badge-rose">{{ __('Bills & Ops') }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- ===== BAR + DONUT CHARTS ===== --}}
-    <div class="row g-3 mb-3">
-        <div class="col-12 col-md-7">
-            <div class="chart-card">
-                <div class="chart-card-header">
-                    <span class="chart-card-title"><i class="bi bi-bar-chart-line me-2 text-success"></i>{{ __('Income & Expenses') }}</span>
-                    <span class="chart-badge">{{ __('monthly') }}</span>
+    {{-- ========================================================================
+         NOTE: Picha ya 3 (Secondary Metrics Ribbon: Avg Order Value, Defective Loss, 
+         Total Invoices, Active Branch) imeondolewa kabisa kama ulivyoomba.
+         ======================================================================== --}}
+
+    {{-- ========================================================================
+         4. NET PROFIT MASTER EXECUTIVE STRIP (Admin Only)
+         ======================================================================== --}}
+    @if($isAdmin && !$selectedCashier)
+    @php $isProfit = $netProfit >= 0; @endphp
+    <div class="net-profit-hero {{ $isProfit ? 'is-profit' : 'is-loss' }}">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="metric-icon-badge {{ $isProfit ? 'mib-emerald' : 'mib-rose' }}" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi {{ $isProfit ? 'bi-shield-check' : 'bi-exclamation-triangle' }}"></i>
                 </div>
-                <div id="incomeExpenseChart"></div>
+                <div>
+                    <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                        {{ $isProfit ? __('Net Operating Profit') : __('Net Operating Loss') }}
+                    </div>
+                    <div class="num-tabular" style="font-size: 1.85rem; font-weight: 800; color: {{ $isProfit ? '#065f46' : '#991b1b' }}; line-height: 1.1;">
+                        {{ $isProfit ? '+' : '' }}{{ number_format($netProfit) }}
+                        <span style="font-size: 0.85rem; font-weight: 600; opacity: 0.8;">TSh</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-12 col-md-5">
-            <div class="chart-card">
-                <div class="chart-card-header">
-                    <span class="chart-card-title"><i class="bi bi-pie-chart me-2 text-warning"></i>{{ __('Top Expenses') }}</span>
-                    <span class="chart-badge">{{ __('cumulative') }}</span>
+
+            <div class="d-flex align-items-center gap-3 text-muted" style="font-size: 0.82rem;">
+                <div class="d-none d-md-block text-end">
+                    <div>{{ __('Gross Profit') }}: <strong class="text-dark">{{ number_format($grossProfit) }} TSh</strong></div>
+                    <div>&minus; {{ __('Operating Expenses') }}: <strong class="text-danger">{{ number_format($totalExpense) }} TSh</strong></div>
                 </div>
-                <div id="topExpensesChart"></div>
+                <div class="border-start ps-3 d-none d-sm-block">
+                    <div class="small fw-bold text-muted text-uppercase">{{ __('Net Margin') }}</div>
+                    <div class="fw-bold {{ $isProfit ? 'text-success' : 'text-danger' }}" style="font-size: 1.1rem;">
+                        {{ $totalSales > 0 ? round(($netProfit / $totalSales) * 100, 1) : 0 }}%
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     @endif
 
-    {{-- ===== RECENT SALES + QUICK ACTIONS ===== --}}
-    <div class="row g-3 mb-3">
-        {{-- Recent Sales --}}
-        <div class="col-12 col-lg-8">
-            <div class="table-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <span class="chart-card-title"><i class="bi bi-receipt me-2 text-primary"></i>{{ __('Recent Sales') }}</span>
-                    <a href="{{ route('sales.index') }}" class="btn btn-sm rounded-pill px-3" style="font-size:0.75rem;background:#ede9fe;color:#4f46e5;font-weight:600;border:none;">{{ __('View All') }} →</a>
+    {{-- ========================================================================
+         5. CHARTS & ANALYTICS SECTION
+         ======================================================================== --}}
+    @if($isAdmin)
+    <div class="row g-3 mb-4">
+        {{-- Monthly Cash Flow / Revenue Area Chart --}}
+        <div class="col-12 {{ !$selectedCashier ? 'col-lg-8' : '' }}">
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h4 class="dash-card-title">
+                        <i class="bi bi-activity text-primary"></i>
+                        <span>
+                            @if($selectedCashier)
+                                {{ __('Monthly Sales Performance') }}: {{ $selectedCashier->name }}
+                            @else
+                                {{ __('Annual Cash Flow & Sales Trend') }}
+                            @endif
+                        </span>
+                    </h4>
+                    <span class="dash-card-badge">{{ date('Y') }} · {{ __('Monthly Analysis') }}</span>
                 </div>
+                <div id="cashFlowChart" style="min-height: 220px;"></div>
+                
+                <div class="chart-summary-bar">
+                    <div class="csb-item">
+                        <span class="csb-label"><span class="csb-dot" style="background: #10b981;"></span>{{ $selectedCashier ? __('Sales Total') : __('Total Inflow') }}</span>
+                        <span class="csb-val num-tabular">{{ number_format(array_sum($monthlyIncome)) }} <small style="font-size: 0.65rem; color:#94a3b8;">TSh</small></span>
+                    </div>
+                    @if(!$selectedCashier)
+                    <div class="csb-item">
+                        <span class="csb-label"><span class="csb-dot" style="background: #f59e0b;"></span>{{ __('Total Outflow') }}</span>
+                        <span class="csb-val num-tabular">{{ number_format(array_sum($monthlyExpense)) }} <small style="font-size: 0.65rem;">TSh</small></span>
+                    </div>
+                    <div class="csb-item">
+                        @php $ytdNet = array_sum($monthlyNetCash); @endphp
+                        <span class="csb-label"><span class="csb-dot" style="background: #2563eb;"></span>{{ __('Net Cash Flow') }}</span>
+                        <span class="csb-val num-tabular" style="color: {{ $ytdNet >= 0 ? '#059669' : '#dc2626' }};">
+                            {{ $ytdNet >= 0 ? '+' : '' }}{{ number_format($ytdNet) }} <small style="font-size: 0.65rem;">TSh</small>
+                        </span>
+                    </div>
+                    @else
+                    <div class="csb-item">
+                        <span class="csb-label"><span class="csb-dot" style="background: #2563eb;"></span>{{ __('Recorded Transactions') }}</span>
+                        <span class="csb-val num-tabular">{{ number_format($salesCount) }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Expense Distribution Donut Chart --}}
+        @if(!$selectedCashier)
+        <div class="col-12 col-lg-4">
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h4 class="dash-card-title">
+                        <i class="bi bi-pie-chart text-warning"></i>
+                        <span>{{ __('Expense Outflow') }}</span>
+                    </h4>
+                    <span class="dash-card-badge">{{ __('Cumulative') }}</span>
+                </div>
+                <div id="topExpensesChart" style="min-height: 240px;"></div>
+            </div>
+        </div>
+        @endif
+    </div>
+    @endif
+
+    {{-- ========================================================================
+         6. OPERATIONAL TABLES (RECENT SALES & TOP PRODUCTS)
+         ======================================================================== --}}
+    <div class="row g-3 mb-4">
+        {{-- Recent Sales Table --}}
+        <div class="col-12 col-lg-8">
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h4 class="dash-card-title">
+                        <i class="bi bi-clock-history text-primary"></i>
+                        <span>
+                            @if($selectedCashier)
+                                {{ __('Recent Sales by') }} {{ $selectedCashier->name }}
+                            @else
+                                {{ __('Recent Sales Transactions') }}
+                            @endif
+                        </span>
+                    </h4>
+                    <a href="{{ route('sales.index') }}" class="dash-card-link-btn">
+                        {{ __('View All Invoices') }} &rarr;
+                    </a>
+                </div>
+
                 <div class="table-responsive">
-                    <table class="table recent-table mb-0">
+                    <table class="exec-table">
                         <thead>
                             <tr>
-                                <th>{{ __('Reference') }}</th>
-                                <th>{{ __('Date') }}</th>
+                                <th>{{ __('Invoice #') }}</th>
+                                <th>{{ __('Date & Time') }}</th>
                                 <th>{{ __('Status') }}</th>
                                 <th class="text-end">{{ __('Amount') }}</th>
+                                <th class="text-center">{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentSales as $sale)
                             <tr>
-                                <td><span class="ref-badge">{{ $sale->reference_no }}</span></td>
-                                <td style="color:#64748b;">{{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}</td>
+                                <td>
+                                    <span class="ref-code-badge">{{ $sale->reference_no }}</span>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">{{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}</div>
+                                    <small class="text-muted">{{ \Carbon\Carbon::parse($sale->created_at)->format('H:i') }}</small>
+                                </td>
                                 <td>
                                     @if($sale->payment_status == 'paid')
-                                        <span class="status-pill" style="background:#d1fae5;color:#059669;">✓ {{ __('Paid') }}</span>
+                                        <span class="badge-paid"><i class="bi bi-check-circle-fill"></i> {{ __('Paid') }}</span>
                                     @elseif($sale->payment_status == 'partial')
-                                        <span class="status-pill" style="background:#fef3c7;color:#d97706;">~ {{ __('Partial') }}</span>
+                                        <span class="badge-partial"><i class="bi bi-clock-fill"></i> {{ __('Partial') }}</span>
                                     @else
-                                        <span class="status-pill" style="background:#fee2e2;color:#dc2626;">✗ {{ __('Unpaid') }}</span>
+                                        <span class="badge-unpaid"><i class="bi bi-x-circle-fill"></i> {{ __('Unpaid') }}</span>
                                     @endif
                                 </td>
-                                <td class="text-end fw-bold" style="color:#0f172a;">
+                                <td class="text-end num-tabular fw-bold text-dark">
                                     {{ number_format($sale->total_amount) }}
-                                    <span style="font-size:0.68rem;color:#94a3b8;font-weight:400;">TSh</span>
+                                    <small class="text-muted" style="font-size: 0.68rem; font-weight: 500;">TSh</small>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{{ route('sales.show', $sale->id) }}" class="btn btn-sm btn-light border py-1 px-2 rounded-2" title="{{ __('View Details') }}">
+                                        <i class="bi bi-eye text-primary"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center py-5" style="color:#94a3b8;">
-                                    <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:8px;"></i>
-                                    {{ __('No recent sales found.') }}
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                                    <span>{{ __('No recent transactions recorded.') }}</span>
                                 </td>
                             </tr>
                             @endforelse
@@ -503,54 +1545,64 @@
             </div>
         </div>
 
-        {{-- Quick Actions + Top Products --}}
+        {{-- Top Products Leaderboard --}}
         <div class="col-12 col-lg-4">
-            {{-- Quick Actions --}}
-            <div class="quick-action-card mb-3">
-                <div class="chart-card-title mb-3"><i class="bi bi-lightning-charge me-2 text-warning"></i>{{ __('Quick Actions') }}</div>
-                <a href="{{ route('sales.create') }}" class="quick-btn">
-                    <div class="qb-icon icon-blue"><i class="bi bi-cart-plus"></i></div>
-                    {{ __('Record new sales') }}
-                </a>
-                <a href="{{ route('products.create') }}" class="quick-btn">
-                    <div class="qb-icon icon-green"><i class="bi bi-plus-square"></i></div>
-                    {{ __('Add Product') }}
-                </a>
-                <a href="{{ route('purchases.create') }}" class="quick-btn">
-                    <div class="qb-icon icon-orange"><i class="bi bi-box-arrow-in-down"></i></div>
-                    {{ __('Record new stock intake') }}
-                </a>
-                <a href="{{ route('expenses.create') }}" class="quick-btn" style="margin-bottom:0;">
-                    <div class="qb-icon icon-red"><i class="bi bi-wallet2"></i></div>
-                    {{ __('Record Expense') }}
-                </a>
-            </div>
-
-            {{-- Top Products Today --}}
-            @if(isset($topProducts) && $topProducts->count())
-            <div class="quick-action-card">
-                <div class="chart-card-title mb-3"><i class="bi bi-trophy me-2 text-warning"></i>{{ __('Top Products Today') }}</div>
-                @foreach($topProducts->take(5) as $i => $product)
-                <div class="product-row">
-                    <div class="product-rank rank-{{ $i+1 }}">{{ $i+1 }}</div>
-                    <div class="flex-grow-1" style="min-width:0;">
-                        <div style="font-size:0.8rem;font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            {{ $product->name }}
-                        </div>
-                        <div style="font-size:0.68rem;color:#94a3b8;">{{ $product->total_qty ?? 0 }} {{ __('units') }}</div>
-                    </div>
-                    <div style="font-size:0.78rem;font-weight:700;color:#4f46e5;white-space:nowrap;">
-                        {{ number_format($product->total_revenue ?? 0) }} <span style="font-size:0.6rem;color:#94a3b8;font-weight:400;">TSh</span>
-                    </div>
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h4 class="dash-card-title">
+                        <i class="bi bi-trophy text-warning"></i>
+                        <span>{{ __('Top Products') }}</span>
+                    </h4>
+                    <span class="dash-card-badge">{{ __('By Volume') }}</span>
                 </div>
-                @endforeach
+
+                @if(isset($topProducts) && $topProducts->count())
+                    @php 
+                        $maxRev = $topProducts->max('total_revenue') ?: 1; 
+                    @endphp
+                    <div>
+                        @foreach($topProducts->take(5) as $idx => $prod)
+                        @php
+                            $rankClass = $idx === 0 ? 'rank-1' : ($idx === 1 ? 'rank-2' : ($idx === 2 ? 'rank-3' : 'rank-other'));
+                            $revPct = round(($prod->total_revenue / $maxRev) * 100);
+                        @endphp
+                        <div class="top-product-item">
+                            <span class="top-rank-badge {{ $rankClass }}">{{ $idx + 1 }}</span>
+                            <div class="flex-grow-1" style="min-width: 0;">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <div class="fw-bold text-dark text-truncate me-2" style="font-size: 0.8rem;" title="{{ $prod->name }}">
+                                        {{ $prod->name }}
+                                    </div>
+                                    <span class="num-tabular fw-bold text-dark" style="font-size: 0.8rem; white-space: nowrap;">
+                                        {{ number_format($prod->total_revenue) }} <small class="text-muted" style="font-size: 0.65rem;">TSh</small>
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.7rem;">
+                                    <span>{{ number_format($prod->total_qty) }} {{ __('units sold') }}</span>
+                                    <span>{{ $revPct }}%</span>
+                                </div>
+                                <div class="tpi-progress">
+                                    <div class="tpi-progress-bar" style="width: {{ $revPct }}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="text-center py-5 text-muted my-auto">
+                        <i class="bi bi-box-seam fs-2 d-block mb-2 text-secondary"></i>
+                        <span>{{ __('No product sales recorded yet for this period.') }}</span>
+                    </div>
+                @endif
             </div>
-            @endif
         </div>
     </div>
 
 </div>
 
+{{-- ========================================================================
+     APEXCHARTS SCRIPT WITH DYNAMIC DARK/LIGHT THEME SUPPORT
+     ======================================================================== --}}
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -561,91 +1613,168 @@ document.addEventListener("DOMContentLoaded", function() {
         '{{ __('Sep') }}','{{ __('Oct') }}','{{ __('Nov') }}','{{ __('Dec') }}'
     ];
 
-    const commonChart = {
+    const isCurrentDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    const baseChartConfig = {
         toolbar: { show: false },
-        fontFamily: 'Inter, sans-serif',
-        animations: { enabled: true, easing: 'easeinout', speed: 600 }
+        fontFamily: 'Poppins, -apple-system, sans-serif',
+        theme: { mode: isCurrentDark ? 'dark' : 'light' },
+        animations: { enabled: true, easing: 'easeinout', speed: 500 }
     };
 
+    let cashFlowChartInstance = null;
+    let topExpChartInstance = null;
+
     @if($isAdmin)
-    // --- 1. Cash Flow Area Chart ---
-    new ApexCharts(document.querySelector("#cashFlowChart"), {
-        series: [{ name: '{{ __('Net Cash Flow') }}', data: {!! json_encode($monthlyNetCash) !!} }],
-        chart: { ...commonChart, type: 'area', height: 200 },
-        colors: ['#6366f1'],
-        fill: {
-            type: 'gradient',
-            gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.02, stops: [0, 100] }
-        },
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 2.5 },
-        xaxis: {
-            categories: months,
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-            labels: { style: { fontSize: '11px', colors: '#94a3b8' } }
-        },
-        yaxis: { labels: { formatter: v => v === 0 ? '0' : (v/1000).toFixed(0)+'K', style: { colors: '#94a3b8', fontSize: '11px' } } },
-        grid: { borderColor: '#f1f5f9', strokeDashArray: 4, padding: { left: 0, right: 0 } },
-        tooltip: { y: { formatter: val => val.toLocaleString() + " TSh" } }
-    }).render();
+    // --- 1. Monthly Revenue / Cash Flow Area Chart ---
+    const cashFlowEl = document.querySelector("#cashFlowChart");
+    if (cashFlowEl) {
+        cashFlowChartInstance = new ApexCharts(cashFlowEl, {
+            series: [{ 
+                name: '{{ $selectedCashier ? __("Sales Revenue") : __("Net Cash Flow") }}', 
+                data: {!! json_encode($monthlyNetCash) !!} 
+            }],
+            chart: { ...baseChartConfig, type: 'area', height: 210, background: 'transparent' },
+            colors: ['#2563eb'],
+            fill: {
+                type: 'gradient',
+                gradient: { shadeIntensity: 1, opacityFrom: 0.28, opacityTo: 0.02, stops: [0, 95] }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 2.5 },
+            xaxis: {
+                categories: months,
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { fontSize: '11px', colors: isCurrentDark ? '#cbd5e1' : '#64748b' } }
+            },
+            yaxis: { 
+                labels: { 
+                    formatter: v => v === 0 ? '0' : (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : (v/1000).toFixed(0)+'K'), 
+                    style: { colors: isCurrentDark ? '#cbd5e1' : '#64748b', fontSize: '11px' } 
+                } 
+            },
+            grid: { borderColor: isCurrentDark ? '#1f2937' : '#f1f5f9', strokeDashArray: 3, padding: { left: 0, right: 0 } },
+            tooltip: { 
+                theme: isCurrentDark ? 'dark' : 'light',
+                y: { formatter: val => Number(val).toLocaleString() + " TSh" } 
+            }
+        });
+        cashFlowChartInstance.render();
+    }
 
-    // --- 2. Income & Expenses Bar Chart ---
-    new ApexCharts(document.querySelector("#incomeExpenseChart"), {
-        series: [
-            { name: '{{ __('Cash In') }}',  data: {!! json_encode($monthlyIncome) !!} },
-            { name: '{{ __('Cash Out') }}', data: {!! json_encode($monthlyExpense) !!} }
-        ],
-        chart: { ...commonChart, type: 'bar', height: 240 },
-        colors: ['#10b981', '#f59e0b'],
-        plotOptions: { bar: { horizontal: false, columnWidth: '45%', borderRadius: 5, borderRadiusApplication: 'end' } },
-        dataLabels: { enabled: false },
-        stroke: { show: true, width: 2, colors: ['transparent'] },
-        xaxis: {
-            categories: months,
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-            labels: { style: { fontSize: '11px', colors: '#94a3b8' } }
-        },
-        yaxis: { labels: { formatter: v => v === 0 ? '0' : (v/1000).toFixed(0)+'K', style: { colors: '#94a3b8', fontSize:'11px' } } },
-        grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
-        legend: { position: 'top', horizontalAlign: 'left', markers: { radius: 10 }, fontSize: '12px' },
-        tooltip: { y: { formatter: val => val.toLocaleString() + " TSh" } }
-    }).render();
+    @if(!$selectedCashier)
+    // --- 2. Top Expenses Donut Chart ---
+    const topExpEl = document.querySelector("#topExpensesChart");
+    if (topExpEl) {
+        const topExpenseData = ({!! json_encode($topExpenseData) !!}).map(Number);
+        const topExpenseLabels = {!! json_encode($topExpenseLabels) !!};
 
-    // --- 3. Top Expenses Donut Chart ---
-    var topExpenseData   = ({!! json_encode($topExpenseData) !!}).map(Number);
-    var topExpenseLabels = {!! json_encode($topExpenseLabels) !!};
-
-    new ApexCharts(document.querySelector("#topExpensesChart"), {
-        series: topExpenseData.length > 0 ? topExpenseData : [1],
-        labels: topExpenseLabels.length > 0 ? topExpenseLabels : ['{{ __('No Data') }}'],
-        chart: { ...commonChart, type: 'donut', height: 270 },
-        colors: ['#10b981', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '72%',
-                    labels: {
-                        show: true,
-                        name: { fontSize: '13px', color: '#64748b' },
-                        value: { fontSize: '18px', fontWeight: 700, color: '#0f172a', formatter: val => Number(val).toLocaleString() },
-                        total: {
-                            show: true, showAlways: true,
-                            label: '{{ __('All Expenses') }}',
-                            fontSize: '12px', color: '#94a3b8',
-                            formatter: w => topExpenseData.length === 0 ? '0' : w.globals.seriesTotals.reduce((a,b) => a+b, 0).toLocaleString()
+        topExpChartInstance = new ApexCharts(topExpEl, {
+            series: topExpenseData.length > 0 ? topExpenseData : [1],
+            labels: topExpenseLabels.length > 0 ? topExpenseLabels : ['{{ __('No Expenses') }}'],
+            chart: { ...baseChartConfig, type: 'donut', height: 260, background: 'transparent' },
+            colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '72%',
+                        labels: {
+                            show: true,
+                            name: { fontSize: '12px', color: isCurrentDark ? '#cbd5e1' : '#64748b' },
+                            value: { 
+                                fontSize: '16px', 
+                                fontWeight: 800, 
+                                color: isCurrentDark ? '#ffffff' : '#0f172a', 
+                                formatter: val => Number(val).toLocaleString() + ' TSh' 
+                            },
+                            total: {
+                                show: true,
+                                label: '{{ __('Total Outflow') }}',
+                                fontSize: '11px',
+                                color: isCurrentDark ? '#cbd5e1' : '#64748b',
+                                formatter: w => {
+                                    if (topExpenseData.length === 0) return '0 TSh';
+                                    const sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                    return sum >= 1000000 ? (sum / 1000000).toFixed(1) + 'M TSh' : sum.toLocaleString() + ' TSh';
+                                }
+                            }
                         }
                     }
                 }
+            },
+            dataLabels: { enabled: false },
+            legend: { 
+                show: true, 
+                position: 'bottom', 
+                fontSize: '11px', 
+                labels: { colors: isCurrentDark ? '#ffffff' : '#475569' } 
+            },
+            stroke: { show: false },
+            tooltip: { 
+                theme: isCurrentDark ? 'dark' : 'light',
+                y: { formatter: val => topExpenseData.length > 0 ? Number(val).toLocaleString() + " TSh" : "" } 
             }
-        },
-        dataLabels: { enabled: false },
-        legend: { show: true, position: 'bottom', fontSize: '11px' },
-        stroke: { show: false },
-        tooltip: { y: { formatter: val => topExpenseData.length > 0 ? val.toLocaleString() + " TSh" : "" } }
-    }).render();
+        });
+        topExpChartInstance.render();
+    }
     @endif
+    @endif
+
+    // Listen for theme change event from navbar toggle
+    window.addEventListener('themeChanged', function(e) {
+        const isDark = e.detail.theme === 'dark';
+        if (cashFlowChartInstance) {
+            cashFlowChartInstance.updateOptions({
+                theme: { mode: isDark ? 'dark' : 'light' },
+                grid: { borderColor: isDark ? '#1f2937' : '#f1f5f9' },
+                tooltip: { theme: isDark ? 'dark' : 'light' },
+                xaxis: { labels: { style: { colors: isDark ? '#cbd5e1' : '#64748b' } } },
+                yaxis: { labels: { style: { colors: isDark ? '#cbd5e1' : '#64748b' } } }
+            });
+        }
+        if (topExpChartInstance) {
+            topExpChartInstance.updateOptions({
+                theme: { mode: isDark ? 'dark' : 'light' },
+                tooltip: { theme: isDark ? 'dark' : 'light' },
+                legend: { labels: { colors: isDark ? '#ffffff' : '#475569' } },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            labels: {
+                                name: { color: isDark ? '#cbd5e1' : '#64748b' },
+                                value: { color: isDark ? '#ffffff' : '#0f172a' },
+                                total: { color: isDark ? '#cbd5e1' : '#64748b' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
 });
+
+function handleDashboardPeriodChange(val) {
+    if (val === 'custom') {
+        toggleCustomRangeBar(true);
+    } else {
+        const cashierParam = '{{ $selectedCashierId ? "&cashier_id=" . $selectedCashierId : "" }}';
+        window.location.href = '?filter=' + val + cashierParam;
+    }
+}
+
+function toggleCustomRangeBar(forceOpen = false) {
+    const bar = document.getElementById('customRangeBar');
+    if (!bar) return;
+    if (forceOpen) {
+        bar.style.display = 'block';
+        bar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        bar.style.display = (bar.style.display === 'none' || !bar.style.display) ? 'block' : 'none';
+    }
+    if (typeof initGlobalDatepickers === 'function') {
+        initGlobalDatepickers(bar);
+    }
+}
 </script>
 @endsection

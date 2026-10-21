@@ -27,6 +27,7 @@
     </div>
 </div>
 
+
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -37,6 +38,7 @@
                         <th class="border-0 fw-semibold">{{ __('Category') }}</th>
                         <th class="border-0 fw-semibold text-end">{{ __('Opening Stock') }}</th>
                         <th class="border-0 fw-semibold text-end">{{ __('Sold') }}</th>
+                        <th class="border-0 fw-semibold text-end">{{ __('Damaged') }}</th>
                         <th class="border-0 fw-semibold text-end">{{ __('Remaining') }}</th>
                         <th class="border-0 fw-semibold text-center pe-4 rounded-end">{{ __('Movement') }}</th>
                     </tr>
@@ -53,7 +55,16 @@
                             <td>{{ $row->product->category->name ?? '-' }}</td>
                             <td class="text-end">{{ number_format($row->opening) }} {{ $row->product->unit->short_name ?? '' }}</td>
                             <td class="text-end fw-bold text-dark">{{ number_format($row->sold) }} {{ $row->product->unit->short_name ?? '' }}</td>
-                            <td class="text-end">{{ number_format($row->current) }} {{ $row->product->unit->short_name ?? '' }}</td>
+                            <td class="text-end">
+                                @if(($row->damaged ?? 0) > 0)
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill fw-bold">
+                                        {{ number_format($row->damaged) }} {{ $row->product->unit->short_name ?? '' }}
+                                    </span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
+                            <td class="text-end fw-semibold">{{ number_format($row->current) }} {{ $row->product->unit->short_name ?? '' }}</td>
                             <td class="text-center pe-4">
                                 @if($row->sellThrough === null)
                                     <span class="badge bg-light text-muted border px-3 py-2 rounded-pill">{{ __('No Activity') }}</span>
@@ -68,7 +79,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
+                            <td colspan="7" class="text-center py-5 text-muted">
                                 <i class="bi bi-box-seam fs-1 mb-3 d-block"></i>
                                 {{ __('No products found.') }}
                             </td>

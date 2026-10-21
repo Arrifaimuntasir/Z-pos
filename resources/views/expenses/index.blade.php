@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4 gap-3">
     <div>
-        <h4 class="fw-bold mb-1" style="font-size: 24px; color: #0f172a;">{{ __('Expenses') }}</h4>
+        <h4 class="fw-bold mb-1 text-dark" style="font-size: 24px;">{{ __('Expenses') }}</h4>
         <p class="text-muted mb-0" style="font-size: 14px;">{{ __('Track and manage your business expenses') }}</p>
     </div>
     <a href="{{ route('expenses.create') }}" class="btn btn-dark shadow-sm px-3" style="border-radius: 8px; font-weight: 500;">
@@ -16,7 +16,7 @@
 <div class="card border mb-4" style="border-radius: 12px; max-width: 280px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
     <div class="card-body p-3 py-4">
         <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">{{ __('TOTAL EXPENSES') }}</div>
-        <h3 class="fw-bold mb-0" style="color: #0f172a; font-size: 24px;">{{ number_format($totalExpenses, 2) }}</h3>
+        <h3 class="fw-bold mb-0 text-dark" style="font-size: 24px;">{{ number_format($totalExpenses, 2) }}</h3>
     </div>
 </div>
 
@@ -76,7 +76,7 @@
                         <td class="selection-cell d-none">
                             <input class="form-check-input row-checkbox" type="checkbox" data-id="{{ $expense->id }}" style="cursor: pointer; width: 1.2rem; height: 1.2rem;">
                         </td>
-                        <td class="text-muted">{{ \Carbon\Carbon::parse($expense->expense_date)->format('M d, Y') }}</td>
+                        <td class="text-muted">{{ \Carbon\Carbon::parse($expense->expense_date)->format('d M Y') }}</td>
                         <td class="fw-semibold">{{ $expense->description }}</td>
                         <td>
                             @if($expense->category)
@@ -123,7 +123,7 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted small">{{ \Carbon\Carbon::parse($expense->expense_date)->format('M d, Y') }}</span>
+                            <span class="text-muted small">{{ \Carbon\Carbon::parse($expense->expense_date)->format('d M Y') }}</span>
                             @if($expense->category)
                                 <span class="badge bg-light text-dark border px-2 py-1">{{ $expense->category }}</span>
                             @endif

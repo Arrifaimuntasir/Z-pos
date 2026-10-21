@@ -30,6 +30,7 @@ class User extends Authenticatable
         'branch_id',
         'shop_id',
         'is_active',
+        'can_manage_products',
         'password',
     ];
 
@@ -54,7 +55,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'can_manage_products' => 'boolean',
         ];
+    }
+
+    public function canManageProducts(): bool
+    {
+        return $this->hasRole('Administrator') || $this->hasRole('Super Admin') || (bool) $this->can_manage_products;
     }
 
     public function branch()

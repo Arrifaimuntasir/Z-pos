@@ -95,9 +95,12 @@ class DefectiveStockController extends Controller
      */
     public function index()
     {
+        $this->ensureTableExists();
         $branchId = $this->getActiveBranchId();
+        $shopId = auth()->user()->shop_id;
 
         $defectiveStocks = \App\Models\DefectiveStock::with(['product', 'branch', 'user'])
+            ->where('shop_id', $shopId)
             ->when($branchId, function ($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             })
@@ -112,6 +115,7 @@ class DefectiveStockController extends Controller
      */
     public function create()
     {
+        $this->ensureTableExists();
         $branchId = $this->resolveBranchId();
         $products = $this->productsWithStock($branchId);
 
@@ -142,11 +146,13 @@ class DefectiveStockController extends Controller
             $this->adjustStock($branchId, $product, -$request->quantity);
 
             \App\Models\DefectiveStock::create([
+                'shop_id' => auth()->user()->shop_id,
                 'branch_id' => $branchId,
                 'product_id' => $product->id,
                 'user_id' => auth()->id(),
                 'quantity' => $request->quantity,
                 'reason' => $request->reason,
+                'status' => 'defective',
             ]);
 
             \Illuminate\Support\Facades\DB::commit();
@@ -324,6 +330,28 @@ class DefectiveStockController extends Controller
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             return back()->with('error', 'Error deleting records: ' . $e->getMessage());
+        }
+    }
+
+    protected function ensureTableExists(): void
+    {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('defective_stocks')) {
+            try {
+                \Illuminate\Support\Facades\Schema::create('defective_stocks', function ($table) {
+                    $table->id();
+                    $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
+                    $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
+                    $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+                    $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+                    $table->decimal('quantity', 15, 2);
+                    $table->text('reason')->nullable();
+                    $table->string('status', 20)->default('defective');
+                    $table->timestamp('restored_at')->nullable();
+                    $table->timestamps();
+                });
+            } catch (\Throwable $e) {
+                // Silently ignore or log
+            }
         }
     }
 }

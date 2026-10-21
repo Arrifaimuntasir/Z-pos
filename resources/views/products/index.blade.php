@@ -16,7 +16,7 @@
             </span>
         @endif
     </div>
-    @if(Auth::user()->hasRole('Administrator'))
+    @if(Auth::user()->canManageProducts())
     <a href="{{ route('products.create') }}" class="btn btn-primary shadow-sm rounded-pill px-4">
         <i class="bi bi-plus-lg me-1"></i> {{ __('Add Product') }}
     </a>
@@ -27,7 +27,7 @@
 <div class="card shadow-sm border-0 rounded-4">
     <div class="card-header bg-white border-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
         <!-- Bulk Delete Controls -->
-        @if(Auth::user()->hasRole('Administrator'))
+        @if(Auth::user()->canManageProducts())
         <div class="d-flex align-items-center">
             <button type="button" id="toggleSelectBtn" class="btn btn-sm shadow-sm rounded-pill px-3 fw-bold" style="background-color: #e9ecef; color: #495057; border: 1px solid #ced4da;">
                 <i class="bi bi-check2-square"></i> {{ __('Select') }}
@@ -58,7 +58,7 @@
                 <table class="table table-hover align-middle">
                     <thead class="text-muted table-light">
                         <tr>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <th class="select-column d-none" style="width: 40px; min-width: 40px;">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="selectAll">
@@ -72,11 +72,11 @@
                             <th style="min-width: 130px;">{{ __('Branch') }}</th>
                             @endif
                             <th class="text-center" style="min-width: 120px;">{{ __('Stock') }}</th>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <th class="text-end" style="min-width: 120px;">{{ __('Buying Price') }}</th>
                             @endif
                             <th class="text-end" style="min-width: 120px;">{{ __('Selling Price') }}</th>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <th class="text-end" style="min-width: 100px;">{{ __('Actions') }}</th>
                             @endif
                         </tr>
@@ -84,7 +84,7 @@
                     <tbody>
                         @forelse($products as $product)
                         <tr>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <td class="select-column d-none">
                                 <div class="form-check">
                                     <input class="form-check-input product-checkbox" type="checkbox" name="product_ids[]" value="{{ $product->id }}" form="bulkDeleteForm">
@@ -111,7 +111,7 @@
                             <td>
                                 <div class="d-flex flex-wrap gap-1">
                                     @forelse($product->branches as $b)
-                                        <span class="badge bg-light text-dark border rounded-pill">{{ $b->name }}</span>
+                                         <span class="badge bg-light text-dark border rounded-pill">{{ $b->name }}</span>
                                     @empty
                                         <span class="text-muted small">-</span>
                                     @endforelse
@@ -140,11 +140,11 @@
                                     <span class="badge bg-success rounded-pill px-3">{{ $stock }} {{ $product->unit->short_name ?? '' }}{!! $label !!}</span>
                                 @endif
                             </td>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <td class="text-end fw-semibold text-muted">{{ number_format($product->cost_price) }} TSh</td>
                             @endif
                             <td class="text-end fw-bold">{{ number_format($product->selling_price) }} TSh</td>
-                            @if(Auth::user()->hasRole('Administrator'))
+                            @if(Auth::user()->canManageProducts())
                             <td class="text-end">
                                 <div class="btn-group gap-1">
                                     <a href="{{ route('products.edit', $product) }}" class="btn btn-sm btn-light text-primary shadow-sm" style="border-radius: 6px;">
@@ -167,7 +167,7 @@
                                 // Always shown: Product, Brand & Model, SKU, Stock, Selling Price
                                 $emptyColspan = 5;
                                 $emptyColspan += (!$activeBranchId && $shopHasBranches) ? 1 : 0;
-                                $emptyColspan += Auth::user()->hasRole('Administrator') ? 3 : 0; // select, buying price, actions
+                                $emptyColspan += Auth::user()->canManageProducts() ? 3 : 0; // select, buying price, actions
                             @endphp
                             <td colspan="{{ $emptyColspan }}" class="text-center py-5 text-muted">
                                 <i class="bi bi-inbox fs-1 d-block mb-3"></i>
@@ -185,7 +185,7 @@
         </div>
     </div>
 
-@if(Auth::user()->hasRole('Administrator'))
+@if(Auth::user()->canManageProducts())
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const selectAll = document.getElementById('selectAll');

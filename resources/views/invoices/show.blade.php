@@ -90,7 +90,7 @@ async function shareInvoice(event) {
                     <div class="col-sm-6 text-sm-end mt-4 mt-sm-0">
                         <h6 class="fw-bold text-muted small text-uppercase mb-1">{{ __('Invoice Details:') }}</h6>
                         <h5 class="fw-bold text-primary mb-1">{{ $invoice->reference_no }}</h5>
-                        <p class="text-muted mb-0">Date: {{ \Carbon\Carbon::parse($invoice->sale_date)->format('M d, Y') }}</p>
+                        <p class="text-muted mb-0">Date: {{ \Carbon\Carbon::parse($invoice->sale_date)->format('d M Y') }}</p>
                         <p class="text-muted mb-0">Method: {{ $invoice->payment_method }}</p>
                     </div>
                 </div>
@@ -185,33 +185,5 @@ async function shareInvoice(event) {
     .card-body { padding: 0 !important; }
 }
 </style>
-@if(session('error'))
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if(typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: "{{ session('error') }}",
-            confirmButtonColor: '#d33'
-        });
-    }
-});
-</script>
-@endif
-@if(session('success'))
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if(typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: "{{ session('success') }}",
-            confirmButtonColor: '#16a34a'
-        });
-    }
-});
-</script>
-@endif
 @endsection
 

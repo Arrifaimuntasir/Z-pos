@@ -102,7 +102,7 @@ async function shareReceipt(event) {
                             <h6 class="fw-bold text-muted small text-uppercase mb-1">{{ __('Receipt Details:') }}</h6>
                         @endif
                         <h5 class="fw-bold text-primary mb-1">{{ $sale->reference_no }}</h5>
-                        <p class="text-muted mb-0">Date: {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}</p>
+                        <p class="text-muted mb-0">Date: {{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}</p>
                         <p class="text-muted mb-0">Method: {{ $sale->payment_method }}</p>
                     </div>
                 </div>
@@ -208,32 +208,4 @@ async function shareReceipt(event) {
     .card-body { padding: 0 !important; }
 }
 </style>
-@if(session('error'))
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if(typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: "{{ session('error') }}",
-            confirmButtonColor: '#d33'
-        });
-    }
-});
-</script>
-@endif
-@if(session('success'))
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    if(typeof Swal !== 'undefined') {
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: "{{ session('success') }}",
-            confirmButtonColor: '#16a34a'
-        });
-    }
-});
-</script>
-@endif
 @endsection

@@ -78,6 +78,93 @@
         font-size: 13px;
         font-weight: 500;
     }
+
+    /* Dark Mode Warranty Create Overrides */
+    [data-theme="dark"] .warrant-card,
+    body.dark-mode .warrant-card {
+        background: #111827 !important;
+        border: 1px solid #1f2937 !important;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
+        color: #f1f5f9 !important;
+    }
+    [data-theme="dark"] .section-title,
+    body.dark-mode .section-title {
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .section-title i,
+    body.dark-mode .section-title i {
+        color: #60a5fa !important;
+    }
+    [data-theme="dark"] .form-label,
+    body.dark-mode .form-label {
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] .type-btn,
+    body.dark-mode .type-btn {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #94a3b8 !important;
+    }
+    [data-theme="dark"] .type-btn.active,
+    body.dark-mode .type-btn.active {
+        background: #2563eb !important;
+        border-color: #3b82f6 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .product-row,
+    body.dark-mode .product-row {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    [data-theme="dark"] .btn-add-product,
+    body.dark-mode .btn-add-product {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #60a5fa !important;
+    }
+    [data-theme="dark"] .theme-card,
+    body.dark-mode .theme-card {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .theme-card:hover,
+    body.dark-mode .theme-card:hover {
+        background: #273549 !important;
+        border-color: #475569 !important;
+    }
+    [data-theme="dark"] .theme-card.selected,
+    body.dark-mode .theme-card.selected {
+        background: rgba(37, 99, 235, 0.25) !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px #3b82f6 !important;
+    }
+    [data-theme="dark"] .note-editor.note-frame,
+    body.dark-mode .note-editor.note-frame {
+        border-color: #374151 !important;
+        background: #111827 !important;
+    }
+    [data-theme="dark"] .note-toolbar,
+    body.dark-mode .note-toolbar {
+        background-color: #1e293b !important;
+        border-bottom-color: #374151 !important;
+    }
+    [data-theme="dark"] .note-editable,
+    body.dark-mode .note-editable {
+        background-color: #111827 !important;
+        color: #f1f5f9 !important;
+    }
+    [data-theme="dark"] .note-btn,
+    body.dark-mode .note-btn {
+        background-color: #1e293b !important;
+        border-color: #374151 !important;
+        color: #cbd5e1 !important;
+    }
+    [data-theme="dark"] hr,
+    body.dark-mode hr {
+        border-color: #1f2937 !important;
+        opacity: 1 !important;
+    }
     .btn-add-product:hover { background: #f8fafc; }
     
     .toggle-switch {
@@ -278,7 +365,15 @@
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 
-                document.getElementById('endDateInput').value = `${year}-${month}-${day}`;
+                const endInput = document.getElementById('endDateInput');
+                if (endInput) {
+                    const formattedDate = `${year}-${month}-${day}`;
+                    if (endInput._flatpickr) {
+                        endInput._flatpickr.setDate(formattedDate, true);
+                    } else {
+                        endInput.value = formattedDate;
+                    }
+                }
             }
         </script>
 

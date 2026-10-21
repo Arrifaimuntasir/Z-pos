@@ -1,4 +1,4 @@
-﻿@php
+@php
     $cat = strtolower($shop->business_type ?? '');
     $userEmail = auth()->user()->email;
 @endphp
@@ -13,12 +13,24 @@
     :root {
         --bc-primary: #3b82f6;
         --bc-bg: #f1f5f9;
+        --bc-card-bg: #ffffff;
         --bc-border: #e2e8f0;
+        --bc-text: #1e293b;
+        --bc-muted: #64748b;
         --card-radius: 16px;
     }
 
+    [data-theme="dark"], body.dark-mode {
+        --bc-bg: #0b1120 !important;
+        --bc-card-bg: #111827 !important;
+        --bc-border: #1f2937 !important;
+        --bc-text: #f1f5f9 !important;
+        --bc-muted: #94a3b8 !important;
+    }
+
     * { box-sizing: border-box; }
-    body { background-color: var(--bc-bg); font-family: 'Inter', sans-serif; }
+    body.admin-body { background-color: var(--bc-bg); font-family: 'Inter', sans-serif; }
+    [data-theme="dark"] body.admin-body, body.dark-mode { background-color: #0b1120 !important; }
 
     /* PAGE HEADER */
     .bc-header {
@@ -54,11 +66,12 @@
 
     /* GALLERY */
     .gallery-wrapper {
-        background: white;
+        background: var(--bc-card-bg);
         border-radius: 16px;
         padding: 1.5rem;
         border: 1px solid var(--bc-border);
         margin-bottom: 2rem;
+        transition: all 0.2s ease;
     }
     .gallery-container {
         display: flex;
@@ -146,7 +159,7 @@
     .editor-sidebar {
         width: 340px;
         flex-shrink: 0;
-        background: white;
+        background: var(--bc-card-bg);
         border-radius: 16px;
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         border: 1px solid var(--bc-border);
@@ -167,7 +180,7 @@
         flex-direction: column;
         align-items: center;
         padding: 1.5rem;
-        background: white;
+        background: var(--bc-card-bg);
         border-radius: 16px;
         border: 1px solid var(--bc-border);
         overflow: hidden;
@@ -238,6 +251,137 @@
     .btn-download { background: var(--bc-primary); color: white; box-shadow: 0 4px 6px -1px rgba(59,130,246,0.4); }
     .btn-download:hover { background: #2563eb; transform: translateY(-2px); }
 
+    /* Sidebar and helpers */
+    .bc-sidebar-header { background: #f8fafc; border-radius: 16px 16px 0 0; }
+    .bc-sidebar-footer { background: #f8fafc; border-radius: 0 0 16px 16px; }
+    .bc-upload-box { background: #f8fafc; }
+    .bc-info-box { background: #eff6ff; color: #1d4ed8; }
+    .bc-search-icon { background: #ffffff; }
+
+    /* DARK MODE COMPREHENSIVE OVERRIDES */
+    [data-theme="dark"] .gallery-wrapper,
+    body.dark-mode .gallery-wrapper,
+    [data-theme="dark"] .editor-sidebar,
+    body.dark-mode .editor-sidebar,
+    [data-theme="dark"] .card-scene,
+    body.dark-mode .card-scene {
+        background: #111827 !important;
+        border-color: #1f2937 !important;
+        color: #f1f5f9 !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    [data-theme="dark"] .bc-sidebar-header,
+    body.dark-mode .bc-sidebar-header,
+    [data-theme="dark"] .bc-sidebar-footer,
+    body.dark-mode .bc-sidebar-footer {
+        background: #0f172a !important;
+        border-color: #1f2937 !important;
+    }
+
+    [data-theme="dark"] .template-card,
+    body.dark-mode .template-card {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    [data-theme="dark"] .template-card.active,
+    body.dark-mode .template-card.active {
+        border-color: var(--bc-primary) !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+        background: #1e293b !important;
+    }
+    [data-theme="dark"] .template-info,
+    body.dark-mode .template-info {
+        background: #1e293b !important;
+    }
+    [data-theme="dark"] .template-title,
+    body.dark-mode .template-title {
+        color: #f1f5f9 !important;
+    }
+    [data-theme="dark"] .fav-btn,
+    body.dark-mode .fav-btn {
+        background: #1e293b !important;
+        color: #94a3b8 !important;
+        border: 1px solid #334155 !important;
+    }
+
+    [data-theme="dark"] .cat-tab,
+    body.dark-mode .cat-tab {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #94a3b8 !important;
+    }
+    [data-theme="dark"] .cat-tab:hover,
+    body.dark-mode .cat-tab:hover {
+        background: #334155 !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .cat-tab.active,
+    body.dark-mode .cat-tab.active {
+        background: var(--bc-primary) !important;
+        border-color: var(--bc-primary) !important;
+        color: #ffffff !important;
+    }
+    [data-theme="dark"] .cat-tab.recommended,
+    body.dark-mode .cat-tab.recommended {
+        background: rgba(245, 158, 11, 0.15) !important;
+        color: #fbbf24 !important;
+        border-color: rgba(245, 158, 11, 0.35) !important;
+    }
+    [data-theme="dark"] .cat-tab.recommended.active,
+    body.dark-mode .cat-tab.recommended.active {
+        background: #f59e0b !important;
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .accordion-item,
+    body.dark-mode .accordion-item {
+        background: #111827 !important;
+        border-color: #1f2937 !important;
+    }
+    [data-theme="dark"] .accordion-button,
+    body.dark-mode .accordion-button {
+        background: #111827 !important;
+        color: #f1f5f9 !important;
+    }
+    [data-theme="dark"] .accordion-button:not(.collapsed),
+    body.dark-mode .accordion-button:not(.collapsed) {
+        background: rgba(37, 99, 235, 0.2) !important;
+        color: #60a5fa !important;
+    }
+    [data-theme="dark"] .accordion-body,
+    body.dark-mode .accordion-body {
+        background: #111827 !important;
+        color: #f1f5f9 !important;
+    }
+
+    [data-theme="dark"] .bc-upload-box,
+    body.dark-mode .bc-upload-box {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+    }
+    [data-theme="dark"] .bc-info-box,
+    body.dark-mode .bc-info-box {
+        background: rgba(37, 99, 235, 0.15) !important;
+        color: #93c5fd !important;
+        border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    }
+    [data-theme="dark"] .bc-search-icon,
+    body.dark-mode .bc-search-icon {
+        background: #1e293b !important;
+        border-color: #374151 !important;
+    }
+    [data-theme="dark"] .btn-flip,
+    body.dark-mode .btn-flip {
+        background: #334155 !important;
+        color: #ffffff !important;
+        border: 1px solid #475569 !important;
+    }
+    [data-theme="dark"] .btn-flip:hover,
+    body.dark-mode .btn-flip:hover {
+        background: #475569 !important;
+    }
+
     /* FONTS */
     .font-inter * { font-family: 'Inter', sans-serif !important; }
     .font-roboto * { font-family: 'Roboto', sans-serif !important; }
@@ -299,12 +443,12 @@
     <!-- Header -->
     <div class="bc-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div style="position: relative; z-index: 2;">
-            <h2 class="fw-bold mb-1" style="letter-spacing: -0.5px;">🎨 Business Card Studio</h2>
-            <p class="mb-0" style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Professional templates tailored to your business category.</p>
+            <h2 class="fw-bold mb-1" style="letter-spacing: -0.5px;">🎨 {{ __('Business Card Studio') }}</h2>
+            <p class="mb-0" style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">{{ __('Professional templates tailored to your business category.') }}</p>
         </div>
         <div class="d-flex gap-2" style="position: relative; z-index: 2;">
-            <button class="action-btn" id="btn-favs" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
-                <i class="bi bi-heart-fill text-danger"></i> Favorites
+            <button class="action-btn" id="btn-favs" style="background: rgba(255,255,255,0.12); color: white; border: 1px solid rgba(255,255,255,0.25);">
+                <i class="bi bi-heart-fill text-danger"></i> <span>{{ __('Favorites') }}</span>
             </button>
         </div>
     </div>
@@ -312,10 +456,10 @@
     <!-- GALLERY SECTION -->
     <div class="gallery-wrapper">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-grid-fill me-2 text-primary"></i>Choose a Template</h6>
+            <h6 class="fw-bold text-dark mb-0"><i class="bi bi-grid-fill me-2 text-primary"></i>{{ __('Choose a Template') }}</h6>
             <div class="input-group" style="width: 220px;">
-                <span class="input-group-text bg-white border-end-0 pe-1"><i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i></span>
-                <input type="text" id="search-templates" class="form-control border-start-0 ps-1" placeholder="Search..." style="padding: 0.45rem;">
+                <span class="input-group-text border-end-0 pe-1 bc-search-icon"><i class="bi bi-search text-muted" style="font-size: 0.85rem;"></i></span>
+                <input type="text" id="search-templates" class="form-control border-start-0 ps-1" placeholder="{{ __('Search...') }}" style="padding: 0.45rem;">
             </div>
         </div>
 
@@ -324,7 +468,7 @@
         
         <div id="empty-gallery" class="text-center py-4 d-none">
             <i class="bi bi-search" style="font-size: 2rem; color: #cbd5e1;"></i>
-            <p class="mt-2 mb-0 text-muted small fw-bold">No templates found</p>
+            <p class="mt-2 mb-0 text-muted small fw-bold">{{ __('No templates found') }}</p>
         </div>
     </div>
 
@@ -333,9 +477,9 @@
         
         <!-- SIDEBAR -->
         <div class="editor-sidebar">
-            <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #f8fafc; border-radius: 16px 16px 0 0;">
-                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;"><i class="bi bi-sliders me-2 text-primary"></i>Customize</h6>
-                <span class="badge bg-primary rounded-pill" id="template-badge" style="font-size: 0.7rem;">Template</span>
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center bc-sidebar-header">
+                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;"><i class="bi bi-sliders me-2 text-primary"></i>{{ __('Customize') }}</h6>
+                <span class="badge bg-primary rounded-pill" id="template-badge" style="font-size: 0.7rem;">{{ __('Template') }}</span>
             </div>
 
             <div class="accordion" id="editorAccordion">
@@ -343,7 +487,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#acc-info">
-                            <i class="bi bi-person-lines-fill me-2"></i> Information
+                            <i class="bi bi-person-lines-fill me-2"></i> {{ __('Information') }}
                         </button>
                     </h2>
                     <div id="acc-info" class="accordion-collapse collapse show" data-bs-parent="#editorAccordion">
@@ -372,7 +516,7 @@
                                 <label class="form-label">{{ __('Social Username') }}</label>
                                 <input type="text" class="form-control" id="inp-social" value="{{ strtolower(str_replace(' ', '_', $shop->name)) }}">
                             </div>
-                            <div class="mb-2 mt-3 p-2 border rounded" style="background:#f8fafc">
+                            <div class="mb-2 mt-3 p-2 border rounded bc-upload-box">
                                 <label class="form-label text-primary" style="font-size:0.85rem;"><i class="bi bi-image me-1"></i>{{ __('Custom Logo (Optional)') }}</label>
                                 <input type="file" class="form-control form-control-sm" id="inp-logo-upload" accept="image/*">
                             </div>
@@ -419,7 +563,7 @@
                                 <option value="font-playfair">Playfair (Elegant)</option>
                             </select>
 
-                            <div class="mt-3 p-2 rounded d-flex align-items-center gap-2" style="background: #eff6ff; font-size: 0.78rem; color: #1d4ed8;">
+                            <div class="mt-3 p-2 rounded d-flex align-items-center gap-2 bc-info-box" style="font-size: 0.78rem;">
                                 <i class="bi bi-info-circle-fill"></i>
                                 <span>{{ __('Logo loads from your Shop Settings automatically, or use the custom upload above.') }}</span>
                             </div>
@@ -428,7 +572,7 @@
                 </div>
             </div>
 
-            <div class="p-3 border-top" style="background: #f8fafc; border-radius: 0 0 16px 16px;">
+            <div class="p-3 border-top bc-sidebar-footer">
                 <button class="action-btn btn-save w-100" id="btn-save">
                     <i class="bi bi-cloud-check-fill"></i> {{ __('Save Design') }}
                 </button>
@@ -540,6 +684,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const CATS = ['All', 'Electronics', 'Restaurant', 'Pharmacy', 'Fashion', 'Construction', 'Auto', 'General'];
+    const CAT_LABELS = {
+        'All': @json(__('All')),
+        'Electronics': @json(__('Electronics')),
+        'Restaurant': @json(__('Restaurant')),
+        'Pharmacy': @json(__('Pharmacy')),
+        'Fashion': @json(__('Fashion')),
+        'Construction': @json(__('Construction')),
+        'Auto': @json(__('Auto')),
+        'General': @json(__('General'))
+    };
 
     /* ==========================================
      * SMART DETECT
@@ -616,8 +770,9 @@ document.addEventListener('DOMContentLoaded', () => {
         CATS.forEach(cat => {
             const b = document.createElement('button');
             const isRec = cat === recCat;
+            const label = CAT_LABELS[cat] || cat;
             b.className = 'cat-tab' + (isRec ? ' recommended' : '') + (cat === activeCat ? ' active' : '');
-            b.textContent = isRec ? '✨ ' + cat : cat;
+            b.textContent = isRec ? '✨ ' + label : label;
             b.onclick = () => { activeCat = cat; renderTabs(); renderGallery(); };
             $tabs.appendChild(b);
         });
@@ -871,8 +1026,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-favs').addEventListener('click', function() {
         showFavs = !showFavs;
         this.innerHTML = showFavs
-            ? '<i class="bi bi-heart-fill text-danger"></i> All Templates'
-            : '<i class="bi bi-heart-fill text-danger"></i> Favorites';
+            ? '<i class="bi bi-heart-fill text-danger"></i> ' + @json(__('All Templates'))
+            : '<i class="bi bi-heart-fill text-danger"></i> ' + @json(__('Favorites'));
         renderGallery();
     });
 
@@ -887,22 +1042,35 @@ document.addEventListener('DOMContentLoaded', () => {
         this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ __("Saving...") }}';
         this.disabled = true;
 
+        const payload = {
+            _token: '{{ csrf_token() }}',
+            card_theme: activeTpl.id,
+            card_color: inp.cPrim ? inp.cPrim.value : '',
+            card_bg: inp.cBg ? inp.cBg.value : '',
+            card_text: inp.cText ? inp.cText.value : '',
+            card_accent: inp.cAccent ? inp.cAccent.value : '',
+            card_font: inp.font ? inp.font.value : 'font-inter',
+            card_name: inp.name ? inp.name.value : '',
+            card_phone: inp.phone ? inp.phone.value : '',
+            card_email: inp.email ? inp.email.value : '',
+            card_message: inp.tagline ? inp.tagline.value : '',
+            card_address: inp.address ? inp.address.value : '',
+            card_social: inp.social ? inp.social.value : '',
+            card_logo_data: customLogoBase64
+        };
+
         fetch('{{ route("shop.business-card.save") }}', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({
-                _token: '{{ csrf_token() }}',
-                card_theme: activeTpl.id,
-                card_color: inp.cPrim.value,
-                card_phone: inp.phone.value,
-                card_email: inp.email.value,
-                card_message: inp.tagline.value,
-                card_logo_data: customLogoBase64
-            })
+            body: JSON.stringify(payload)
         })
         .then(r => r.json())
         .then(d => {
             if (d.success) {
+                try {
+                    localStorage.setItem('zpos_bc_saved_theme', activeTpl.id);
+                    localStorage.setItem('zpos_bc_saved_state', JSON.stringify(payload));
+                } catch(e) {}
                 this.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>{{ __("Saved!") }}';
                 this.style.background = '#059669';
                 setTimeout(() => { this.innerHTML = orig; this.style.background = ''; this.disabled = false; }, 2500);
@@ -947,13 +1115,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ==========================================
-     * INITIALISE
+     * INITIALISE & RESTORE SAVED STATE
      * ========================================== */
-    // Restore saved template
-    const savedTheme = '{{ $shop->card_theme }}';
+    const savedSettings = @json($cardSettings ?? []);
+    let localSavedState = null;
+    try {
+        localSavedState = JSON.parse(localStorage.getItem('zpos_bc_saved_state') || 'null');
+    } catch(e) {}
+
+    const cfg = (savedSettings && Object.keys(savedSettings).length > 0) ? savedSettings : (localSavedState || {});
+
+    if (cfg && Object.keys(cfg).length > 0) {
+        if (cfg.name && inp.name) inp.name.value = cfg.name;
+        if (cfg.tagline && inp.tagline) inp.tagline.value = cfg.tagline;
+        if (cfg.phone && inp.phone) inp.phone.value = cfg.phone;
+        if (cfg.email && inp.email) inp.email.value = cfg.email;
+        if (cfg.address && inp.address) inp.address.value = cfg.address;
+        if (cfg.social && inp.social) inp.social.value = cfg.social;
+        if (cfg.color && inp.cPrim) inp.cPrim.value = cfg.color;
+        if (cfg.bg && inp.cBg) inp.cBg.value = cfg.bg;
+        if (cfg.text && inp.cText) inp.cText.value = cfg.text;
+        if (cfg.accent && inp.cAccent) inp.cAccent.value = cfg.accent;
+        if (cfg.font && inp.font) inp.font.value = cfg.font;
+    } else {
+        if ('{{ $shop->card_color }}' && inp.cPrim) inp.cPrim.value = '{{ $shop->card_color }}';
+    }
+
+    const savedTheme = (cfg && cfg.theme) ? cfg.theme : ('{{ $shop->card_theme }}' || localStorage.getItem('zpos_bc_saved_theme'));
     if (savedTheme) {
         const t = templates.find(x => x.id === savedTheme);
-        if (t) { activeTpl = t; activeCat = t.cat.charAt(0).toUpperCase() + t.cat.slice(1); $badge.textContent = t.name; }
+        if (t) {
+            activeTpl = t;
+            activeCat = t.cat.charAt(0).toUpperCase() + t.cat.slice(1);
+            $badge.textContent = t.name;
+        }
     }
 
     renderTabs();

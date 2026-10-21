@@ -41,7 +41,7 @@
                     @forelse($returns as $rtn)
                     <tr>
                         <td class="ps-4">
-                            {{ \Carbon\Carbon::parse($rtn->return_date)->format('M d, Y') }}
+                            {{ \Carbon\Carbon::parse($rtn->return_date)->format('d M Y') }}
                         </td>
                         <td>
                             <span class="fw-medium text-dark">{{ $rtn->reference_no }}</span>

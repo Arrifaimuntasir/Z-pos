@@ -49,7 +49,7 @@
                     @forelse($invoices as $sale)
                         <tr>
                             <td class="ps-4">
-                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('M d, Y') }}
+                                {{ \Carbon\Carbon::parse($sale->sale_date)->format('d M Y') }}
                             </td>
                             <td><span class="fw-medium">{{ $sale->reference_no }}</span></td>
                             <td>

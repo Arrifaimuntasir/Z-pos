@@ -14,12 +14,12 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('moved_by')->constrained('users')->onDelete('cascade');
 
-            // FROM: null = shop floor/duka, filled = specific warehouse
-            $table->enum('from_type', ['shop', 'warehouse']);
+            // FROM: 'shop', 'warehouse', 'supplier', 'direct'
+            $table->string('from_type', 30);
             $table->foreignId('from_warehouse_id')->nullable()->constrained('warehouses')->onDelete('set null');
 
-            // TO: null = shop floor/duka, filled = specific warehouse
-            $table->enum('to_type', ['shop', 'warehouse']);
+            // TO: 'shop', 'warehouse'
+            $table->string('to_type', 30);
             $table->foreignId('to_warehouse_id')->nullable()->constrained('warehouses')->onDelete('set null');
 
             $table->decimal('quantity', 10, 2);

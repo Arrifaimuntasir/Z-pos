@@ -19,11 +19,11 @@
     <div class="container">
         <div class="header">
             <h2>{{ __('Daily Sales Report') }}</h2>
-            <div>{{ $shop->name }} &middot; {{ $date->format('M d, Y') }}</div>
+            <div>{{ $shop->name }} &middot; {{ $date->format('d M Y') }}</div>
         </div>
         <div class="content">
             <p>{{ __('Hello') }} {{ $owner->first_name }},</p>
-            <p>{{ __('Here is your end-of-day summary for') }} <strong>{{ $date->format('l, M d, Y') }}</strong>:</p>
+            <p>{{ __('Here is your end-of-day summary for') }} <strong>{{ $date->format('l, d M Y') }}</strong>:</p>
 
             <table class="stats">
                 <tr><td>{{ __('Sales Made') }}</td><td>{{ number_format($salesCount) }}</td></tr>

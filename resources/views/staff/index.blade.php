@@ -31,6 +31,7 @@
                         <th class="ps-4 fw-medium border-0 rounded-start py-3">{{ __('Name') }}</th>
                         <th class="fw-medium border-0">{{ __('Email') }}</th>
                         <th class="fw-medium border-0">{{ __('Role') }}</th>
+                        <th class="fw-medium border-0">{{ __('Product Access') }}</th>
                         <th class="text-end pe-4 fw-medium border-0 rounded-end">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
@@ -39,8 +40,8 @@
                     <tr>
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center">
-                                <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="bi bi-person-circle fs-5"></i>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 42px; height: 42px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff !important; flex-shrink: 0; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);">
+                                    <i class="bi bi-person-fill-check fs-5" style="color: #ffffff !important;"></i>
                                 </div>
                                 <div>
                                     <div class="fw-bold text-dark">{{ Auth::user()->name }} (You)</div>
@@ -50,9 +51,10 @@
                         </td>
                         <td>{{ Auth::user()->email }}</td>
                         <td><span class="badge bg-primary rounded-pill px-3">{{ __('Admin') }}</span></td>
+                        <td><span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3"><i class="bi bi-shield-check me-1"></i>{{ __('Full Access') }}</span></td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('staff.edit', Auth::user()->id) }}" class="btn btn-sm btn-light text-primary shadow-sm rounded-3">
-                                <i class="bi bi-pencil"></i> {{ __('Edit') }}
+                            <a href="{{ route('staff.edit', Auth::user()->id) }}" class="btn btn-sm btn-outline-primary shadow-sm rounded-3 px-3">
+                                <i class="bi bi-pencil me-1"></i> {{ __('Edit') }}
                             </a>
                         </td>
                     </tr>
@@ -61,8 +63,8 @@
                     <tr>
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center">
-                                <div class="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="bi bi-person fs-5"></i>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center me-3 shadow-sm" style="width: 42px; height: 42px; background: #334155; border: 1.5px solid #475569; color: #38bdf8 !important; flex-shrink: 0;">
+                                    <i class="bi bi-person-fill fs-5" style="color: #38bdf8 !important;"></i>
                                 </div>
                                 <div>
                                     <div class="fw-bold text-dark">{{ $user->name }}</div>
@@ -77,22 +79,33 @@
                                 <span class="badge bg-secondary bg-opacity-10 text-dark rounded-pill px-3">{{ __('Staff') }}</span>
                             @endif
                         </td>
+                        <td>
+                            @if($user->canManageProducts())
+                                <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">
+                                    <i class="bi bi-check2-circle me-1"></i>{{ __('Can Add & Edit') }}
+                                </span>
+                            @else
+                                <span class="badge bg-light text-muted border rounded-pill px-3">
+                                    <i class="bi bi-lock me-1"></i>{{ __('Sales Only') }}
+                                </span>
+                            @endif
+                        </td>
                         <td class="text-end pe-4">
-                            <a href="{{ route('staff.edit', $user->id) }}" class="btn btn-sm btn-light text-primary shadow-sm rounded-3 me-1">
-                                <i class="bi bi-pencil"></i> {{ __('Edit') }}
+                            <a href="{{ route('staff.edit', $user->id) }}" class="btn btn-sm btn-outline-primary shadow-sm rounded-3 me-1 px-3">
+                                <i class="bi bi-pencil me-1"></i> {{ __('Edit') }}
                             </a>
                             <form action="{{ route('staff.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-light text-danger shadow-sm rounded-3" onclick="return confirm('Are you sure you want to remove this user from your shop? They will no longer be able to log in.')">
-                                    <i class="bi bi-trash"></i> {{ __('Remove') }}
+                                <button type="submit" class="btn btn-sm btn-outline-danger shadow-sm rounded-3 px-3" onclick="return confirm('Are you sure you want to remove this user from your shop? They will no longer be able to log in.')">
+                                    <i class="bi bi-trash me-1"></i> {{ __('Remove') }}
                                 </button>
                             </form>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center py-5 text-muted">
+                        <td colspan="5" class="text-center py-5 text-muted">
                             <i class="bi bi-people fs-1 text-light-secondary mb-3 d-block"></i>
                             <h5>{{ __('No other staff added yet') }}</h5>
                             <p class="mb-0">{{ __('You can add staff like Cashiers to help you manage sales.') }}</p>
