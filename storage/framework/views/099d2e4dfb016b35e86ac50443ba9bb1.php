@@ -2004,6 +2004,36 @@
             padding: 8px 18px !important;
         }
 
+        /* Sidebar Overlay Guarantee */
+        .sidebar-overlay {
+            display: none !important;
+            pointer-events: none !important;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+        }
+        .sidebar-overlay.active {
+            display: block !important;
+            pointer-events: auto !important;
+        }
+
+        /* SweetAlert container must NEVER block clicks when showing toasts */
+        .swal2-container.swal2-top-end,
+        .swal2-container.swal2-top-right,
+        .swal2-container.swal2-bottom-end,
+        .swal2-container.swal2-bottom-right {
+            pointer-events: none !important;
+        }
+        .swal2-popup.swal2-toast {
+            pointer-events: auto !important;
+        }
+
         /* Mobile adjustments */
         @media (max-width: 576px) {
             .swal2-container.swal2-top-end,
@@ -2011,10 +2041,12 @@
                 padding: 10px 12px !important;
                 right: 0 !important;
                 left: 0 !important;
+                pointer-events: none !important;
             }
             .swal2-popup.swal2-toast {
                 max-width: calc(100vw - 24px) !important;
                 width: 100% !important;
+                pointer-events: auto !important;
             }
         }
 
@@ -2219,7 +2251,7 @@
             }
         })();
     </script>
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-overlay" id="sidebarOverlay" style="display: none; pointer-events: none;"></div>
     <div class="wrapper">
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
@@ -2583,7 +2615,7 @@
             <!-- Top Navbar -->
             <nav class="navbar navbar-expand-lg top-navbar shadow-sm border-bottom" style="background-color: #3b82f6; padding: 12px 20px;">
                 <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn text-white" style="background: transparent; border: none;">
+                    <button type="button" id="sidebarCollapse" class="btn text-white" style="background: transparent; border: none; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="bi bi-chevron-double-left fs-5"></i>
                     </button>
 
@@ -2881,7 +2913,18 @@
             function toggleSidebar() {
                 if(sidebar) sidebar.classList.toggle('active');
                 if (window.innerWidth <= 768) {
-                    if(overlay) overlay.classList.toggle('active');
+                    if(overlay) {
+                        const isNowActive = sidebar && sidebar.classList.contains('active');
+                        if (isNowActive) {
+                            overlay.classList.add('active');
+                            overlay.style.display = 'block';
+                            overlay.style.pointerEvents = 'auto';
+                        } else {
+                            overlay.classList.remove('active');
+                            overlay.style.display = 'none';
+                            overlay.style.pointerEvents = 'none';
+                        }
+                    }
                 } else {
                     if(content) content.classList.toggle('active');
                 }
@@ -2959,29 +3002,16 @@
             });
         }
 
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
+        if ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window) {
             navigator.serviceWorker.register('/sw.js?v=81')
             .then(function(swReg) {
                 console.log('Service Worker is registered', swReg);
-                
-                // If not denied, prompt user on first click anywhere
-                if (Notification.permission === 'default') {
-                    const promptOnce = () => {
-                        Notification.requestPermission().then(function(permission) {
-                            if (permission === 'granted') {
-                                subscribeUserToPush();
-                            }
-                        });
-                        document.removeEventListener('click', promptOnce);
-                    };
-                    document.addEventListener('click', promptOnce);
-                } else if (Notification.permission === 'granted') {
-                    // Always try to subscribe/refresh subscription on load if granted
+                if (Notification.permission === 'granted') {
                     subscribeUserToPush();
                 }
             })
             .catch(function(error) {
-                console.error('Service Worker Error', error);
+                console.warn('Service Worker registration skipped or failed:', error);
             });
         }
     </script>

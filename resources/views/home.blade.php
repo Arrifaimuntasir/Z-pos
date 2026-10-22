@@ -214,8 +214,34 @@
         overflow: hidden !important;
         position: relative;
         padding: 4px 0 10px 0;
-        mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
+        touch-action: pan-y;
+        -webkit-overflow-scrolling: touch;
+    }
+    .pulse-marquee-wrapper::before,
+    .pulse-marquee-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 32px;
+        z-index: 6;
+        pointer-events: none !important;
+    }
+    .pulse-marquee-wrapper::before {
+        left: 0;
+        background: linear-gradient(to right, var(--dash-bg, #f8fafc), transparent);
+    }
+    .pulse-marquee-wrapper::after {
+        right: 0;
+        background: linear-gradient(to left, var(--dash-bg, #f8fafc), transparent);
+    }
+    [data-theme="dark"] .pulse-marquee-wrapper::before,
+    body.dark-mode .pulse-marquee-wrapper::before {
+        background: linear-gradient(to right, var(--dash-bg, #0b1120), transparent);
+    }
+    [data-theme="dark"] .pulse-marquee-wrapper::after,
+    body.dark-mode .pulse-marquee-wrapper::after {
+        background: linear-gradient(to left, var(--dash-bg, #0b1120), transparent);
     }
     .pulse-track {
         display: flex;
@@ -224,8 +250,10 @@
         animation: pulseTrackSlide 30s linear infinite;
         will-change: transform;
     }
-    .pulse-track:hover {
-        animation-play-state: paused;
+    .pulse-track:hover,
+    .pulse-track:active,
+    .pulse-track.is-paused {
+        animation-play-state: paused !important;
     }
     @keyframes pulseTrackSlide {
         0% { transform: translateX(0); }
@@ -249,6 +277,13 @@
         width: 220px;
         min-width: 220px;
         box-sizing: border-box;
+        cursor: pointer;
+        position: relative;
+        z-index: 5;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+        -webkit-user-select: none;
     }
     .quick-op-btn:hover {
         transform: translateY(-2px);
@@ -1056,13 +1091,63 @@
         .quick-op-btn { width: 195px; min-width: 195px; padding: 10px 12px; }
         .metric-card { width: 245px; min-width: 245px; padding: 16px; }
     }
+    .exec-controls-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
     @media (max-width: 576px) {
-        .exec-header { flex-direction: column; align-items: stretch; gap: 12px; padding: 14px; }
-        .exec-title-group h3 { font-size: 1.15rem; }
-        .exec-controls { width: 100%; flex-direction: row; gap: 8px; }
-        .exec-select { flex: 1; min-width: 0; font-size: 0.78rem; height: 38px; }
-        .exec-action-btn { height: 38px; padding: 0 10px; }
-        .chart-summary-bar { grid-template-columns: 1fr 1fr; }
+        .exec-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 14px;
+            padding: 15px 16px;
+            border-radius: 14px;
+        }
+        .exec-title-group h3 {
+            font-size: 1.18rem;
+            margin-bottom: 2px;
+        }
+        .exec-meta-subtitle {
+            font-size: 0.78rem;
+            gap: 8px;
+        }
+        .exec-controls {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .exec-controls-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .exec-select {
+            width: 100%;
+            font-size: 0.82rem;
+            height: 42px;
+            padding: 0 12px;
+            border-radius: 10px;
+        }
+        .exec-controls-row .exec-select {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .exec-action-btn {
+            height: 42px;
+            padding: 0 16px;
+            flex: 0 0 auto;
+            justify-content: center;
+            font-weight: 700;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .chart-summary-bar {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 </style>
 
@@ -1106,21 +1191,23 @@
             </select>
             @endif
 
-            {{-- Period Filter --}}
-            <select id="dashboardFilter" class="exec-select" onchange="handleDashboardPeriodChange(this.value)">
-                <option value="overall"   {{ $filter == 'overall'   ? 'selected' : '' }}>📊 {{ __('All-Time Data') }}</option>
-                <option value="today"     {{ $filter == 'today'     ? 'selected' : '' }}>📅 {{ __("Today's Analytics") }}</option>
-                <option value="month"     {{ $filter == 'month'     ? 'selected' : '' }}>📆 {{ __("This Month") }}</option>
-                <option value="half_year" {{ $filter == 'half_year' ? 'selected' : '' }}>📈 {{ __('Last 6 Months') }}</option>
-                <option value="year"      {{ $filter == 'year'      ? 'selected' : '' }}>🗓️ {{ __('This Year') }}</option>
-                <option value="custom"    {{ $filter == 'custom'    ? 'selected' : '' }}>🎯 {{ __('Custom Date Range') }}</option>
-            </select>
+            <div class="exec-controls-row">
+                {{-- Period Filter --}}
+                <select id="dashboardFilter" class="exec-select" onchange="handleDashboardPeriodChange(this.value)">
+                    <option value="overall"   {{ $filter == 'overall'   ? 'selected' : '' }}>📊 {{ __('All-Time Data') }}</option>
+                    <option value="today"     {{ $filter == 'today'     ? 'selected' : '' }}>📅 {{ __("Today's Analytics") }}</option>
+                    <option value="month"     {{ $filter == 'month'     ? 'selected' : '' }}>📆 {{ __("This Month") }}</option>
+                    <option value="half_year" {{ $filter == 'half_year' ? 'selected' : '' }}>📈 {{ __('Last 6 Months') }}</option>
+                    <option value="year"      {{ $filter == 'year'      ? 'selected' : '' }}>🗓️ {{ __('This Year') }}</option>
+                    <option value="custom"    {{ $filter == 'custom'    ? 'selected' : '' }}>🎯 {{ __('Custom Date Range') }}</option>
+                </select>
 
-            {{-- Quick Reports Link --}}
-            <a href="{{ route('reports.index') }}" class="exec-action-btn" title="{{ __('View Comprehensive Reports') }}">
-                <i class="bi bi-file-earmark-bar-graph"></i>
-                <span class="d-none d-md-inline">{{ __('Reports') }}</span>
-            </a>
+                {{-- Quick Reports Link --}}
+                <a href="{{ route('reports.index') }}" class="exec-action-btn" title="{{ __('View Comprehensive Reports') }}">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                    <span>{{ __('Reports') }}</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -1752,6 +1839,38 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
     });
+
+    // --- Pulse Marquee: Safe Touch & Hover Movement Engine ---
+    (function initPulseMarquee() {
+        const wrapper = document.querySelector('.pulse-marquee-wrapper');
+        const track = document.querySelector('.pulse-track');
+        if (!wrapper || !track) return;
+
+        let resumeTimer = null;
+
+        function pause() {
+            clearTimeout(resumeTimer);
+            track.classList.add('is-paused');
+            track.style.animationPlayState = 'paused';
+        }
+
+        function resume(delay = 800) {
+            clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(() => {
+                track.classList.remove('is-paused');
+                track.style.animationPlayState = 'running';
+            }, delay);
+        }
+
+        // Desktop Hover
+        wrapper.addEventListener('mouseenter', pause);
+        wrapper.addEventListener('mouseleave', () => resume(200));
+
+        // Mobile Touch: Pause safely without hijacking touches or navigation
+        wrapper.addEventListener('touchstart', pause, { passive: true });
+        wrapper.addEventListener('touchend', () => resume(1200), { passive: true });
+        wrapper.addEventListener('touchcancel', () => resume(400), { passive: true });
+    })();
 });
 
 function handleDashboardPeriodChange(val) {

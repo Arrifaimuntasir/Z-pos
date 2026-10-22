@@ -371,6 +371,7 @@
 
     .sidebar-overlay {
         display: none;
+        pointer-events: none;
         position: fixed;
         width: 100vw;
         height: 100vh;
@@ -382,6 +383,7 @@
         
         &.active {
             display: block;
+            pointer-events: auto;
         }
     }
 }
